@@ -125,8 +125,7 @@ INSERT INTO Estado (id, nombre, paisId) VALUES
 (24, 'Carabobo', 10),               
 (25, 'Lara', 10);
 
-
---Ciudad
+-- Ciudad
 INSERT INTO Ciudad (id, nombre, estadoId) VALUES
 -- Ciudad de Mexico (id=1)
 (1, 'Ciudad de Mexico', 1),
@@ -214,7 +213,7 @@ INSERT INTO Ciudad (id, nombre, estadoId) VALUES
 (49, 'Petare', 22),
 
 -- Venezuela: Zulia (id=23)
-(50, 'Maracaibo', 23);
+(50, 'Maracaibo', 23),
 
 -- Venezuela: Distrito Capital (id=21)
 (51, 'El Junquito', 21),
