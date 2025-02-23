@@ -1,5 +1,4 @@
-
---Orden Online 
+-- Orden Online 
 CREATE TABLE OrdenOnline (
     id INT PRIMARY KEY,
     clienteId INT,
@@ -12,7 +11,7 @@ CREATE TABLE OrdenOnline (
     FOREIGN KEY (facturaId) REFERENCES Factura(id)
 );
 
---Detalles de orden 
+-- Detalles de orden 
 CREATE TABLE OrdenDetalle (
     id INT PRIMARY KEY,
     ordenId INT,
@@ -23,7 +22,7 @@ CREATE TABLE OrdenDetalle (
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
 
---Venta fisica 
+-- Venta fisica 
 CREATE TABLE VentaFisica (
     facturaId INT,
     sucursalId INT, 
@@ -34,7 +33,7 @@ CREATE TABLE VentaFisica (
     FOREIGN KEY (empleadoId) REFERENCES Empleado(id)
 );
 
---Factura
+-- Factura
 CREATE TABLE Factura (
     id INT PRIMARY KEY,
     fechaEmision DATE,
@@ -47,7 +46,7 @@ CREATE TABLE Factura (
     FOREIGN KEY (clienteId) REFERENCES Cliente(id)
 );
 
---Detalle de factura
+-- Detalle de factura
 CREATE TABLE FacturaDetalle (
     id INT PRIMARY KEY,
     facturaId INT,
@@ -58,7 +57,7 @@ CREATE TABLE FacturaDetalle (
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
 
---Pago
+-- Pago
 CREATE TABLE Pago (
     facturaId INT PRIMARY KEY,
     nroTransaccion VARCHAR(50),
@@ -67,14 +66,14 @@ CREATE TABLE Pago (
     FOREIGN KEY (metodoPagoId) REFERENCES FormaPago(id)
 );
 
---Forma de pago
+-- Forma de pago
 CREATE TABLE FormaPago (
     id INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     descripcion VARCHAR(50)
 );
 
---Promocion
+-- Promocion
 CREATE TABLE Promo (
     id INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
@@ -87,7 +86,7 @@ CREATE TABLE Promo (
     tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Fisica', 'Ambos'))
 );
 
---Promocion Especializada
+-- Promocion Especializada
 CREATE TABLE PromoEspecializada (
     id INT PRIMARY KEY,
     promoId INT,
@@ -100,7 +99,7 @@ CREATE TABLE PromoEspecializada (
     FOREIGN KEY (marcaId) REFERENCES Marca(id)
 );
 
---Factura promocion 
+-- Factura promocion 
 CREATE TABLE FacturaPromo (
     facturaId INT,
     promoId INT,
