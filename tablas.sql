@@ -17,7 +17,7 @@ CREATE TABLE OrdenDetalle (
     ordenId INT,
     productoId INT,
     cantidad INT CHECK (cantidad >= 0),
-    precioPor FLOAT CHECK (precioPor >= 0),
+    precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
     FOREIGN KEY (ordenId) REFERENCES OrdenOnline(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
@@ -52,7 +52,7 @@ CREATE TABLE FacturaDetalle (
     facturaId INT,
     productoId INT, 
     cantidad INT CHECK (cantidad >= 0),
-    precioPor FLOAT CHECK (precioPor >= 0),
+    precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
@@ -69,21 +69,21 @@ CREATE TABLE Pago (
 -- Forma de pago
 CREATE TABLE FormaPago (
     id INT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion VARCHAR(255)
+    nombre VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(50)
 );
 
 -- Promocion
 CREATE TABLE Promo (
     id INT PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    slogan VARCHAR(255),
+    nombre VARCHAR(50) NOT NULL,
+    slogan VARCHAR(50),
     codigo VARCHAR(50),
     tipoDescuento VARCHAR(50) CHECK (tipoDescuento IN ('Porcentaje', 'Fijo')),
     valorDescuento FLOAT CHECK (valorDescuento >= 0),
     fechaInicio DATE,
     fechaFin DATE,
-    tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Física', 'Ambos'))
+    tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Fisica', 'Ambos'))
 );
 
 -- Promocion Especializada
