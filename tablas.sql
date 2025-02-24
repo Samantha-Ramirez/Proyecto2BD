@@ -1,4 +1,4 @@
--- Orden Online 
+-- Orden online 
 CREATE TABLE OrdenOnline (
     id INT PRIMARY KEY,
     clienteId INT,
@@ -17,7 +17,7 @@ CREATE TABLE OrdenDetalle (
     ordenId INT,
     productoId INT,
     cantidad INT CHECK (cantidad >= 0),
-    precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
+    precioPor DECIMAL(10,2) CHECK (precioPor >= 0),
     FOREIGN KEY (ordenId) REFERENCES OrdenOnline(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
@@ -52,7 +52,7 @@ CREATE TABLE FacturaDetalle (
     facturaId INT,
     productoId INT, 
     cantidad INT CHECK (cantidad >= 0),
-    precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
+    precioPor DECIMAL(10,2) CHECK (precioPor >= 0),
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
@@ -86,7 +86,7 @@ CREATE TABLE Promo (
     tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Fisica', 'Ambos'))
 );
 
--- Promocion Especializada
+-- Promocion especializada
 CREATE TABLE PromoEspecializada (
     id INT PRIMARY KEY,
     promoId INT,
@@ -106,14 +106,15 @@ CREATE TABLE FacturaPromo (
     PRIMARY KEY (facturaId, promoId),
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
 );
--- Paises 
+
+-- Pais
 CREATE TABLE Pais(
     id INT,
     nombre VARCHAR(50) NOT NULL,
     PRIMARY KEY(id)
 );
 
--- Estados 
+-- Estado
 CREATE TABLE Estado(
     id INT,
     nombre VARCHAR(50) NOT NULL,
@@ -122,7 +123,7 @@ CREATE TABLE Estado(
     PRIMARY KEY(id)
 );
 
--- Ciudades 
+-- Ciudad
 CREATE TABLE Ciudad(
     id INT,
     nombre VARCHAR(50) NOT NULL,
@@ -131,23 +132,23 @@ CREATE TABLE Ciudad(
     PRIMARY KEY(id)
 );
 
--- Sucursales 
+-- Sucursal
 CREATE TABLE Sucursal(
     id INT,
     nombre VARCHAR(50) NOT NULL,
-    direccion VARCHAR(100),
-    telefono VARCHAR(20),
+    direccion VARCHAR(50),
+    telefono VARCHAR(50),
     horaAbrir INT CHECK (horaAbrir >= 0 AND horaAbrir <= 23),
-    horaCerrar CHECK (horaCerrar >= 0 AND horaCerrar <= 23),
+    horaCerrar INT CHECK (horaCerrar >= 0 AND horaCerrar <= 23),
     ciudadId INT,
     FOREIGN KEY(ciudadId) REFERENCES Ciudad(id),
     PRIMARY KEY(id)
 );
 
--- Empleados 
+-- Empleado
 CREATE TABLE Empleado(
     id INT,
-    CI VARCHAR(20) UNIQUE,
+    CI VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50),
     sexo CHAR(1) CHECK (sexo IN ('M', 'F')),
@@ -159,14 +160,14 @@ CREATE TABLE Empleado(
     bonoFijoMensual DECIMAL(10,2) CHECK (bonoFijoMensual >= 0),
     horalnicio INT CHECK (horaInicio >= 0 AND horaInicio <= 23),
     horaFin INT CHECK (horaFin >= 0 AND horaFin <= 23),
-    cantidadDiasTrabajoPorSemana INT CHECK CHECK (cantidadDiasTrabajoPorSemana >= 1 AND cantidadDiasTrabajoPorSemana <= 7),
+    cantidadDiasTrabajoPorSemana INT CHECK (cantidadDiasTrabajoPorSemana >= 1 AND cantidadDiasTrabajoPorSemana <= 7),
     FOREIGN KEY(cargoId) REFERENCES Cargo(id),
     FOREIGN KEY(empleadoSupervisorId) REFERENCES Empleado(id),
     FOREIGN KEY(sucursalId) REFERENCES Sucursal(id),
     PRIMARY KEY(id)
 );
 
--- Cargos 
+-- Cargo
 CREATE TABLE Cargo(
     id INT,
     nombre VARCHAR(50) NOT NULL,
@@ -184,20 +185,20 @@ CREATE TABLE Inventario(
     PRIMARY KEY(id)
 );
 
--- Proveedores 
+-- Proveedor
 CREATE TABLE Proveedor(
     id INT,
-    RIF VARCHAR(20) UNIQUE,
+    RIF VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     contacto VARCHAR(50),
-    telefono VARCHAR(20),
-    correo VARCHAR(100),
+    telefono VARCHAR(50),
+    correo VARCHAR(50),
     ciudadId INT,
     FOREIGN KEY(ciudadId) REFERENCES Ciudad(id),
     PRIMARY KEY(id)
 );
 
--- Proveedores proveen Producto 
+-- Proveedor provee Producto 
 CREATE TABLE ProveedorProducto(
     id INT,
     proveedorId INT,
