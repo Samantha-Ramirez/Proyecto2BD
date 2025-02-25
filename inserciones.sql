@@ -905,6 +905,7 @@ INSERT INTO Cargo (id, nombre, descripcion, salarioBasePorHora) VALUES
     (15, 'Analista de Inventarios', 'Control y gestion de inventarios', 18.00);
 
 -- Inventario 
+-- No hacer inserción (se hace con el trigger)
 
 -- Proveedor
 -- Mínimo 40 proveedores
