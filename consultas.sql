@@ -2,7 +2,7 @@
 SELECT 
     P.*, -- Informacion de los productos
     Pr.nombre, -- Nombre promo 'Verano EN GaMa'
-    PE.* -- Informacion de las promos especializadas de los productos
+    PE.* -- Informacion de las promos especializadas
 FROM Producto P
 JOIN Marca M ON M.id = P.marcaId -- Marca del producto
 JOIN FacturaDetalle FD ON FD.productoId = P.id -- Factura detalle del producto
@@ -78,7 +78,7 @@ CROSS JOIN TotalIngresos TI
 SELECT 
     P.nombre AS nombre, -- Nombre
     P.precioPor AS precioActual, -- Precio actual
-    P.precioPor * 0.90 AS precioConDescuento, -- Precio con descuento del 10%
+    P.precioPor * 0.90 AS precioConDescuento, -- Precio con descuento del 10% por ser al mayor
     (CASE
         WHEN I.cantidad < 10 THEN 'Últimos disponibles'
         WHEN I.cantidad < 20 THEN 'Pocos disponibles'
