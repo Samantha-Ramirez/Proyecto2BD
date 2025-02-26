@@ -38,11 +38,11 @@ CREATE TABLE Factura (
     id INT PRIMARY KEY,
     fechaEmision DATE,
     clienteId INT,
-    subTotal FLOAT CHECK (subTotal >= 0),
-    montoDescuentoTotal FLOAT CHECK (montoDescuentoTotal >= 0),
-    porcentajeIVA FLOAT CHECK (porcentajeIVA >= 0),
-    montoIVA FLOAT CHECK (montoIVA >= 0),
-    montoTotal FLOAT CHECK (montoTotal >= 0),
+    subTotal DECIMAL(10,2) CHECK (subTotal >= 0),
+    montoDescuentoTotal DECIMAL(10,2) CHECK (montoDescuentoTotal >= 0),
+    porcentajeIVA DECIMAL(10,2) CHECK (porcentajeIVA >= 0),
+    montoIVA DECIMAL(10,2) CHECK (montoIVA >= 0),
+    montoTotal DECIMAL(10,2) CHECK (montoTotal >= 0),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id)
 );
 
@@ -80,7 +80,7 @@ CREATE TABLE Promo (
     slogan VARCHAR(50),
     codigo VARCHAR(50),
     tipoDescuento VARCHAR(50) CHECK (tipoDescuento IN ('Porcentaje', 'Fijo')),
-    valorDescuento FLOAT CHECK (valorDescuento >= 0),
+    valorDescuento DECIMAL(10,2) CHECK (valorDescuento >= 0),
     fechaInicio DATE,
     fechaFin DATE,
     tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Fisica', 'Ambos'))
@@ -108,14 +108,14 @@ CREATE TABLE FacturaPromo (
 );
 
 -- Pais
-CREATE TABLE Pais(
+CREATE TABLE Pais (
     id INT,
     nombre VARCHAR(50) NOT NULL,
     PRIMARY KEY(id)
 );
 
 -- Estado
-CREATE TABLE Estado(
+CREATE TABLE Estado (
     id INT,
     nombre VARCHAR(50) NOT NULL,
     paisId INT,
@@ -124,7 +124,7 @@ CREATE TABLE Estado(
 );
 
 -- Ciudad
-CREATE TABLE Ciudad(
+CREATE TABLE Ciudad (
     id INT,
     nombre VARCHAR(50) NOT NULL,
     estadoId INT,
@@ -133,7 +133,7 @@ CREATE TABLE Ciudad(
 );
 
 -- Sucursal
-CREATE TABLE Sucursal(
+CREATE TABLE Sucursal (
     id INT,
     nombre VARCHAR(50) NOT NULL,
     direccion VARCHAR(50),
@@ -146,7 +146,7 @@ CREATE TABLE Sucursal(
 );
 
 -- Empleado
-CREATE TABLE Empleado(
+CREATE TABLE Empleado (
     id INT,
     CI VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
@@ -168,7 +168,7 @@ CREATE TABLE Empleado(
 );
 
 -- Cargo
-CREATE TABLE Cargo(
+CREATE TABLE Cargo (
     id INT,
     nombre VARCHAR(50) NOT NULL,
     descripcion TEXT,
@@ -177,7 +177,7 @@ CREATE TABLE Cargo(
 );
 
 -- Inventario 
-CREATE TABLE Inventario(
+CREATE TABLE Inventario (
     id INT,
     productoId INT,
     cantidad INT CHECK (cantidad >= 0),
@@ -186,7 +186,7 @@ CREATE TABLE Inventario(
 );
 
 -- Proveedor
-CREATE TABLE Proveedor(
+CREATE TABLE Proveedor (
     id INT,
     RIF VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
@@ -199,7 +199,7 @@ CREATE TABLE Proveedor(
 );
 
 -- Proveedor provee Producto 
-CREATE TABLE ProveedorProducto(
+CREATE TABLE ProveedorProducto (
     id INT,
     proveedorId INT,
     productoId INT,
