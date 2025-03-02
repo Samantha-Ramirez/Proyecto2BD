@@ -145,6 +145,15 @@ CREATE TABLE Sucursal (
     PRIMARY KEY(id)
 );
 
+-- Cargo
+CREATE TABLE Cargo (
+    id INT,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion TEXT,
+    salarioBasePorHora DECIMAL(10,2) CHECK (salarioBasePorHora >= 0),
+    PRIMARY KEY(id)
+);
+
 -- Empleado
 CREATE TABLE Empleado (
     id INT,
@@ -158,7 +167,7 @@ CREATE TABLE Empleado (
     sucursalId INT,
     fechaContrato DATE,
     bonoFijoMensual DECIMAL(10,2) CHECK (bonoFijoMensual >= 0),
-    horalnicio INT CHECK (horaInicio >= 0 AND horaInicio <= 23),
+    horaInicio INT CHECK (horaInicio >= 0 AND horaInicio <= 23),
     horaFin INT CHECK (horaFin >= 0 AND horaFin <= 23),
     cantidadDiasTrabajoPorSemana INT CHECK (cantidadDiasTrabajoPorSemana >= 1 AND cantidadDiasTrabajoPorSemana <= 7),
     FOREIGN KEY(cargoId) REFERENCES Cargo(id),
@@ -167,23 +176,36 @@ CREATE TABLE Empleado (
     PRIMARY KEY(id)
 );
 
--- Cargo
-CREATE TABLE Cargo (
-    id INT,
+
+-- Categoria
+CREATE TABLE Categoria (
+    id INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    descripcion TEXT,
-    salarioBasePorHora DECIMAL(10,2) CHECK (salarioBasePorHora >= 0),
-    PRIMARY KEY(id)
+    descripcion VARCHAR(50)
 );
 
--- Inventario 
-CREATE TABLE Inventario (
-    id INT,
-    productoId INT,
-    cantidad INT CHECK (cantidad >= 0),
-    FOREIGN KEY(productoId) REFERENCES Producto(id),
-    PRIMARY KEY(id)
+-- Marca
+CREATE TABLE Marca (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(50)
 );
+
+-- Producto
+CREATE TABLE Producto (
+    id INT PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL,
+    codigoBarra VARCHAR(50) NOT NULL,
+    descripcion VARCHAR(50),
+    tipoPrecio VARCHAR(50) NOT NULL CHECK (tipoPrecio IN ('PorUnidad', 'PorPesoKg')),
+    precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
+    esExentoIVA BIT NOT NULL,
+    categoriald INT NOT NULL,
+    marcald INT NOT NULL,
+    FOREIGN KEY (categoriald) REFERENCES Categoria(id),
+    FOREIGN KEY (marcald) REFERENCES Marca(id)
+);
+
 
 -- Proveedor
 CREATE TABLE Proveedor (
@@ -224,7 +246,7 @@ CREATE TABLE Cliente (
 );
 
 -- ClienteDirección
-CREATE TABLE ClienteDirección (
+CREATE TABLE ClienteDireccion (
     id INT PRIMARY KEY,
     clienteld INT NOT NULL,
     tipoDireccion VARCHAR(50) NOT NULL CHECK (tipoDireccion IN ('Facturación', 'Envío')),
@@ -234,33 +256,15 @@ CREATE TABLE ClienteDirección (
     FOREIGN KEY (ciudadId) REFERENCES Ciudad(id)
 );
 
--- Categoria
-CREATE TABLE Categoria (
-    id INT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    descripción VARCHAR(50)
-);
 
--- Marca
-CREATE TABLE Marca (
-    id INT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    descripción VARCHAR(50)
-);
 
--- Producto
-CREATE TABLE Producto (
-    id INT PRIMARY KEY,
-    nombre VARCHAR(50) NOT NULL,
-    codigoBarra VARCHAR(50) NOT NULL,
-    descripción VARCHAR(50),
-    tipoPrecio VARCHAR(50) NOT NULL CHECK (tipoPrecio IN ('PorUnidad', 'PorPesoKg')),
-    precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
-    esExentoIVA BIT NOT NULL,
-    categoriald INT NOT NULL,
-    marcald INT NOT NULL,
-    FOREIGN KEY (categoriald) REFERENCES Categoria(id),
-    FOREIGN KEY (marcald) REFERENCES Marca(id)
+-- Inventario 
+CREATE TABLE Inventario (
+    id INT,
+    productoId INT,
+    cantidad INT CHECK (cantidad >= 0),
+    FOREIGN KEY(productoId) REFERENCES Producto(id),
+    PRIMARY KEY(id)
 );
 
 -- ProductoRecomendadoParaProducto
@@ -312,7 +316,7 @@ CREATE TABLE Carrito (
 -- TipoEnvio
 CREATE TABLE TipoEnvio (
     id INT PRIMARY KEY,
-    nombreEnvío VARCHAR(50) NOT NULL,
+    nombreEnvio VARCHAR(50) NOT NULL,
     tiempoEstimadoEntrega INT NOT NULL CHECK (tiempoEstimadoEntrega >= 0 AND tiempoEstimadoEntrega <= 23),
-    costoEnvío DECIMAL(10, 2) NOT NULL CHECK (costoEnvío >= 0)
+    costoEnvio DECIMAL(10, 2) NOT NULL CHECK (costoEnvio >= 0)
 );
