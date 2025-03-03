@@ -23,7 +23,7 @@ WHERE
         FROM ProductoRecomendadoParaCliente PRC2 
         WHERE PRC2.productoRecomendadoId = P.id
     );
-    
+
 -- Consulta F
 SELECT 
     P.*, -- Informacion de los productos
@@ -39,6 +39,62 @@ WHERE M.nombre = 'Gama' -- Marca Gama
 AND MONTH(F.fechaEmision) IN (6, 8) -- Compra en junio y agosto
 AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa
 AND Pr.fechaFin <= GETDATE() -- Promo activa
+
+--Consulta G
+-- Ordenes válidas (condición b)
+WITH OrdenesValidas AS (
+    SELECT 
+        f.id AS facturaId,
+        f.clienteId,
+        f.montoTotal,
+        f.fechaEmision,
+        fp.nombre AS metodoPago
+    FROM Factura f
+    INNER JOIN FacturaDetalle fd ON f.id = fd.facturaId
+    INNER JOIN Producto p ON fd.productoId = p.id
+    INNER JOIN Categoria c ON p.categoriaId = c.id
+    LEFT JOIN Pago pg ON f.id = pg.facturaId
+    LEFT JOIN FormaPago fp ON pg.metodoPagoId = fp.id
+    WHERE f.fechaEmision >= DATEADD(MONTH, -6, '2025-03-03') -- Últimos 6 meses
+    GROUP BY f.id, f.clienteId, f.montoTotal, f.fechaEmision, fp.nombre
+    HAVING 
+        SUM(CASE WHEN c.nombre = 'Electrónica' THEN 1 ELSE 0 END) >= 1
+        AND SUM(CASE WHEN c.nombre = 'Hogar' THEN 1 ELSE 0 END) >= 1
+),
+-- Clientes que cumplen con las condiciones a y c
+ClientesConCondiciones AS (
+    SELECT 
+        c.id AS clienteId,
+        c.CI,
+        c.nombre,
+        c.apellido,
+        c.correo,
+        c.sexo,
+        c.fechaNacimiento,
+        c.fechaRegistro,
+        COUNT(ov.facturaId) AS totalOrdenes,
+        SUM(ov.montoTotal) AS totalGastado
+    FROM Cliente c
+    INNER JOIN OrdenesValidas ov ON c.id = ov.clienteId
+    GROUP BY 
+        c.id, c.CI, c.nombre, c.apellido, c.correo, c.sexo, c.fechaNacimiento, c.fechaRegistro
+    HAVING 
+        COUNT(ov.facturaId) >= 3 -- Condición a: al menos 3 órdenes
+        AND SUM(CASE WHEN ov.metodoPago = 'Tarjeta de Crédito' THEN 1 ELSE 0 END) >= 1 -- Condición c
+),
+--Calcular el promedio de gasto de todos los clientes
+PromedioGasto AS (
+    SELECT AVG(montoTotal) AS promedioGasto
+    FROM Factura
+    WHERE fechaEmision >= DATEADD(MONTH, -6, '2025-03-03')
+)
+SELECT 
+    cc.*
+FROM ClientesConCondiciones cc
+CROSS JOIN PromedioGasto pg
+WHERE cc.totalGastado > pg.promedioGasto -- Condición d
+ORDER BY cc.totalGastado DESC;
+
 
 -- Consulta H
 WITH 
