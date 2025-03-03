@@ -92,8 +92,8 @@ CREATE TABLE Producto (
     esExentoIVA BIT NOT NULL,
     categoriaId INT NOT NULL,
     marcaId INT NOT NULL,
-    FOREIGN KEY (categoriald) REFERENCES Categoria(id),
-    FOREIGN KEY (marcald) REFERENCES Marca(id)
+    FOREIGN KEY (categoriaId) REFERENCES Categoria(id),
+    FOREIGN KEY (marcaId) REFERENCES Marca(id)
 );
 
 -- Inventario 
@@ -110,9 +110,9 @@ CREATE TABLE ProductoRecomendadoParaProducto (
     productoId INT NOT NULL,
     productoRecomendadoId INT NOT NULL,
     mensaje VARCHAR(50),
-    PRIMARY KEY (productold, productoRecomendadold),
-    FOREIGN KEY (productold) REFERENCES Producto(id),
-    FOREIGN KEY (productoRecomendadold) REFERENCES Producto(id)
+    PRIMARY KEY (productoId, productoRecomendadoId),
+    FOREIGN KEY (productoId) REFERENCES Producto(id),
+    FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id)
 );
 
 -- Cliente
@@ -134,7 +134,7 @@ CREATE TABLE ClienteDireccion (
     tipoDireccion VARCHAR(50) NOT NULL CHECK (tipoDireccion IN ('Facturación', 'Envío')),
     dirLinea1 VARCHAR(50) NOT NULL,
     ciudadId INT NOT NULL,
-    FOREIGN KEY (clienteld) REFERENCES Cliente(id),
+    FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (ciudadId) REFERENCES Ciudad(id)
 );
 
@@ -144,9 +144,9 @@ CREATE TABLE HistorialClienteProducto (
     productoId INT NOT NULL,
     fecha DATETIME NOT NULL,
     tipoAccion VARCHAR(50) NOT NULL CHECK (tipoAccion IN ('Búsqueda', 'Carrito', 'Compra')),
-    PRIMARY KEY (clienteId, productold, fecha),
+    PRIMARY KEY (clienteId, productoId, fecha),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
-    FOREIGN KEY (productold) REFERENCES Producto(id)
+    FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
 
 -- Carrito
@@ -156,9 +156,9 @@ CREATE TABLE Carrito (
     fechaAgregado DATETIME NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad >= 0),
     precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
-    PRIMARY KEY (clienteId, productold, fechaAgregado),
+    PRIMARY KEY (clienteId, productoId, fechaAgregado),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
-    FOREIGN KEY (productold) REFERENCES Producto(id)
+    FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
 
 -- Proveedor
