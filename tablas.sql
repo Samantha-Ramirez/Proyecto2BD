@@ -90,8 +90,8 @@ CREATE TABLE Producto (
     tipoPrecio VARCHAR(50) NOT NULL CHECK (tipoPrecio IN ('PorUnidad', 'PorPesoKg')),
     precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
     esExentoIVA BIT NOT NULL,
-    categoriald INT NOT NULL,
-    marcald INT NOT NULL,
+    categoriaId INT NOT NULL,
+    marcaId INT NOT NULL,
     FOREIGN KEY (categoriald) REFERENCES Categoria(id),
     FOREIGN KEY (marcald) REFERENCES Marca(id)
 );
@@ -107,8 +107,8 @@ CREATE TABLE Inventario (
 
 -- ProductoRecomendadoParaProducto
 CREATE TABLE ProductoRecomendadoParaProducto (
-    productold INT NOT NULL,
-    productoRecomendadold INT NOT NULL,
+    productoId INT NOT NULL,
+    productoRecomendadoId INT NOT NULL,
     mensaje VARCHAR(50),
     PRIMARY KEY (productold, productoRecomendadold),
     FOREIGN KEY (productold) REFERENCES Producto(id),
@@ -130,7 +130,7 @@ CREATE TABLE Cliente (
 -- ClienteDirección
 CREATE TABLE ClienteDireccion (
     id INT PRIMARY KEY,
-    clienteld INT NOT NULL,
+    clienteId INT NOT NULL,
     tipoDireccion VARCHAR(50) NOT NULL CHECK (tipoDireccion IN ('Facturación', 'Envío')),
     dirLinea1 VARCHAR(50) NOT NULL,
     ciudadId INT NOT NULL,
@@ -138,10 +138,10 @@ CREATE TABLE ClienteDireccion (
     FOREIGN KEY (ciudadId) REFERENCES Ciudad(id)
 );
 
--- HistoriaClienteProducto
-CREATE TABLE HistoriaClienteProducto (
+-- HistorialClienteProducto
+CREATE TABLE HistorialClienteProducto (
     clienteId INT NOT NULL,
-    productold INT NOT NULL,
+    productoId INT NOT NULL,
     fecha DATETIME NOT NULL,
     tipoAccion VARCHAR(50) NOT NULL CHECK (tipoAccion IN ('Búsqueda', 'Carrito', 'Compra')),
     PRIMARY KEY (clienteId, productold, fecha),
@@ -152,7 +152,7 @@ CREATE TABLE HistoriaClienteProducto (
 -- Carrito
 CREATE TABLE Carrito (
     clienteId INT NOT NULL,
-    productold INT NOT NULL,
+    productoId INT NOT NULL,
     fechaAgregado DATETIME NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad >= 0),
     precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
