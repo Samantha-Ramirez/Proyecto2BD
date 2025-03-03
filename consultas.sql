@@ -1,3 +1,29 @@
+--Consulta C
+SELECT DISTINCT 
+    P.nombre AS nombreProducto,
+    C.nombre AS categoriaProducto,
+    M.nombre AS marcaProducto
+FROM 
+    Producto P
+JOIN 
+    Categoria C ON P.categoriaId = C.id
+JOIN 
+    Marca M ON P.marcaId = M.id
+JOIN 
+    ProductoRecomendadoParaCliente PRC ON PRC.productoRecomendadoId = P.id
+JOIN 
+    HistorialClienteProducto HCP ON PRC.clienteId = HCP.clienteId AND HCP.productoId = P.id
+JOIN 
+    Carrito Ca ON Ca.productoId = P.id
+WHERE 
+    HCP.tipoAccion = 'Compra'
+    AND HCP.fecha >= DATEADD(MONTH, -1, GETDATE())
+    AND Ca.clienteId NOT IN (
+        SELECT PRC2.clienteId 
+        FROM ProductoRecomendadoParaCliente PRC2 
+        WHERE PRC2.productoRecomendadoId = P.id
+    );
+    
 -- Consulta F
 SELECT 
     P.*, -- Informacion de los productos
