@@ -223,7 +223,7 @@ CREATE TABLE FacturaPromo (
 CREATE TABLE TipoEnvio (
     id INT PRIMARY KEY,
     nombreEnvio VARCHAR(50) NOT NULL,
-    tiempoEstimadoEntrega INT NOT NULL CHECK (tiempoEstimadoEntrega >= 0 AND tiempoEstimadoEntrega <= 23),
+    tiempoEstimadoEntrega INT NOT NULL CHECK (tiempoEstimadoEntrega >= 0),
     costoEnvio DECIMAL(10, 2) NOT NULL CHECK (costoEnvio >= 0)
 );
 
