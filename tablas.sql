@@ -138,6 +138,17 @@ CREATE TABLE ClienteDireccion (
     FOREIGN KEY (ciudadId) REFERENCES Ciudad(id)
 );
 
+-- ProductoRecomendadoParaCliente
+CREATE TABLE ProductoRecomendadoParaCliente (
+    clienteId INT NOT NULL,
+    productoRecomendadoId INT NOT NULL,
+    fechaRecomendacion DATETIME NOT NULL,
+    mensaje VARCHAR(50),
+    PRIMARY KEY (clienteId, productoRecomendadoId),
+    FOREIGN KEY (clienteId) REFERENCES Cliente(id),
+    FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id)
+);
+
 -- HistorialClienteProducto
 CREATE TABLE HistorialClienteProducto (
     clienteId INT NOT NULL,
