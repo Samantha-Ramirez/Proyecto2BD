@@ -1072,7 +1072,7 @@ VALUES
     (42, 'Pan de Trigo', '2233445566778', 'Pan de trigo integral', 'PorUnidad', 1.80, 0, 5, 11),  -- Bimbo
     (43, 'Papas Fritas con Queso', '3344556677889', 'Papas fritas sabor queso', 'PorUnidad', 2.00, 0, 6, 10),  -- Lays
     (44, 'Helado de Chocolate', '4455667788990', 'Helado de chocolate', 'PorUnidad', 3.80, 0, 17, 6),  -- Danone  
-    (45, 'Afeitadora Gillette', '5566778899001', 'Té verde en hebras', 'PorUnidad', 2.00, 1, 9, 40),  -- Gillette
+    (45, 'Afeitadora Gillette', '5566778899001', 'Afeitadora de dos hojas', 'PorUnidad', 2.00, 1, 9, 40),  -- Gillette
     (46, 'Aceite de Girasol', '6677889900112', 'Aceite de girasol', 'PorUnidad', 5.00, 0, 19, 7),  -- Heinz
     (47, 'Pimienta Negra', '7788990011223', 'Pimienta negra molida', 'PorUnidad', 1.80, 0, 20, 17),  -- Knorr
     (48, 'Chocolate con Leche', '8899001122334', 'Chocolate con leche', 'PorUnidad', 3.50, 0, 21, 16),  -- Mondelez
@@ -1082,9 +1082,9 @@ VALUES
 	(52, 'Detergente Líquido Ariel', '554532211009', 'Detergente líquido para ropa', 'PorUnidad', 8.00, 0, 8, 9),  -- P&G (categoría Limpieza)
     (53, 'Jabón en Barra Dove', '4433521100998', 'Jabón en barra para piel sensible', 'PorUnidad', 2.50, 0, 9, 35),  -- Dove (categoría Cuidado Personal)
     (54, 'Limpiador Multiuso Cif', '3822110099887', 'Limpiador multiuso para superficies', 'PorUnidad', 4.00, 0, 8, 9),  -- P&G (categoría Limpieza)
-	(55, 'Jabón en polvo Ariel', '5541332211009', 'Detergente líquido para ropa', 'PorUnidad', 8.00, 0, 8, 9),  -- P&G (categoría Limpieza)
-    (56, 'Jabón Facial Dove', '4433223100998', 'Jabón en barra para piel sensible', 'PorUnidad', 2.50, 0, 9, 35),  -- Dove (categoría Cuidado Personal)
-    (57, 'Suavizante ', '3322110099877', 'Limpiador multiuso para superficies', 'PorUnidad', 4.00, 0, 8, 9),  -- P&G (categoría Limpieza)
+	(55, 'Jabón en polvo Ariel', '5541332211009', 'Jabón en polvo para ropa', 'PorUnidad', 8.00, 0, 8, 9),  -- P&G (categoría Limpieza)
+    (56, 'Jabón Facial Dove', '4433223100998', 'Jabón Facial para piel grasa', 'PorUnidad', 2.50, 0, 9, 35),  -- Dove (categoría Cuidado Personal)
+    (57, 'Suavizante ', '3322110099877', 'Suavizante pra ropa', 'PorUnidad', 4.00, 0, 8, 9),  -- P&G (categoría Limpieza)
     (58, 'Jugo de Piña', '8899001122334', 'Jugo de piña natural', 'PorUnidad', 2.30, 0, 1, 3),  -- Nestlé
     (59, 'Queso Parmesano', '9900112233445', 'Queso parmesano', 'PorPesoKg', 18.00, 0, 2, 12),  -- La Serenísima
     (60, 'Lomo de Cerdo', '0011223344556', 'Lomo de cerdo fresco', 'PorPesoKg', 10.00, 0, 3, 15),  -- Molinos
