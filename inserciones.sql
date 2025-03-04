@@ -33,26 +33,46 @@ INSERT INTO Categoria (id, nombre, descripcion) VALUES
 
 -- Marca
 INSERT INTO Marca (id, nombre, descripcion) VALUES
-    (1, 'Coca-Cola', 'Bebidas gaseosas y refrescos'),
-    (2, 'Pepsi', 'Bebidas y snacks'),
-    (3, 'Nestle', 'Productos alimenticios y bebidas'),
-    (4, 'Unilever', 'Productos de cuidado personal y alimentos'),
-    (5, 'Kelloggs', 'Cereales y snacks'),
-    (6, 'Danone', 'Productos lacteos y yogures'),
-    (7, 'Heinz', 'Salsas y conservas'),
-    (8, 'Colgate', 'Productos de higiene bucal'),
-    (9, 'P&G', 'Productos de limpieza y cuidado personal'),
-    (10, 'Lays', 'Snacks y papas fritas'),
-    (11, 'Bimbo', 'Pan y productos de panaderia'),
-    (12, 'La Serenisima', 'Productos lacteos y derivados'),
-    (13, 'Quilmes', 'Bebidas alcoholicas y cervezas'),
-    (14, 'Arcor', 'Golosinas y productos alimenticios'),
-    (15, 'Molinos', 'Harinas y productos alimenticios'),
-    (16, 'Mondelez', 'Galletas y snacks'),
-    (17, 'Knorr', 'Sopas y condimentos'),
-    (18, 'Natura', 'Productos de belleza y cuidado personal'),
-    (19, 'Fanta', 'Bebidas gaseosas'),
-    (20, 'Sprite', 'Bebidas gaseosas')
+(1, 'Coca-Cola', 'Bebidas gaseosas y refrescos'),
+(2, 'Pepsi', 'Bebidas y snacks'),
+(3, 'Nestle', 'Productos alimenticios y bebidas'),
+(4, 'Unilever', 'Productos de cuidado personal y alimentos'),
+(5, 'Kelloggs', 'Cereales y snacks'),
+(6, 'Danone', 'Productos lácteos y yogures'),
+(7, 'Heinz', 'Salsas y conservas'),
+(8, 'Colgate', 'Productos de higiene bucal'),
+(9, 'P&G', 'Productos de limpieza y cuidado personal'),
+(10, 'Lays', 'Snacks y papas fritas'),
+(11, 'Bimbo', 'Pan y productos de panadería'),
+(12, 'La Serenísima', 'Productos lácteos y derivados'),
+(13, 'Quilmes', 'Bebidas alcohólicas y cervezas'),
+(14, 'Arcor', 'Golosinas y productos alimenticios'),
+(15, 'Molinos', 'Harinas y productos alimenticios'),
+(16, 'Mondelez', 'Galletas y snacks'),
+(17, 'Knorr', 'Sopas y condimentos'),
+(18, 'Natura', 'Productos de belleza y cuidado personal'),
+(19, 'Fanta', 'Bebidas gaseosas'),
+(20, 'Sprite', 'Bebidas gaseosas'),
+(21, 'Gama', 'Consumo masivo, hogar y electronica'),
+(22, 'Oster', 'Electrodomésticos'),
+(23, 'LG', 'Electrodomésticos y electrónica'),
+(24, 'Panasonic', 'Electrónica y electrodomésticos'),
+(25, 'General Mills', 'Cereales y alimentos'),
+(26, 'Hershey’s', 'Chocolates y dulces'),
+(27, 'Dell', 'Computadoras y tecnología'),
+(28, 'Cadbury', 'Chocolates y dulces'),
+(29, 'Nescafé', 'Café y bebidas instantáneas'),
+(30, 'HP', 'Computadoras y tecnología'),
+(31, 'Gatorade', 'Bebidas deportivas'),
+(32, 'Red Bull', 'Bebidas energéticas'),
+(33, 'Lipton', 'Tés y bebidas'),
+(34, 'Nivea', 'Productos de cuidado personal'),
+(35, 'Dove', 'Productos de cuidado personal'),
+(36, 'Axe', 'Productos de cuidado personal'),
+(37, 'Head & Shoulders', 'Productos de cuidado capilar'),
+(38, 'Oral-B', 'Productos de higiene bucal'),
+(39, 'Pantene', 'Productos de cuidado capilar'),
+(40, 'Gillete', 'Productos de afeitado y cuidado personal');
 
 -- Tipo de envio
 INSERT INTO TipoEnvio (id, nombreEnvio, tiempoEstimadoEntrega, costoEnvio) VALUES
@@ -60,7 +80,7 @@ INSERT INTO TipoEnvio (id, nombreEnvio, tiempoEstimadoEntrega, costoEnvio) VALUE
     (2, 'Mismo dia', 4, 30.00),
     (3, 'Al dia siguiente', 23, 20.00),
     (4, 'Semana siguiente', 168, 6.00),
-    (5, 'Envio estandar', 72, 15.00)
+    (5, 'Envio estandar', 72, 15.00);
 
 -- Orden online 
 INSERT INTO OrdenOnline (id, clienteId, nroOrden, fechaCreacion, tipoEnvioId, facturaId) VALUES
@@ -1004,3 +1024,237 @@ INSERT INTO ProveedorProducto (id, proveedorId, productoId, fechaCompra, precioP
     (48, 8, 3, '2023-10-03', 6.00, 28),
     (49, 9, 4, '2023-10-02', 1.40, 190),
     (50, 10, 5, '2023-10-02', 1.20, 240);
+
+--Producto
+INSERT INTO Producto (id, nombre, codigoBarra, descripcion, tipoPrecio, precioPor, esExentoIVA, categoriaId, marcaId)
+VALUES
+    (1, 'Coca-Cola Original', '1234567890123', 'Refresco de cola', 'PorUnidad', 1.50, 0, 1, 1),
+    (2, 'Pepsi Max', '2345678901234', 'Refresco de cola sin azúcar', 'PorUnidad', 1.40, 0, 1, 2),
+    (3, 'Nescafé Clásico', '3456789012345', 'Café instantáneo', 'PorUnidad', 4.00, 0, 18, 3),
+    (4, 'Leche Entera La Serenísima', '4567890123456', 'Leche entera pasteurizada', 'PorUnidad', 1.20, 0, 2, 12),
+    (5, 'Yogur Danone Natural', '5678901234567', 'Yogur natural sin azúcar', 'PorUnidad', 0.80, 0, 2, 6),
+    (6, 'Cereal Kelloggs Corn Flakes', '6789012345678', 'Cereal de maíz tostado', 'PorUnidad', 3.50, 0, 25, 5),
+    (7, 'Salsa de Tomate Heinz', '7890123456789', 'Salsa de tomate', 'PorUnidad', 2.00, 0, 24, 7),
+    (8, 'Galletas Oreo', '8901234567890', 'Galletas de chocolate con crema', 'PorUnidad', 2.50, 0, 26, 16),
+    (9, 'Pan Bimbo Integral', '9012345678901', 'Pan de molde integral', 'PorUnidad', 1.80, 0, 5, 11),
+    (10, 'Cerveza Quilmes', '0123456789012', 'Cerveza rubia', 'PorUnidad', 2.00, 0, 11, 13),
+    (11, 'Manzanas', '1122334455667', 'Manzanas frescas', 'PorPesoKg', 3.00, 0, 4, 14),  -- Usando Arcor como marca
+    (12, 'Carne de Res', '2233445566778', 'Carne de res fresca', 'PorPesoKg', 8.50, 0, 3, 15),  -- Usando Molinos como marca
+    (13, 'Queso Gouda', '3344556677889', 'Queso Gouda', 'PorPesoKg', 12.00, 0, 2, 12),  -- Usando La Serenísima como marca
+    (14, 'Pescado Fresco', '4455667788990', 'Pescado fresco', 'PorPesoKg', 10.00, 0, 29, 13),  -- Usando Quilmes como marca
+    (15, 'Arroz Integral', '5566778899001', 'Arroz integral', 'PorUnidad', 2.50, 0, 10, 15),  -- Usando Molinos como marca
+    (16, 'Agua Mineral', '6677889900112', 'Agua mineral sin gas', 'PorUnidad', 0.90, 0, 1, 1),  -- Coca-Cola
+    (17, 'Jugo de Naranja', '7788990011223', 'Jugo de naranja natural', 'PorUnidad', 2.20, 0, 1, 3),  -- Nestlé
+    (18, 'Yogur de Frutas', '8899001122334', 'Yogur con trozos de fruta', 'PorUnidad', 1.00, 0, 2, 6),  -- Danone
+    (19, 'Queso Cheddar', '9900112233445', 'Queso cheddar', 'PorPesoKg', 15.00, 0, 2, 12),  -- La Serenísima
+    (20, 'Filete de Pollo', '0011223344556', 'Filete de pollo fresco', 'PorPesoKg', 7.00, 0, 3, 15),  -- Molinos
+    (21, 'Bananas', '1122334455667', 'Bananas frescas', 'PorPesoKg', 2.50, 0, 4, 14),  -- Arcor
+    (22, 'Pan de Centeno', '2233445566778', 'Pan de centeno integral', 'PorUnidad', 2.00, 0, 5, 11),  -- Bimbo
+    (23, 'Papas Fritas', '3344556677889', 'Papas fritas clásicas', 'PorUnidad', 1.80, 0, 6, 10),  -- Lays
+    (24, 'Helado de Vainilla', '4455667788990', 'Helado de vainilla', 'PorUnidad', 3.50, 0, 17, 6),  -- Danone
+    (25, 'Café Molido', '5566778899001', 'Café molido para filtro', 'PorUnidad', 5.00, 0, 18, 3),  -- Nestlé
+    (26, 'Aceite de Oliva', '6677889900112', 'Aceite de oliva extra virgen', 'PorUnidad', 8.00, 0, 19, 7),  -- Heinz
+    (27, 'Sal Marina', '7788990011223', 'Sal marina natural', 'PorUnidad', 1.50, 0, 20, 17),  -- Knorr
+    (28, 'Chocolate Amargo', '8899001122334', 'Chocolate amargo 70% cacao', 'PorUnidad', 4.00, 0, 21, 16),  -- Mondelez
+    (29, 'Atún en Lata', '9900112233445', 'Atún en lata al natural', 'PorUnidad', 2.20, 0, 22, 7),  -- Heinz
+    (30, 'Ravioles de Ricotta', '0011223344556', 'Ravioles rellenos de ricotta', 'PorUnidad', 3.00, 0, 23, 15),  -- Molinos
+    (31, 'Salsa Barbacoa', '1122334455667', 'Salsa barbacoa', 'PorUnidad', 2.80, 1, 24, 7),
+    (32, 'Cereal de Avena', '2233445566778', 'Cereal de avena integral', 'PorUnidad', 3.20, 0, 25, 5),
+    (33, 'Galletas de Avena', '3344556677889', 'Galletas de avena y miel', 'PorUnidad', 2.00, 1, 26, 16),
+    (34, 'Maíz en Lata', '4455667788990', 'Maíz dulce en conserva', 'PorUnidad', 1.50, 0, 27, 7),
+    (35, 'Huevos Frescos', '5566778899001', 'Huevos frescos de gallina', 'PorUnidad', 2.00, 1, 28, 12),
+    (36, 'Leche Deslactosada', '6677889900112', 'Leche deslactosada', 'PorUnidad', 1.50, 0, 2, 12),
+    (37, 'Yogur Griego', '7788990011223', 'Yogur griego natural', 'PorUnidad', 1.20, 1, 2, 6),
+    (38, 'Jugo de Manzana', '8899001122334', 'Jugo de manzana natural', 'PorUnidad', 2.00, 0, 1, 3),
+    (39, 'Queso Mozzarella', '9900112233445', 'Queso mozzarella', 'PorPesoKg', 10.00, 0, 2, 12),  -- La Serenísima
+    (40, 'Pechuga de Pavo', '0011223344556', 'Pechuga de pavo fresca', 'PorPesoKg', 9.00, 0, 3, 15),  -- Molinos
+    (41, 'Naranjas', '1122334455667', 'Naranjas frescas', 'PorPesoKg', 2.00, 0, 4, 14),  -- Arcor
+    (42, 'Pan de Trigo', '2233445566778', 'Pan de trigo integral', 'PorUnidad', 1.80, 0, 5, 11),  -- Bimbo
+    (43, 'Papas Fritas con Queso', '3344556677889', 'Papas fritas sabor queso', 'PorUnidad', 2.00, 0, 6, 10),  -- Lays
+    (44, 'Helado de Chocolate', '4455667788990', 'Helado de chocolate', 'PorUnidad', 3.80, 0, 17, 6),  -- Danone  
+    (45, 'Afeitadora Gillette', '5566778899001', 'Té verde en hebras', 'PorUnidad', 2.00, 1, 9, 40),  -- Gillette
+    (46, 'Aceite de Girasol', '6677889900112', 'Aceite de girasol', 'PorUnidad', 5.00, 0, 19, 7),  -- Heinz
+    (47, 'Pimienta Negra', '7788990011223', 'Pimienta negra molida', 'PorUnidad', 1.80, 0, 20, 17),  -- Knorr
+    (48, 'Chocolate con Leche', '8899001122334', 'Chocolate con leche', 'PorUnidad', 3.50, 0, 21, 16),  -- Mondelez
+    (49, 'Sardinas en Lata', '9900112233445', 'Sardinas en lata al natural', 'PorUnidad', 2.50, 0, 22, 7),  -- Heinz
+    (50, 'Canelones de Espinaca', '0011223344556', 'Canelones rellenos de espinaca', 'PorUnidad', 3.50, 0, 23, 15),  -- Molinos
+    (51, 'Salsa de Soja', '1122334455667', 'Salsa de soja', 'PorUnidad', 3.00, 0, 24, 7),  -- Heinz
+	(52, 'Detergente Líquido Ariel', '554532211009', 'Detergente líquido para ropa', 'PorUnidad', 8.00, 0, 8, 9),  -- P&G (categoría Limpieza)
+    (53, 'Jabón en Barra Dove', '4433521100998', 'Jabón en barra para piel sensible', 'PorUnidad', 2.50, 0, 9, 35),  -- Dove (categoría Cuidado Personal)
+    (54, 'Limpiador Multiuso Cif', '3822110099887', 'Limpiador multiuso para superficies', 'PorUnidad', 4.00, 0, 8, 9),  -- P&G (categoría Limpieza)
+	(55, 'Jabón en polvo Ariel', '5541332211009', 'Detergente líquido para ropa', 'PorUnidad', 8.00, 0, 8, 9),  -- P&G (categoría Limpieza)
+    (56, 'Jabón Facial Dove', '4433223100998', 'Jabón en barra para piel sensible', 'PorUnidad', 2.50, 0, 9, 35),  -- Dove (categoría Cuidado Personal)
+    (57, 'Suavizante ', '3322110099877', 'Limpiador multiuso para superficies', 'PorUnidad', 4.00, 0, 8, 9),  -- P&G (categoría Limpieza)
+    (58, 'Jugo de Piña', '8899001122334', 'Jugo de piña natural', 'PorUnidad', 2.30, 0, 1, 3),  -- Nestlé
+    (59, 'Queso Parmesano', '9900112233445', 'Queso parmesano', 'PorPesoKg', 18.00, 0, 2, 12),  -- La Serenísima
+    (60, 'Lomo de Cerdo', '0011223344556', 'Lomo de cerdo fresco', 'PorPesoKg', 10.00, 0, 3, 15),  -- Molinos
+    (61, 'Uvas', '1122334455667', 'Uvas frescas', 'PorPesoKg', 4.00, 0, 4, 14),  -- Arcor
+    (62, 'Pan de Avena', '2233445566778', 'Pan de avena integral', 'PorUnidad', 2.20, 0, 5, 11),  -- Bimbo
+    (63, 'Papas Fritas Light', '3344556677889', 'Papas fritas bajas en grasa', 'PorUnidad', 1.90, 0, 6, 10),  -- Lays
+    (64, 'Helado de Fresa', '4455667788990', 'Helado de fresa', 'PorUnidad', 3.60, 0, 17, 6),  -- Danone
+    (65, 'Té Negro', '5566778899001', 'Té negro en hebras', 'PorUnidad', 4.00, 0, 18, 3),  -- Nestlé
+    (66, 'Aceite de Coco', '6677889900112', 'Aceite de coco virgen', 'PorUnidad', 7.00, 0, 19, 7),  -- Heinz
+    (67, 'Orégano', '7788990011223', 'Orégano seco', 'PorUnidad', 1.20, 0, 20, 17),  -- Knorr
+    (68, 'Chocolate Blanco', '8899001122334', 'Chocolate blanco', 'PorUnidad', 3.80, 0, 21, 16),  -- Mondelez
+    (69, 'Atún en Aceite', '9900112233445', 'Atún en lata con aceite', 'PorUnidad', 2.50, 0, 22, 7),  -- Heinz
+    (70, 'Lasagna de Carne', '0011223344556', 'Lasagna rellena de carne', 'PorUnidad', 4.00, 0, 23, 15),  -- Molinos
+    (71, 'Salsa de Tomate Picante', '1122334455667', 'Salsa de tomate con picante', 'PorUnidad', 2.50, 0, 24, 7),  -- Heinz
+    (72, 'Cereal de Arroz', '2233445566778', 'Cereal de arroz inflado', 'PorUnidad', 3.10, 0, 25, 5),  -- Kelloggs
+    (73, 'Galletas de Vainilla', '3344556677889', 'Galletas de vainilla', 'PorUnidad', 2.10, 0, 26, 16),  -- Mondelez
+    (74, 'Choclo en Lata', '4455667788990', 'Choclo en conserva', 'PorUnidad', 1.70, 0, 27, 7),  -- Heinz
+    (75, 'Huevos de Codorniz', '5566778899001', 'Huevos de codorniz', 'PorUnidad', 3.00, 0, 28, 12),  -- La Serenísima
+    (76, 'Leche de Soja', '6677889900112', 'Leche de soja', 'PorUnidad', 2.20, 0, 2, 12),  -- La Serenísima
+    (77, 'Yogur de Durazno', '7788990011223', 'Yogur con trozos de durazno', 'PorUnidad', 1.30, 0, 2, 6),  -- Danone
+    (78, 'Jugo de Zanahoria', '8899001122334', 'Jugo de zanahoria natural', 'PorUnidad', 2.40, 0, 1, 3),  -- Nestlé
+    (79, 'Queso Ricotta', '9900112233445', 'Queso ricotta', 'PorPesoKg', 12.50, 0, 2, 12),  -- La Serenísima
+    (80, 'Chuleta de Cordero', '0011223344556', 'Chuleta de cordero fresca', 'PorPesoKg', 15.00, 0, 3, 15),  -- Molinos
+    (81, 'Fresas', '1122334455667', 'Fresas frescas', 'PorPesoKg', 5.00, 0, 4, 14),  -- Arcor
+    (82, 'Pan de Centeno', '2233445566778', 'Pan de centeno integral', 'PorUnidad', 2.30, 0, 5, 11),  -- Bimbo
+    (83, 'Papas Fritas con Cebolla', '3344556677889', 'Papas fritas sabor cebolla', 'PorUnidad', 2.10, 0, 6, 10),  -- Lays
+    (84, 'Helado de Menta', '4455667788990', 'Helado de menta', 'PorUnidad', 3.70, 0, 17, 6),  -- Danone
+    (85, 'Té de Manzanilla', '5566778899001', 'Té de manzanilla', 'PorUnidad', 3.50, 0, 18, 3),  -- Nestlé
+    (86, 'Aceite de Maíz', '6677889900112', 'Aceite de maíz', 'PorUnidad', 4.50, 0, 19, 7),  -- Heinz
+    (87, 'Comino', '7788990011223', 'Comino molido', 'PorUnidad', 1.50, 0, 20, 17),  -- Knorr
+    (88, 'Chocolate con Almendras', '8899001122334', 'Chocolate con almendras', 'PorUnidad', 4.20, 0, 21, 16),  -- Mondelez
+    (89, 'Sardinas en Aceite', '9900112233445', 'Sardinas en lata con aceite', 'PorUnidad', 2.80, 0, 22, 7),  -- Heinz
+    (90, 'Canelones de Carne', '0011223344556', 'Canelones rellenos de carne', 'PorUnidad', 4.50, 0, 23, 15),  -- Molinos
+    (91, 'Salsa de Mostaza', '1122334455667', 'Salsa de mostaza', 'PorUnidad', 2.60, 0, 24, 7),  -- Heinz
+    (92, 'Cereal de Maíz', '2233445566778', 'Cereal de maíz inflado', 'PorUnidad', 3.20, 0, 25, 5),  -- Kelloggs
+    (93, 'Galletas de Limón', '3344556677889', 'Galletas de limón', 'PorUnidad', 2.30, 0, 26, 16),  -- Mondelez
+    (94, 'Arvejas con Zanahoria', '4455667788990', 'Arvejas con zanahoria en conserva', 'PorUnidad', 1.80, 0, 27, 7),  -- Heinz
+    (95, 'Huevos de Patio', '5566778899001', 'Huevos de patio', 'PorUnidad', 3.50, 0, 28, 12),  -- La Serenísima
+    (96, 'Leche de Arroz', '6677889900112', 'Leche de arroz', 'PorUnidad', 2.30, 0, 2, 12),  -- La Serenísima
+    (97, 'Yogur de Frutilla', '7788990011223', 'Yogur con trozos de frutilla', 'PorUnidad', 1.40, 0, 2, 6),  -- Danone
+    (98, 'Jugo de Uva', '8899001122334', 'Jugo de uva natural', 'PorUnidad', 2.50, 0, 1, 3),  -- Nestlé
+    (99, 'Queso Azul', '9900112233445', 'Queso azul', 'PorPesoKg', 20.00, 0, 2, 12),  -- La Serenísima
+    (100, 'Costillas de Cerdo', '0011223344556', 'Costillas de cerdo frescas', 'PorPesoKg', 12.00, 0, 3, 15),  -- Molinos
+    (101, 'Kiwi', '1122334455667', 'Kiwi fresco', 'PorPesoKg', 6.00, 0, 4, 14),  -- Arcor
+    (102, 'Pan de Maíz', '2233445566778', 'Pan de maíz', 'PorUnidad', 2.40, 0, 5, 11),  -- Bimbo
+    (103, 'Papas Fritas con Jalapeño', '3344556677889', 'Papas fritas sabor jalapeño', 'PorUnidad', 2.20, 0, 6, 10),  -- Lays
+    (104, 'Helado de Dulce de Leche', '4455667788990', 'Helado de dulce de leche', 'PorUnidad', 3.80, 0, 17, 6),  -- Danone
+    (105, 'Té de Menta', '5566778899001', 'Té de menta', 'PorUnidad', 3.60, 0, 18, 3),  -- Nestlé
+    (106, 'Aceite de Canola', '6677889900112', 'Aceite de canola', 'PorUnidad', 5.50, 0, 19, 7),  -- Heinz
+    (107, 'Pimentón', '7788990011223', 'Pimentón molido', 'PorUnidad', 1.60, 0, 20, 17),  -- Knorr
+    (108, 'Chocolate con Avellanas', '8899001122334', 'Chocolate con avellanas', 'PorUnidad', 4.50, 0, 21, 16),  -- Mondelez
+    (109, 'Atún con Limón', '9900112233445', 'Atún en lata con limón', 'PorUnidad', 2.70, 0, 22, 7),  -- Heinz
+    (110, 'Canelones de Pollo', '0011223344556', 'Canelones rellenos de pollo', 'PorUnidad', 4.60, 0, 23, 15),  -- Molinos
+    (111, 'Salsa de Ajo', '1122334455667', 'Salsa de ajo', 'PorUnidad', 2.70, 0, 24, 7),  -- Heinz
+    (112, 'Cereal de Trigo y Miel', '2233445566778', 'Cereal de trigo con miel', 'PorUnidad', 3.30, 0, 25, 5),  -- Kelloggs
+    (113, 'Galletas de Chocolate Blanco', '3344556677889', 'Galletas de chocolate blanco', 'PorUnidad', 2.40, 0, 26, 16),  -- Mondelez
+    (114, 'Choclo con Mantequilla', '4455667788990', 'Choclo en conserva con mantequilla', 'PorUnidad', 1.90, 0, 27, 7),  -- Heinz
+    (115, 'Huevos de Campo', '5566778899001', 'Huevos de campo', 'PorUnidad', 3.80, 0, 28, 12),  -- La Serenísima
+    (116, 'Leche de Coco', '6677889900112', 'Leche de coco', 'PorUnidad', 2.40, 0, 2, 12),  -- La Serenísima
+    (117, 'Yogur de Mango', '7788990011223', 'Yogur con trozos de mango', 'PorUnidad', 1.50, 0, 2, 6),  -- Danone
+    (118, 'Jugo de Melón', '8899001122334', 'Jugo de melón natural', 'PorUnidad', 2.60, 0, 1, 3),  -- Nestlé
+    (119, 'Queso Gorgonzola', '9900112233445', 'Queso gorgonzola', 'PorPesoKg', 22.00, 0, 2, 12),  -- La Serenísima
+    (120, 'Pechuga de Pollo', '0011223344556', 'Pechuga de pollo fresca', 'PorPesoKg', 8.00, 0, 3, 15),  -- Molinos
+    (121, 'Piña', '1122334455667', 'Piña fresca', 'PorPesoKg', 3.50, 0, 4, 14),  -- Arcor
+    (122, 'Pan de Salvado', '2233445566778', 'Pan de salvado integral', 'PorUnidad', 2.50, 0, 5, 11),  -- Bimbo
+    (123, 'Papas Fritas con Queso y Bacon', '3344556677889', 'Papas fritas sabor queso y bacon', 'PorUnidad', 2.30, 0, 6, 10),  -- Lays
+    (124, 'Helado de Vainilla con Chocolate', '4455667788990', 'Helado de vainilla con trozos de chocolate', 'PorUnidad', 3.90, 0, 17, 6),  -- Danone
+    (125, 'Té de Frutos Rojos', '5566778899001', 'Té de frutos rojos', 'PorUnidad', 3.70, 0, 18, 3),  -- Nestlé
+    (126, 'Aceite de Oliva Virgen Extra', '6677889900112', 'Aceite de oliva virgen extra', 'PorUnidad', 9.00, 0, 19, 7),  -- Heinz
+    (127, 'Canela', '7788990011223', 'Canela molida', 'PorUnidad', 1.70, 0, 20, 17),  -- Knorr
+    (128, 'Chocolate con Naranja', '8899001122334', 'Chocolate con trozos de naranja', 'PorUnidad', 4.30, 0, 21, 16),  -- Mondelez
+    (129, 'Atún con Hierbas', '9900112233445', 'Atún en lata con hierbas', 'PorUnidad', 2.90, 0, 22, 7),  -- Heinz
+    (130, 'Canelones de Espinaca y Ricotta', '0011223344556', 'Canelones rellenos de espinaca y ricotta', 'PorUnidad', 4.70, 0, 23, 15),  -- Molinos
+    (131, 'Salsa de Champiñones', '1122334455667', 'Salsa de champiñones', 'PorUnidad', 2.80, 0, 24, 7),  -- Heinz
+    (132, 'Cereal de Avena y Pasas', '2233445566778', 'Cereal de avena con pasas', 'PorUnidad', 3.40, 0, 25, 5),  -- Kelloggs
+    (133, 'Galletas de Coco', '3344556677889', 'Galletas de coco', 'PorUnidad', 2.50, 0, 26, 16),  -- Mondelez
+    (134, 'Choclo con Queso', '4455667788990', 'Choclo en conserva con queso', 'PorUnidad', 2.00, 0, 27, 7),  -- Heinz
+    (135, 'Huevos de Granja', '5566778899001', 'Huevos de granja', 'PorUnidad', 4.00, 0, 28, 12),  -- La Serenísima
+    (136, 'Leche de Avena', '6677889900112', 'Leche de avena', 'PorUnidad', 2.50, 0, 2, 12),  -- La Serenísima
+    (137, 'Yogur de Coco', '7788990011223', 'Yogur de coco', 'PorUnidad', 1.60, 0, 2, 6),  -- Danone
+    (138, 'Jugo de Maracuyá', '8899001122334', 'Jugo de maracuyá natural', 'PorUnidad', 2.70, 0, 1, 3),  -- Nestlé
+    (139, 'Queso Feta', '9900112233445', 'Queso feta', 'PorPesoKg', 14.00, 0, 2, 12),  -- La Serenísima
+    (140, 'Lomo de Res', '0011223344556', 'Lomo de res fresco', 'PorPesoKg', 18.00, 0, 3, 15),  -- Molinos
+    (141, 'Mango', '1122334455667', 'Mango fresco', 'PorPesoKg', 5.50, 0, 4, 14),  -- Arcor
+    (142, 'Pan de Trigo y Centeno', '2233445566778', 'Pan de trigo y centeno integral', 'PorUnidad', 2.60, 0, 5, 11),  -- Bimbo
+    (143, 'Papas Fritas con Limón', '3344556677889', 'Papas fritas sabor limón', 'PorUnidad', 2.40, 0, 6, 10),  -- Lays
+    (144, 'Helado de Cookies and Cream', '4455667788990', 'Helado de cookies and cream', 'PorUnidad', 4.00, 0, 17, 6),  -- Danone
+    (145, 'Té de Limón', '5566778899001', 'Té de limón', 'PorUnidad', 3.80, 0, 18, 3),  -- Nestlé
+    (146, 'Aceite de Sésamo', '6677889900112', 'Aceite de sésamo', 'PorUnidad', 6.00, 0, 19, 7),  -- Heinz
+    (147, 'Curry', '7788990011223', 'Curry en polvo', 'PorUnidad', 1.80, 0, 20, 17),  -- Knorr
+    (148, 'Chocolate con Caramelo', '8899001122334', 'Chocolate con caramelo', 'PorUnidad', 4.40, 0, 21, 16),  -- Mondelez
+    (149, 'Atún con Aceitunas', '9900112233445', 'Atún en lata con aceitunas', 'PorUnidad', 3.00, 0, 22, 7),  -- Heinz
+    (150, 'Canelones de Jamón y Queso', '0011223344556', 'Canelones rellenos de jamón y queso', 'PorUnidad', 4.80, 0, 23, 15),  -- Molinos
+    (151, 'Salsa de Tomate y Albahaca', '1122334455667', 'Salsa de tomate con albahaca', 'PorUnidad', 2.90, 0, 24, 7),  -- Heinz
+    (152, 'Cereal de Maíz y Miel', '2233445566778', 'Cereal de maíz con miel', 'PorUnidad', 3.50, 0, 25, 5),  -- Kelloggs
+    (153, 'Galletas de Jengibre', '3344556677889', 'Galletas de jengibre', 'PorUnidad', 2.60, 0, 26, 16),  -- Mondelez
+    (154, 'Choclo con Crema', '4455667788990', 'Choclo en conserva con crema', 'PorUnidad', 2.10, 0, 27, 7),  -- Heinz
+    (155, 'Huevos de Gallina Feliz', '5566778899001', 'Huevos de gallina feliz', 'PorUnidad', 4.20, 0, 28, 12),  -- La Serenísima
+    (156, 'Leche de Almendras con Chocolate', '6677889900112', 'Leche de almendras con chocolate', 'PorUnidad', 2.60, 0, 2, 12),  -- La Serenísima
+    (157, 'Yogur de Vainilla y Galleta', '7788990011223', 'Yogur de vainilla con trozos de galleta', 'PorUnidad', 1.70, 0, 2, 6),  -- Danone
+    (158, 'Jugo de Sandía', '8899001122334', 'Jugo de sandía natural', 'PorUnidad', 2.80, 0, 1, 3),  -- Nestlé
+    (159, 'Queso Camembert', '9900112233445', 'Queso camembert', 'PorPesoKg', 16.00, 0, 2, 12),  -- La Serenísima
+    (160, 'Chuleta de Cerdo', '0011223344556', 'Chuleta de cerdo fresca', 'PorPesoKg', 11.00, 0, 3, 15),  -- Molinos
+    (161, 'Papaya', '1122334455667', 'Papaya fresca', 'PorPesoKg', 6.00, 0, 4, 14),  -- Arcor
+    (162, 'Pan de Trigo y Semillas', '2233445566778', 'Pan de trigo con semillas', 'PorUnidad', 2.70, 0, 5, 11),  -- Bimbo
+    (163, 'Papas Fritas con Pimienta', '3344556677889', 'Papas fritas sabor pimienta', 'PorUnidad', 2.50, 0, 6, 10),  -- Lays
+    (164, 'Helado de Vainilla con Frutos Secos', '4455667788990', 'Helado de vainilla con frutos secos', 'PorUnidad', 4.10, 0, 17, 6),  -- Danone
+    (165, 'Té de Hibisco', '5566778899001', 'Té de hibisco', 'PorUnidad', 3.90, 0, 18, 3),  -- Nestlé
+    (166, 'Aceite de Girasol Alto Oleico', '6677889900112', 'Aceite de girasol alto oleico', 'PorUnidad', 5.50, 0, 19, 7),  -- Heinz
+    (167, 'Pimienta Blanca', '7788990011223', 'Pimienta blanca molida', 'PorUnidad', 1.90, 0, 20, 17),  -- Knorr
+    (168, 'Chocolate con Menta', '8899001122334', 'Chocolate con menta', 'PorUnidad', 4.50, 0, 21, 16),  -- Mondelez
+    (169, 'Atún con Tomate', '9900112233445', 'Atún en lata con tomate', 'PorUnidad', 3.10, 0, 22, 7),  -- Heinz
+    (170, 'Canelones de Espinaca y Queso', '0011223344556', 'Canelones rellenos de espinaca y queso', 'PorUnidad', 4.90, 0, 23, 15),  -- Molinos
+    (171, 'Salsa de Tomate y Ajo', '1122334455667', 'Salsa de tomate con ajo', 'PorUnidad', 3.00, 0, 24, 7),  -- Heinz
+    (172, 'Cereal de Trigo y Chocolate', '2233445566778', 'Cereal de trigo con chocolate', 'PorUnidad', 3.60, 0, 25, 5),  -- Kelloggs
+    (173, 'Galletas de Mantequilla', '3344556677889', 'Galletas de mantequilla', 'PorUnidad', 2.70, 0, 26, 16),  -- Mondelez
+    (174, 'Choclo con Hierbas', '4455667788990', 'Choclo en conserva con hierbas', 'PorUnidad', 2.20, 0, 27, 7),  -- Heinz
+    (175, 'Huevos de Gallina Orgánica', '5566778899001', 'Huevos de gallina orgánica', 'PorUnidad', 4.50, 0, 28, 12),  -- La Serenísima
+	(176, 'Leche de Almendras con Vainilla', '6677889900112', 'Leche de almendras con sabor a vainilla', 'PorUnidad', 2.70, 0, 2, 12),  -- La Serenísima
+    (177, 'Yogur de Frutos del Bosque', '7788990011223', 'Yogur con frutos del bosque', 'PorUnidad', 1.80, 0, 2, 6),  -- Danone
+    (178, 'Jugo de Pomelo', '8899001122334', 'Jugo de pomelo natural', 'PorUnidad', 2.90, 0, 1, 3),  -- Nestlé
+    (179, 'Queso Brie', '9900112233445', 'Queso brie', 'PorPesoKg', 17.00, 0, 2, 12),  -- La Serenísima
+    (180, 'Costillas de Res', '0011223344556', 'Costillas de res frescas', 'PorPesoKg', 20.00, 0, 3, 15),  -- Molinos
+    (181, 'Melón', '1122334455667', 'Melón fresco', 'PorPesoKg', 4.50, 0, 4, 14),  -- Arcor
+    (182, 'Pan de Trigo y Miel', '2233445566778', 'Pan de trigo con miel', 'PorUnidad', 2.80, 0, 5, 11),  -- Bimbo
+    (183, 'Papas Fritas con Queso Cheddar', '3344556677889', 'Papas fritas sabor queso cheddar', 'PorUnidad', 2.60, 0, 6, 10),  -- Lays
+    (184, 'Helado de Chocolate con Almendras', '4455667788990', 'Helado de chocolate con almendras', 'PorUnidad', 4.20, 0, 17, 6),  -- Danone
+    (185, 'Té de Canela', '5566778899001', 'Té de canela', 'PorUnidad', 4.00, 0, 18, 3),  -- Nestlé
+    (186, 'Aceite de Oliva con Limón', '6677889900112', 'Aceite de oliva con limón', 'PorUnidad', 7.50, 0, 19, 7),  -- Heinz
+    (187, 'Cúrcuma', '7788990011223', 'Cúrcuma molida', 'PorUnidad', 2.00, 0, 20, 17),  -- Knorr
+    (188, 'Chocolate con Café', '8899001122334', 'Chocolate con café', 'PorUnidad', 4.60, 0, 21, 16),  -- Mondelez
+    (189, 'Atún con Aceite de Oliva', '9900112233445', 'Atún en lata con aceite de oliva', 'PorUnidad', 3.20, 0, 22, 7),  -- Heinz
+    (190, 'Canelones de Espinaca y Pollo', '0011223344556', 'Canelones rellenos de espinaca y pollo', 'PorUnidad', 5.00, 0, 23, 15),  -- Molinos
+    (191, 'Salsa de Tomate y Pimiento', '1122334455667', 'Salsa de tomate con pimiento', 'PorUnidad', 3.10, 0, 24, 7),  -- Heinz
+    (192, 'Cereal de Arroz y Miel', '2233445566778', 'Cereal de arroz con miel', 'PorUnidad', 3.70, 0, 25, 5),  -- Kelloggs
+    (193, 'Galletas de Avena y Pasas', '3344556677889', 'Galletas de avena con pasas', 'PorUnidad', 2.80, 0, 26, 16),  -- Mondelez
+    (194, 'Choclo con Especias', '4455667788990', 'Choclo en conserva con especias', 'PorUnidad', 2.30, 0, 27, 7),  -- Heinz
+    (195, 'Huevos de Gallina Criolla', '5566778899001', 'Huevos de gallina criolla', 'PorUnidad', 4.30, 0, 28, 12),  -- La Serenísima
+    (196, 'Leche de Soja con Vainilla', '6677889900112', 'Leche de soja con sabor a vainilla', 'PorUnidad', 2.80, 0, 2, 12),  -- La Serenísima
+    (197, 'Yogur de Coco y Limón', '7788990011223', 'Yogur de coco con limón', 'PorUnidad', 1.90, 0, 2, 6),  -- Danone
+    (198, 'Jugo de Manzana y Zanahoria', '8899001122334', 'Jugo de manzana y zanahoria', 'PorUnidad', 3.00, 0, 1, 3),  -- Nestlé
+    (199, 'Queso Gruyere', '9900112233445', 'Queso gruyere', 'PorPesoKg', 19.00, 0, 2, 12),  -- La Serenísima
+    (200, 'Chuleta de Ternera', '0011223344556', 'Chuleta de ternera fresca', 'PorPesoKg', 22.00, 0, 3, 15),  -- Molinos
+	(201, 'Licuadora Oster', '9988776655443', 'Licuadora de alta potencia', 'PorUnidad', 50.00, 0, 15, 22),  -- Oster
+    (202, 'Aspiradora LG', '8877665544332', 'Aspiradora sin bolsa', 'PorUnidad', 120.00, 0, 15, 23),  -- LG
+    (203, 'Horno Eléctrico Gama', '7766554433221', 'Horno eléctrico de 30 litros', 'PorUnidad', 80.00, 0, 15, 21),  -- Gama
+    (204, 'Cafetera Oster', '6655443322110', 'Cafetera programable', 'PorUnidad', 60.00, 1, 15, 22),  -- Oster
+    (205, 'Batidora de Mano Gama', '5544332211009', 'Batidora de mano con accesorios', 'PorUnidad', 40.00, 0, 15, 21),  -- Gama
+    (206, 'Ventilador de Torre Panasonic', '4433221100998', 'Ventilador de torre oscilante', 'PorUnidad', 70.00, 0, 15, 24),  -- Panasonic
+    (207, 'Plancha a Vapor Gama', '3322110099887', 'Plancha a vapor con ajuste de temperatura', 'PorUnidad', 45.00, 0, 15, 21),  -- Gama
+    (208, 'Tostadora Oster', '2211009988776', 'Tostadora de 2 ranuras', 'PorUnidad', 30.00, 0, 15, 22),  -- Oster
+    (209, 'Microondas LG', '1100998877665', 'Microondas de 20 litros', 'PorUnidad', 100.00, 1, 15, 23),  -- LG
+    (210, 'Freidora de Aire Gama', '0099887766554', 'Freidora de aire sin aceite', 'PorUnidad', 90.00, 0, 15, 21),  -- Gama
+    (211, 'Robot de Cocina Oster', '9988776655443', 'Robot de cocina multifunción', 'PorUnidad', 150.00, 0, 15, 22),  -- Oster
+    (212, 'Purificador de Aire Panasonic', '8877665544332', 'Purificador de aire con filtro HEPA', 'PorUnidad', 200.00, 0, 15, 24),  -- Panasonic
+    (213, 'Juego de Ollas Gama', '7766554433221', 'Juego de ollas antiadherentes', 'PorUnidad', 130.00, 0, 14, 21),  -- Gama
+    (214, 'Cafetera Express Gama', '6655443322110', 'Cafetera express para espresso', 'PorUnidad', 110.00, 0, 15, 21),  -- Gama
+    (215, 'Secador de Pelo Oster', '5544332211009', 'Secador de pelo profesional', 'PorUnidad', 35.00, 0, 15, 22),  -- Oster
+    (216, 'Lavavajillas Portátil LG', '4433221100998', 'Lavavajillas portátil para 6 cubiertos', 'PorUnidad', 250.00, 1, 15, 23),  -- LG
+    (217, 'Juego de Sartenes Gama', '3322110099887', 'Juego de sartenes de acero inoxidable', 'PorUnidad', 85.00, 0, 14, 21),  -- Gama
+    (218, 'Hervidor Eléctrico Oster', '2211009988776', 'Hervidor eléctrico de acero inoxidable', 'PorUnidad', 25.00, 0, 15, 22),  -- Oster
+    (219, 'Robot Aspirador Panasonic', '1100998877665', 'Robot aspirador con mapeo inteligente', 'PorUnidad', 300.00, 0, 15, 24),  -- Panasonic
+    (220, 'Juego de Cuchillos Gama', '0099887766554', 'Juego de cuchillos profesionales', 'PorUnidad', 60.00, 0, 14, 21),  -- Gama
+    (221, 'Máquina de Coser Oster', '9988776655443', 'Máquina de coser compacta', 'PorUnidad', 180.00, 0, 15, 22),  -- Oster
+    (222, 'Vaporizador Facial Gama', '8877665544332', 'Vaporizador facial para cuidado de la piel', 'PorUnidad', 40.00, 0, 15, 21),  -- Gama
+    (223, 'Juego de Vajilla Gama', '7766554433221', 'Juego de vajilla de porcelana', 'PorUnidad', 120.00, 0, 14, 21),  -- Gama
+    (224, 'Máquina de Pan Oster', '6655443322110', 'Máquina de pan automática', 'PorUnidad', 95.00, 0, 15, 22),  -- Oster
+    (225, 'Juego de Utensilios de Cocina Gama', '5544332211009', 'Juego de utensilios de silicona', 'PorUnidad', 50.00, 0, 14, 21),  -- Gama
+    (226, 'Cafetera de Goteo Panasonic', '4433221100998', 'Cafetera de goteo programable', 'PorUnidad', 55.00, 0, 15, 24),  -- Panasonic
+    (227, 'Juego de Tuppers Gama', '3322110099887', 'Juego de tuppers herméticos', 'PorUnidad', 30.00, 0, 14, 21),  -- Gama
+    (228, 'Máquina de Helados Oster', '2211009988776', 'Máquina de helados automática', 'PorUnidad', 75.00, 0, 15, 22),  -- Oster
+    (229, 'Juego de Cubiertos Gama', '1100998877665', 'Juego de cubiertos de acero inoxidable', 'PorUnidad', 70.00, 0, 14, 21),  -- Gama
+    (230, 'Batidora de Pie Gama', '0099887766554', 'Batidora de pie con bowl de acero', 'PorUnidad', 110.00, 0, 15, 21);  -- Gama
