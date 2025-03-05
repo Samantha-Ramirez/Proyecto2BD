@@ -310,7 +310,7 @@ INSERT INTO Categoria (id, nombre, descripcion) VALUES
     (3, 'Carnes', 'Carnes frescas y procesadas'),
     (4, 'Frutas y Verduras', 'Productos frescos de frutas y verduras'),
     (5, 'Panaderia', 'Pan, bollos y productos de reposteria'),
-    (6, 'Snacks', 'Papas fritas, frutos secos y golosinas'),
+    (6, 'Chucherías', 'Papas fritas, frutos secos y golosinas'),
     (7, 'Congelados', 'Alimentos congelados y listos para cocinar'),
     (8, 'Limpieza', 'Productos de limpieza para el hogar'),
     (9, 'Cuidado Personal', 'Jabones, champus y productos de higiene'),
@@ -2160,7 +2160,7 @@ INSERT INTO Pago (facturaId, nroTransaccion, metodoPagoId) VALUES
 INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fechaInicio, fechaFin, tipoPromocion) VALUES
 	-- Promociones estándar (28 ajustadas)
 	(1, 'Descuento de Inicio', '¡Comienza con ahorros!', 'START10', 'Porcentaje', 10.0, '2024-01-01', '2024-01-31', 'Online'),      -- Ajustado: Cubre facturas online de enero (5001, 5003)
-	(2, 'Verano en Sucursal', '¡Ahorra en verano!', 'SUMMER20', 'Fijo', 20.0, '2024-01-01', '2024-03-31', 'Fisica'),            -- Ajustado: Fechas para cubrir facturas físicas (6001-6060)
+	(2, 'Verano en Gama', '¡Ahorra en verano!', 'SUMMER20', 'Fijo', 20.0, '2024-01-01', '2024-03-31', 'Fisica'),            -- Ajustado: Fechas para cubrir facturas físicas (6001-6060)
 	(3, 'Compra Doble', '¡Más compras, más descuentos!', 'DOUBLE15', 'Porcentaje', 15.0, '2024-01-01', '2024-03-31', 'Ambos'),    -- Ajustado: Fechas para cubrir facturas online y físicas
 	(4, 'Fin de Semana Online', '¡Solo este fin de semana!', 'WEEKEND5', 'Fijo', 5.0, '2024-02-01', '2024-02-28', 'Online'),      -- Ajustado: Fechas para cubrir facturas online (5005, 5007)
 	(5, 'Lunes en Tienda', '¡Lunes de locura!', 'MONDAY25', 'Porcentaje', 10.0, '2024-01-01', '2024-03-31', 'Fisica'),           -- Ajustado: Fechas y valor (10% para ser coherente con facturas físicas)

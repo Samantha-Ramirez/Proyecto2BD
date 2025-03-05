@@ -169,4 +169,4 @@ SELECT
 FROM Producto P
 JOIN Categoria C ON C.id = P.categoriaId -- Categoria del producto
 JOIN Inventario I ON I.productoId = P.id -- Inventario del producto
-WHERE C.nombre = 'Chucherías' -- Categoria Chucherías 
+WHERE C.nombre = 'Chucherías' -- Categoria Chucherías (id=6)
