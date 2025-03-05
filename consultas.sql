@@ -1,4 +1,4 @@
---Consulta C
+-- Consulta C
 SELECT DISTINCT 
     P.nombre AS nombreProducto,
     C.nombre AS categoriaProducto,
@@ -33,14 +33,15 @@ FROM Producto P
 JOIN Marca M ON M.id = P.marcaId -- Marca del producto
 JOIN FacturaDetalle FD ON FD.productoId = P.id -- Factura detalle del producto
 JOIN Factura F ON F.id = FD.facturaId -- Factura de la factura detalle
+LEFT JOIN FacturaPromo FP ON FP.facturaId = F.id
+LEFT JOIN Promo Pr ON Pr.id = FP.promoId -- Promo de la promo especializada
 LEFT JOIN PromoEspecializada PE ON (PE.productoId = P.id OR PE.categoriaId = P.categoriaId OR PE.marcaId = M.id) -- Promo especializada del producto, de su categoria o de su marca
-LEFT JOIN Promo Pr ON Pr.id = PE.promoId -- Promo de la promo especializada
-WHERE M.nombre = 'Gama' -- Marca Gama
+WHERE M.nombre = 'Gama' -- Marca Gama (id=21)
 AND MONTH(F.fechaEmision) IN (6, 8) -- Compra en junio y agosto
 AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa
 AND Pr.fechaFin <= GETDATE() -- Promo activa
 
---Consulta G
+-- Consulta G
 -- Ordenes válidas (condición b)
 WITH OrdenesValidas AS (
     SELECT 
@@ -82,7 +83,7 @@ ClientesConCondiciones AS (
         COUNT(ov.facturaId) >= 3 -- Condición a: al menos 3 órdenes
         AND SUM(CASE WHEN ov.metodoPago = 'Tarjeta de Crédito' THEN 1 ELSE 0 END) >= 1 -- Condición c
 ),
---Calcular el promedio de gasto de todos los clientes
+-- Calcular el promedio de gasto de todos los clientes
 PromedioGasto AS (
     SELECT AVG(montoTotal) AS promedioGasto
     FROM Factura
@@ -94,7 +95,6 @@ FROM ClientesConCondiciones cc
 CROSS JOIN PromedioGasto pg
 WHERE cc.totalGastado > pg.promedioGasto -- Condición d
 ORDER BY cc.totalGastado DESC;
-
 
 -- Consulta H
 WITH 
@@ -118,7 +118,7 @@ SegundaCompra AS (
 )
 SELECT 
     -- Clientes que han hecho segunda compra entre todos los clientes que hecho compra
-    (COUNT(DISTINCT SC.clienteId) / COUNT(DISTINCT PC.clienteId) * 100.0) AS porcentajeClienteSegCompra 
+    (COUNT(DISTINCT SC.clienteId) * 100/ COUNT(DISTINCT PC.clienteId)) AS porcentajeClienteSegCompra
 FROM PrimeraCompra PC
 LEFT JOIN SegundaCompra SC ON SC.clienteId = PC.clienteId
 
