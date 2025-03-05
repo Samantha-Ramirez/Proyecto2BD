@@ -1,4 +1,5 @@
 -- Pais
+SET IDENTITY_INSERT Pais ON;
 INSERT INTO Pais (id, nombre) VALUES
     (1, 'Mexico'),
     (2, 'Estados Unidos'),
@@ -10,8 +11,10 @@ INSERT INTO Pais (id, nombre) VALUES
     (8, 'Peru'),
     (9, 'Francia'),
     (10, 'Venezuela');
+SET IDENTITY_INSERT Pais OFF;
 
 -- Estado
+SET IDENTITY_INSERT Estado ON;
 INSERT INTO Estado (id, nombre, paisId) VALUES
     -- Mexico (id=1)
     (1, 'Ciudad de Mexico', 1),
@@ -47,8 +50,10 @@ INSERT INTO Estado (id, nombre, paisId) VALUES
     (23, 'Zulia', 10),                 
     (24, 'Carabobo', 10),               
     (25, 'Lara', 10);
+SET IDENTITY_INSERT Estado OFF;
 
 -- Ciudad
+SET IDENTITY_INSERT Ciudad ON;
 INSERT INTO Ciudad (id, nombre, estadoId) VALUES
     -- Ciudad de Mexico (id=1)
     (1, 'Ciudad de Mexico', 1),
@@ -162,10 +167,12 @@ INSERT INTO Ciudad (id, nombre, estadoId) VALUES
     (63, 'Carora', 25),
     (64, 'Sanare', 25),
     (65, 'Cubiro', 25);
+SET IDENTITY_INSERT Ciudad OFF;
 
 -- Sucursal
 -- Mínimo 20 sucursales
 -- Lo que guarden los campos de direcciones es decisión de ustedes, ya sea parroquia, calle, avenida, edificio, etc.
+SET IDENTITY_INSERT Sucursal ON;
 INSERT INTO Sucursal (id, nombre, direccion, telefono, horaAbrir, horaCerrar, ciudadId) VALUES
     (1, 'Sucursal Centro', 'Av. Principal, Edificio A', '0212-1234567', 8, 20, 47),
     (2, 'Sucursal Este', 'Calle 5, Quinta B', '0212-9876543', 9, 21, 48),
@@ -190,9 +197,11 @@ INSERT INTO Sucursal (id, nombre, direccion, telefono, horaAbrir, horaCerrar, ci
     (21, 'Sucursal Chacao', 'Av. Francisco de Miranda, Centro Comercial Sambil', '0212-9876543', 9, 21, 47),
     (22, 'Sucursal Baruta', 'Calle Principal de Baruta, Quinta La Esmeralda', '0212-5551212', 7, 22, 47),
     (23, 'Sucursal La Urbina', 'Calle 12 con Av. Santiago de León', '0212-1112233', 8, 20, 47);
+SET IDENTITY_INSERT Sucursal OFF;
 
 -- Cargo
 -- Mínimo 10 cargos
+SET IDENTITY_INSERT Cargo ON;
 INSERT INTO Cargo (id, nombre, descripcion, salarioBasePorHora) VALUES
     (1, 'Cajero', 'Atencion al cliente en caja y cobro de productos', 12.00),
     (2, 'Reponedor', 'Encargado de reponer productos en estanterias', 10.00),
@@ -209,9 +218,11 @@ INSERT INTO Cargo (id, nombre, descripcion, salarioBasePorHora) VALUES
     (13, 'Tecnico de Refrigeracion', 'Mantenimiento de equipos de refrigeracion', 16.00),
     (14, 'Dependiente de Farmacia', 'Atencion en la seccion de farmacia', 14.00),
     (15, 'Analista de Inventarios', 'Control y gestion de inventarios', 18.00);
+SET IDENTITY_INSERT Cargo OFF;
 
 -- Empleado
 -- Mínimo 40 empleados
+SET IDENTITY_INSERT Empleado ON;
 INSERT INTO Empleado (id, CI, nombre, apellido, sexo, direccionCorta, cargoId, empleadoSupervisorId, sucursalId, fechaContrato, bonoFijoMensual, horaInicio, horaFin, cantidadDiasTrabajoPorSemana) VALUES
     (1, 'V-12345678', 'Juan', 'Pérez', 'M', 'Calle 1, Casa 1', 3, NULL, 1, '2023-01-15', 500.00, 8, 17, 6),
     (2, 'V-87654321', 'María', 'Gómez', 'F', 'Av. Principal, Edificio 2', 1, 1, 2, '2023-02-01', 100.00, 9, 18, 5),
@@ -257,9 +268,11 @@ INSERT INTO Empleado (id, CI, nombre, apellido, sexo, direccionCorta, cargoId, e
     (42, 'V-88887777', 'Gabriel', 'Castro', 'M', 'Av. Principal, Edificio 44', 3, 2, 22, '2026-03-14', 750.00, 9, 17, 5),
     (43, 'V-99990000', 'Valeria', 'León', 'F', 'Calle 45, Local 45', 4, 2, 23, '2026-04-01', 770.00, 8, 16, 6),
     (44, 'V-00009999', 'Martín', 'Rey', 'M', 'Av. Libertador, Apartamento 46', 5, 2, 23, '2026-04-19', 790.00, 10, 18, 5);    
+SET IDENTITY_INSERT Empleado OFF;
 
 -- Marca
 -- Mínimo 40 marcas
+SET IDENTITY_INSERT Marca ON;
 INSERT INTO Marca (id, nombre, descripcion) VALUES
     (1, 'Coca-Cola', 'Bebidas gaseosas y refrescos'),
     (2, 'Pepsi', 'Bebidas y snacks'),
@@ -301,9 +314,11 @@ INSERT INTO Marca (id, nombre, descripcion) VALUES
     (38, 'Oral-B', 'Productos de higiene bucal'),
     (39, 'Pantene', 'Productos de cuidado capilar'),
     (40, 'Gillete', 'Productos de afeitado y cuidado personal');
+SET IDENTITY_INSERT Marca OFF;
 
 -- Categoria
 -- Mínimo 30 categorías
+SET IDENTITY_INSERT Categoria ON;
 INSERT INTO Categoria (id, nombre, descripcion) VALUES
     (1, 'Bebidas', 'Refrescos, aguas, jugos y bebidas alcoholicas'),
     (2, 'Lacteos', 'Leche, yogures, quesos y derivados'),
@@ -336,9 +351,11 @@ INSERT INTO Categoria (id, nombre, descripcion) VALUES
     (29, 'Pescados y Mariscos', 'Pescados y mariscos frescos'),
     (30, 'Comida Preparada', 'Platos preparados y listos para consumir'),
     (31, 'Electronica', 'Equipos pequenos para hogar');
+SET IDENTITY_INSERT Categoria OFF;
 
 -- Producto
 -- Mínimo 200 productos
+SET IDENTITY_INSERT Producto ON;
 INSERT INTO Producto (id, nombre, codigoBarra, descripcion, tipoPrecio, precioPor, esExentoIVA, categoriaId, marcaId) VALUES
     (1, 'Coca-Cola Original', '1234567890123', 'Refresco de cola', 'PorUnidad', 1.50, 0, 1, 1),
     (2, 'Pepsi Max', '2345678901234', 'Refresco de cola sin azúcar', 'PorUnidad', 1.40, 0, 1, 2),
@@ -570,13 +587,12 @@ INSERT INTO Producto (id, nombre, codigoBarra, descripcion, tipoPrecio, precioPo
     (228, 'Máquina de Helados Oster', '2211009988776', 'Máquina de helados automática', 'PorUnidad', 75.00, 0, 15, 22),  -- Oster
     (229, 'Juego de Cubiertos Gama', '1100998877665', 'Juego de cubiertos de acero inoxidable', 'PorUnidad', 70.00, 0, 14, 21),  -- Gama
     (230, 'Batidora de Pie Gama', '0099887766554', 'Batidora de pie con bowl de acero', 'PorUnidad', 110.00, 0, 15, 21);  -- Gama
-
--- Inventario 
--- No hacer inserción (se hace con el trigger)
+SET IDENTITY_INSERT Producto OFF;
 
 -- Cliente
 -- Mínimo 100 clientes
-INSERT INTO Cliente(id, CI, nombre, apellido, correo, sexo, fechaNacimiento, fechaRegistro) VALUES
+SET IDENTITY_INSERT Cliente ON;
+INSERT INTO Cliente (id, CI, nombre, apellido, correo, sexo, fechaNacimiento, fechaRegistro) VALUES
     (1, '20853641', 'Juan', 'Perez', 'juan.perez@example.com', 'M', '1990-01-01', '2023-01-01'),
     (2, '17803572', 'Maria', 'Gomez', 'maria.gomez@example.com', 'F', '1985-05-15', '2023-01-01'),
     (3, '15869022', 'Carlos', 'Lopez', 'carlos.lopez@example.com', 'M', '1978-07-22', '2023-01-01'),
@@ -677,10 +693,12 @@ INSERT INTO Cliente(id, CI, nombre, apellido, correo, sexo, fechaNacimiento, fec
     (98, '25874105', 'Jorge', 'Cordova', 'jorge.cordova@example.com', 'M', '1982-05-05', '2023-01-01'),
     (99, '25869022', 'Diana', 'Vega', 'diana.vega@example.com', 'F', '1991-07-09', '2023-01-01'),
     (100, '21990112', 'Roberto', 'Aguirre', 'roberto.aguirre@example.com', 'M', '1984-09-13', '2023-01-01');
+SET IDENTITY_INSERT Cliente OFF;
 
 -- Cliente tiene Direccion
 -- 80% de los clientes debe tener mínimo 1 dirección, el resto mínimo 2
-INSERT INTO ClienteDireccion(id, clienteId, tipoDireccion, dirLinea1, ciudadId) VALUES
+SET IDENTITY_INSERT ClienteDireccion ON;
+INSERT INTO ClienteDireccion (id, clienteId, tipoDireccion, dirLinea1, ciudadId) VALUES
 	-- 80 clientes con una sola dirección (Facturación o Envío)
 	(1, 1, 'Facturación', 'Calle 123', 1),
 	(2, 2, 'Facturación', 'Avenida 456', 4),
@@ -804,6 +822,7 @@ INSERT INTO ClienteDireccion(id, clienteId, tipoDireccion, dirLinea1, ciudadId) 
 	(118, 99, 'Envío', 'Avenida 948', 23),
 	(119, 100, 'Facturación', 'Calle 949', 26),
 	(120, 100, 'Envío', 'Avenida 950', 29);
+SET IDENTITY_INSERT ClienteDireccion OFF;
 
 -- Carrito
 -- El 25% de los clientes tienen productos en su carrito
@@ -902,97 +921,12 @@ INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) 
 	(25, 43, '2023-10-25', 1, 2.00),
 	(25, 44, '2023-10-25', 1, 3.80);
 
--- Producto recomendado para Cliente 
--- Las recomendaciones deben ser al menos 40
-INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES
-	-- Recomendaciones para el Cliente 1
-	(1, 1, '2023-10-01', 'Recomendado por compras anteriores'),
-	(1, 2, '2023-10-01', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 2
-	(2, 3, '2023-10-02', 'Recomendado por compras anteriores'),
-	(2, 4, '2023-10-02', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 3
-	(3, 5, '2023-10-03', 'Recomendado por compras anteriores'),
-	(3, 6, '2023-10-03', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 4
-	(4, 7, '2023-10-04', 'Recomendado por compras anteriores'),
-	(4, 8, '2023-10-04', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 5
-	(5, 9, '2023-10-05', 'Recomendado por compras anteriores'),
-	(5, 10, '2023-10-05', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 6
-	(6, 11, '2023-10-06', 'Recomendado por compras anteriores'),
-	(6, 12, '2023-10-06', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 7
-	(7, 13, '2023-10-07', 'Recomendado por compras anteriores'),
-	(7, 14, '2023-10-07', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 8
-	(8, 15, '2023-10-08', 'Recomendado por compras anteriores'),
-	(8, 16, '2023-10-08', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 9
-	(9, 17, '2023-10-09', 'Recomendado por compras anteriores'),
-	(9, 18, '2023-10-09', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 10
-	(10, 19, '2023-10-10', 'Recomendado por compras anteriores'),
-	(10, 20, '2023-10-10', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 11
-	(11, 21, '2023-10-11', 'Recomendado por compras anteriores'),
-	(11, 22, '2023-10-11', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 12
-	(12, 23, '2023-10-12', 'Recomendado por compras anteriores'),
-	(12, 24, '2023-10-12', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 13
-	(13, 25, '2023-10-13', 'Recomendado por compras anteriores'),
-	(13, 26, '2023-10-13', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 14
-	(14, 27, '2023-10-14', 'Recomendado por compras anteriores'),
-	(14, 28, '2023-10-14', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 15
-	(15, 29, '2023-10-15', 'Recomendado por compras anteriores'),
-	(15, 30, '2023-10-15', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 16
-	(16, 31, '2023-10-16', 'Recomendado por compras anteriores'),
-	(16, 32, '2023-10-16', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 17
-	(17, 33, '2023-10-17', 'Recomendado por compras anteriores'),
-	(17, 34, '2023-10-17', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 18
-	(18, 35, '2023-10-18', 'Recomendado por compras anteriores'),
-	(18, 36, '2023-10-18', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 19
-	(19, 37, '2023-10-19', 'Recomendado por compras anteriores'),
-	(19, 38, '2023-10-19', 'Recomendado por compras anteriores'),
-
-	-- Recomendaciones para el Cliente 20
-	(20, 39, '2023-10-20', 'Recomendado por compras anteriores'),
-	(20, 40, '2023-10-20', 'Recomendado por compras anteriores');
-
 -- ProductoRecomendadoParaProducto  
--- No hacer inserción (se hace con el trigger)
-
--- HistorialClienteProducto   
--- No hacer inserción (se hace con el trigger)
+-- Las recomendaciones deben ser al menos 40
 
 -- Proveedor
 -- Mínimo 40 proveedores
+SET IDENTITY_INSERT Proveedor ON;
 INSERT INTO Proveedor (id, RIF, nombre, contacto, telefono, correo, ciudadId) VALUES
     (1, 'J-12345678-9', 'Distribuidora La Esquina', 'Juan Pérez', '0212-1234567', 'juan.perez@distribuidora.com', 47),
     (2, 'J-98765432-1', 'Alimentos El Trigal', 'María Gómez', '0212-9876543', 'maria.gomez@alimentos.com', 48),
@@ -1034,9 +968,11 @@ INSERT INTO Proveedor (id, RIF, nombre, contacto, telefono, correo, ciudadId) VA
     (38, 'J-65432109-8', 'Aceites y Vinagres El Dorado', 'Martín Torres', '0212-6543210', 'martin.torres@eldorado.com', 65),
     (39, 'J-98701234-6', 'Productos para Mascotas El Arca', 'Luciana Díaz', '0212-9870123', 'luciana.diaz@elarca.com', 47),
     (40, 'J-12398765-0', 'Artículos para el Hogar La Mansión', 'Nicolás Ruiz', '0212-1239876', 'nicolas.ruiz@lamansion.com', 48);
+SET IDENTITY_INSERT Proveedor OFF;
 
 -- Proveedor provee Producto
 -- Mínimo 50 compras a proveedores 
+SET IDENTITY_INSERT ProveedorProducto ON;
 INSERT INTO ProveedorProducto (id, proveedorId, productoId, fechaCompra, precioPor, cantidad) VALUES
     (1, 1, 1, '2023-10-26', 1.50, 100),
     (2, 2, 2, '2023-10-26', 2.00, 50),
@@ -1088,10 +1024,12 @@ INSERT INTO ProveedorProducto (id, proveedorId, productoId, fechaCompra, precioP
     (48, 8, 3, '2023-10-03', 6.00, 28),
     (49, 9, 4, '2023-10-02', 1.40, 190),
     (50, 10, 5, '2023-10-02', 1.20, 240);
+SET IDENTITY_INSERT ProveedorProducto OFF;
 
 -- Factura 
 -- Mínimo 100 facturas/compras con al menos 3 productos en cada una (la diferencia entre compras online y física no debe ser mucha)
 -- Los ID de factura tanto de OrdenOnline como de VentaFisica tienen que ser diferentes, para poder diferenciar de dónde proviene cierta factura, si a una venta física o a una orden online
+SET IDENTITY_INSERT Factura ON;
 INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal) VALUES
     -- OrdenOnline (5001-5040): 40 facturas, 16 con promociones (40% de 40 = 16)
     (5001, '2024-01-15', 1, 179.97, 17.997, 16.0, 25.915, 187.888),  -- 3 productos, con promo
@@ -1197,8 +1135,10 @@ INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal,
     (6060, '2024-03-11', 100, 255.00, 0.0, 16.0, 40.800, 295.800),
     (6061, '2024-01-16', 1, 179.97, 17.997, 16.0, 25.915, 187.888),
     (6062, '2024-01-17', 2, 136.50, 0.0, 16.0, 21.840, 158.340);
+SET IDENTITY_INSERT Factura OFF;
 
 -- Detalle de factura
+SET IDENTITY_INSERT FacturaDetalle ON;
 INSERT INTO FacturaDetalle (id, facturaId, productoId, cantidad, precioPor) VALUES
 	-- Factura 5001 (subTotal: 179.97, con promoción)
 	(1, 5001, 1, 40, 1.50),    -- Coca-Cola Original: 40 * 1.50 = 60.00
@@ -1879,16 +1819,20 @@ INSERT INTO FacturaDetalle (id, facturaId, productoId, cantidad, precioPor) VALU
 	(376, 6060, 13, 10, 12.00), -- Queso Gouda: 10 * 12.00 = 120.00
 	(377, 6060, 19, 1, 15.00);  -- Queso Cheddar: 1 * 15.00 = 15.00
 	-- Total: 127.50 + 120.00 + 15.00 = 262.50 (muy cercano a 255.00)
+SET IDENTITY_INSERT FacturaDetalle OFF;
 
 -- Tipo de envio
+SET IDENTITY_INSERT TipoEnvio ON;
 INSERT INTO TipoEnvio (id, nombreEnvio, tiempoEstimadoEntrega, costoEnvio) VALUES
     (1, 'Envio inmediato', 1, 50.00),
     (2, 'Mismo dia', 4, 30.00),
     (3, 'Al dia siguiente', 23, 20.00),
     (4, 'Semana siguiente', 168, 6.00),
     (5, 'Envio estandar', 72, 15.00);
+SET IDENTITY_INSERT TipoEnvio OFF;
 
 -- Orden online 
+SET IDENTITY_INSERT OrdenOnline ON;
 INSERT INTO OrdenOnline (id, clienteId, nroOrden, fechaCreacion, tipoEnvioId, facturaId) VALUES
     (1, 1, 1, '2024-01-15', 1, 5001),
     (2, 2, 2, '2024-01-16', 2, 5002),
@@ -1930,8 +1874,10 @@ INSERT INTO OrdenOnline (id, clienteId, nroOrden, fechaCreacion, tipoEnvioId, fa
     (38, 38, 38, '2025-02-10', 2, 5038),
     (39, 39, 39, '2025-02-15', 1, 5039),
     (40, 40, 40, '2025-02-20', 3, 5040);
+SET IDENTITY_INSERT OrdenOnline OFF;
 
--- Detalle de orden 
+-- Detalle de orden
+SET IDENTITY_INSERT OrdenDetalle ON; 
 INSERT INTO OrdenDetalle (id, ordenId, productoId, cantidad, precioPor) VALUES
     (1, 1, 100, 2, 29.99),
     (2, 2, 101, 1, 45.50),
@@ -1973,6 +1919,7 @@ INSERT INTO OrdenDetalle (id, ordenId, productoId, cantidad, precioPor) VALUES
     (38, 38, 137, 5, 17.77),
     (39, 39, 138, 3, 69.99),
     (40, 40, 139, 2, 52.50);
+SET IDENTITY_INSERT OrdenDetalle OFF;
 
 -- Venta fisica 
 INSERT INTO VentaFisica (facturaId, sucursalId, empleadoId) VALUES
@@ -2038,6 +1985,7 @@ INSERT INTO VentaFisica (facturaId, sucursalId, empleadoId) VALUES
     (6060, 12, 20);
 
 -- Forma de pago
+SET IDENTITY_INSERT FormaPago ON;
 INSERT INTO FormaPago (id, nombre, descripcion) VALUES
     (1, 'Tarjeta de credito', 'Pago con tarjeta de credito Visa, Mastercard o Amex'),
     (2, 'Tarjeta de debito', 'Pago con tarjeta de debito vinculada a una cuenta bancaria'),
@@ -2049,6 +1997,7 @@ INSERT INTO FormaPago (id, nombre, descripcion) VALUES
     (8, 'Pago movil', 'Pago a traves de aplicaciones moviles de cada banco'),
     (9, 'Cashea', 'Pago fraccionado en varias cuotas mensuales'),
     (10, 'Zelle', 'Pago a traves de aplicaciones moviles de bancos americanos');
+SET IDENTITY_INSERT FormaPago OFF;
 
 -- Pago 
 INSERT INTO Pago (facturaId, nroTransaccion, metodoPagoId) VALUES
@@ -2157,6 +2106,7 @@ INSERT INTO Pago (facturaId, nroTransaccion, metodoPagoId) VALUES
 
 -- Promo
 -- Mínimo 40 promociones (variadas en tipo de descuento y promoción)
+SET IDENTITY_INSERT Promo ON;
 INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fechaInicio, fechaFin, tipoPromocion) VALUES
 	-- Promociones estándar (28 ajustadas)
 	(1, 'Descuento de Inicio', '¡Comienza con ahorros!', 'START10', 'Porcentaje', 10.0, '2024-01-01', '2024-01-31', 'Online'),      -- Ajustado: Cubre facturas online de enero (5001, 5003)
@@ -2209,9 +2159,11 @@ INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fe
 	(44, 'Sprite Party', '¡Fiesta con Sprite!', 'SPRITE30', 'Fijo', 10.0, '2025-01-01', '2025-02-28', 'Online'),                -- Ajustado: Fechas para facturas como 5031, 5035
 	(45, 'Cereales Mañaneros', '¡Desayuno con energía!', 'CEREAL15', 'Porcentaje', 10.0, '2024-01-01', '2024-03-31', 'Fisica'), -- Ajustado: Fechas
 	(46, 'Producto Bimbo', '¡Pan fresco siempre!', 'BIMBO10', 'Fijo', 10.0, '2024-04-01', '2024-06-30', 'Online');              -- Ajustado: Fechas para facturas online
+SET IDENTITY_INSERT Promo OFF;
 
 -- Promo especializada
 -- El 30% de las promociones deberían tener un objetivo especializado en PromoEspecializada
+SET IDENTITY_INSERT PromoEspecializada ON;
 INSERT INTO PromoEspecializada (id, promoId, productoId, categoriaId, marcaId) VALUES
 	(1, 35, NULL, NULL, 1),      -- Coca-Cola Lovers: Solo marca Coca-Cola (marcaId 1)
 	(2, 36, NULL, 2, NULL),      -- Lácteos Saludables: Solo categoría Lácteos (categoriaId 2)
@@ -2225,6 +2177,7 @@ INSERT INTO PromoEspecializada (id, promoId, productoId, categoriaId, marcaId) V
 	(10, 44, NULL, NULL, 1),     -- Sprite Party: Solo marca Coca-Cola (marcaId 1, ajustado porque Sprite no está en las marcas iniciales)
 	(11, 45, NULL, 25, NULL),    -- Cereales Mañaneros: Solo categoría Cereales (categoriaId 25)
 	(12, 46, 9, NULL, 11);       -- Producto Bimbo: Producto Pan Bimbo Integral (productoId 9) + marca Bimbo (marcaId 11)
+SET IDENTITY_INSERT PromoEspecializada OFF;
 
 -- Factura tiene Promo 
 -- El 40% de esas facturas deben tener promociones
@@ -2271,3 +2224,12 @@ INSERT INTO FacturaPromo (facturaId, promoId) VALUES
     (6043, 32),  
     (6045, 12),  
     (6047, 39);  
+
+-- Inventario 
+-- No hacer inserción (se hace con el trigger)
+
+-- Historial de Cliente y Producto 
+-- No hacer inserción (se hace con el trigger)
+
+-- Producto recomendado para Cliente 
+-- No hacer inserción (se hace con el trigger)
