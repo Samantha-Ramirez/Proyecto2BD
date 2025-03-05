@@ -8,8 +8,8 @@ CREATE TRIGGER ProveedorProductoInsertarInventario
         -- Si el producto no existe: crea el registro
         IF NOT EXISTS (SELECT 1 FROM Inventario I JOIN inserted ON inserted.productoId = I.productoId)
             BEGIN 
-                INSERT INTO Inventario (id, productoId, cantidad)
-                SELECT NEXT VALUE FOR InventarioSecuencia, productoId, cantidad
+                INSERT INTO Inventario (productoId, cantidad)
+                SELECT productoId, cantidad
                 FROM inserted;
             END
         -- else: actualizar cantidad
@@ -29,15 +29,15 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaFacturaDetalle
     AS
     BEGIN
         -- Crear Factura
-        INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal)
-        SELECT NEXT VALUE FOR FacturaSecuencia, fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
+        INSERT INTO Factura (fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal)
+        SELECT fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
         FROM inserted;
 
         DECLARE @facturaId;
 
         -- Crear y copiar OrdenDetalle por completo a FacturaDetalle
-        INSERT INTO FacturaDetalle (id, facturaId, productoId, cantidad, precioPor)
-        SELECT NEXT VALUE FOR FacturaDetalleSecuencia, @facturaId, productoId, cantidad, precioPor
+        INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor)
+        SELECT @facturaId, productoId, cantidad, precioPor
         FROM inserted;
     END;
 
@@ -235,8 +235,8 @@ CREATE TRIGGER OrdenDetalleVerificarInventario
             END;
 
         -- Si hay suficiente stock
-        INSERT INTO OrdenDetalle (id, ordenId, productoId, cantidad, precioPor)
-        SELECT NEXT VALUE FOR OrdenDetalleSecuencia, id, ordenId, productoId, cantidad, precioPor
+        INSERT INTO OrdenDetalle (ordenId, productoId, cantidad, precioPor)
+        SELECT ordenId, productoId, cantidad, precioPor
         FROM inserted;
     END;
 
@@ -275,8 +275,8 @@ CREATE TRIGGER FacturaDetalleVerificarInventario
         END;
 
         -- Si hay suficiente stock
-        INSERT INTO FacturaDetalle (id, facturaId, productoId, cantidad, precioPor)
-        SELECT id, facturaId, productoId, cantidad, precioPor
+        INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor)
+        SELECT facturaId, productoId, cantidad, precioPor
         FROM inserted;
     END;
 
