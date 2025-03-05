@@ -1,53 +1,48 @@
 -- Pais
 CREATE TABLE Pais (
-    id INT,
-    nombre VARCHAR(50) NOT NULL,
-    PRIMARY KEY(id)
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    nombre VARCHAR(50) NOT NULL
 );
 
 -- Estado
 CREATE TABLE Estado (
-    id INT,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     paisId INT,
-    FOREIGN KEY(paisId) REFERENCES Pais(id),
-    PRIMARY KEY(id)
+    FOREIGN KEY(paisId) REFERENCES Pais(id)
 );
 
 -- Ciudad
 CREATE TABLE Ciudad (
-    id INT,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     estadoId INT,
-    FOREIGN KEY(estadoId) REFERENCES Estado(id),
-    PRIMARY KEY(id)
+    FOREIGN KEY(estadoId) REFERENCES Estado(id)
 );
 
 -- Sucursal
 CREATE TABLE Sucursal (
-    id INT,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     direccion VARCHAR(50),
     telefono VARCHAR(50),
     horaAbrir INT CHECK (horaAbrir >= 0 AND horaAbrir <= 23),
     horaCerrar INT CHECK (horaCerrar >= 0 AND horaCerrar <= 23),
     ciudadId INT,
-    FOREIGN KEY(ciudadId) REFERENCES Ciudad(id),
-    PRIMARY KEY(id)
+    FOREIGN KEY(ciudadId) REFERENCES Ciudad(id)
 );
 
 -- Cargo
 CREATE TABLE Cargo (
-    id INT,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    descripcion TEXT, -- TOFIX: VARCHAR(50)
-    salarioBasePorHora DECIMAL(10,2) CHECK (salarioBasePorHora >= 0),
-    PRIMARY KEY(id)
+    descripcion TEXT,
+    salarioBasePorHora DECIMAL(10,2) CHECK (salarioBasePorHora >= 0)
 );
 
 -- Empleado
 CREATE TABLE Empleado (
-    id INT,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     CI VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50),
@@ -63,27 +58,26 @@ CREATE TABLE Empleado (
     cantidadDiasTrabajoPorSemana INT CHECK (cantidadDiasTrabajoPorSemana >= 1 AND cantidadDiasTrabajoPorSemana <= 7),
     FOREIGN KEY(cargoId) REFERENCES Cargo(id),
     FOREIGN KEY(empleadoSupervisorId) REFERENCES Empleado(id),
-    FOREIGN KEY(sucursalId) REFERENCES Sucursal(id),
-    PRIMARY KEY(id)
+    FOREIGN KEY(sucursalId) REFERENCES Sucursal(id)
 );
 
 -- Marca
 CREATE TABLE Marca (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     descripcion VARCHAR(50)
 );
 
 -- Categoria
 CREATE TABLE Categoria (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     descripcion VARCHAR(50)
 );
 
 -- Producto
 CREATE TABLE Producto (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     codigoBarra VARCHAR(50) NOT NULL,
     descripcion VARCHAR(50),
@@ -98,11 +92,10 @@ CREATE TABLE Producto (
 
 -- Inventario 
 CREATE TABLE Inventario (
-    id INT,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     productoId INT,
     cantidad INT CHECK (cantidad >= 0),
-    FOREIGN KEY(productoId) REFERENCES Producto(id),
-    PRIMARY KEY(id)
+    FOREIGN KEY(productoId) REFERENCES Producto(id)
 );
 
 -- Producto recomendado para Producto
@@ -110,15 +103,15 @@ CREATE TABLE ProductoRecomendadoParaProducto (
     productoId INT NOT NULL,
     productoRecomendadoId INT NOT NULL,
     mensaje VARCHAR(50),
-    PRIMARY KEY (productoId, productoRecomendadoId),
     FOREIGN KEY (productoId) REFERENCES Producto(id),
-    FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id)
+    FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id),
+    PRIMARY KEY (productoId, productoRecomendadoId)
 );
 
 -- Cliente
 CREATE TABLE Cliente (
-    id INT PRIMARY KEY,
-    CI VARCHAR(20) NOT NULL,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
+    CI VARCHAR(20) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     correo VARCHAR(50) NOT NULL,
@@ -129,7 +122,7 @@ CREATE TABLE Cliente (
 
 -- Cliente tiene Direccion
 CREATE TABLE ClienteDireccion (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     clienteId INT NOT NULL,
     tipoDireccion VARCHAR(50) NOT NULL CHECK (tipoDireccion IN ('Facturación', 'Envío')),
     dirLinea1 VARCHAR(50) NOT NULL,
@@ -144,9 +137,9 @@ CREATE TABLE ProductoRecomendadoParaCliente (
     productoRecomendadoId INT NOT NULL,
     fechaRecomendacion DATETIME NOT NULL,
     mensaje VARCHAR(50),
-    PRIMARY KEY (clienteId, productoRecomendadoId, fechaRecomendacion),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
-    FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id)
+    FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id),
+    PRIMARY KEY (clienteId, productoRecomendadoId, fechaRecomendacion)
 );
 
 -- Historial de Cliente y Producto
@@ -155,9 +148,9 @@ CREATE TABLE HistorialClienteProducto (
     productoId INT NOT NULL,
     fecha DATETIME NOT NULL,
     tipoAccion VARCHAR(50) NOT NULL CHECK (tipoAccion IN ('Búsqueda', 'Carrito', 'Compra')),
-    PRIMARY KEY (clienteId, productoId, fecha),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
-    FOREIGN KEY (productoId) REFERENCES Producto(id)
+    FOREIGN KEY (productoId) REFERENCES Producto(id),
+    PRIMARY KEY (clienteId, productoId, fecha)
 );
 
 -- Carrito
@@ -167,40 +160,38 @@ CREATE TABLE Carrito (
     fechaAgregado DATETIME NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad >= 0),
     precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
-    PRIMARY KEY (clienteId, productoId),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
-    FOREIGN KEY (productoId) REFERENCES Producto(id)
+    FOREIGN KEY (productoId) REFERENCES Producto(id),
+    PRIMARY KEY (clienteId, productoId)
 );
 
 -- Proveedor
 CREATE TABLE Proveedor (
-    id INT,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     RIF VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     contacto VARCHAR(50),
     telefono VARCHAR(50),
     correo VARCHAR(50),
     ciudadId INT,
-    FOREIGN KEY(ciudadId) REFERENCES Ciudad(id),
-    PRIMARY KEY(id)
+    FOREIGN KEY(ciudadId) REFERENCES Ciudad(id)
 );
 
 -- Proveedor provee Producto 
 CREATE TABLE ProveedorProducto (
-    id INT,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     proveedorId INT,
     productoId INT,
     fechaCompra DATE,
     precioPor DECIMAL(10,2) CHECK (precioPor >= 0),
     cantidad INT CHECK (cantidad >= 0),
     FOREIGN KEY(proveedorId) REFERENCES Proveedor(id),
-    FOREIGN KEY(productoId) REFERENCES Producto(id),
-    PRIMARY KEY(id)
+    FOREIGN KEY(productoId) REFERENCES Producto(id)
 );
 
 -- Factura
 CREATE TABLE Factura (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     fechaEmision DATE,
     clienteId INT,
     subTotal DECIMAL(10,2) CHECK (subTotal >= 0),
@@ -213,7 +204,7 @@ CREATE TABLE Factura (
 
 -- Detalle de factura
 CREATE TABLE FacturaDetalle (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     facturaId INT,
     productoId INT, 
     cantidad INT CHECK (cantidad >= 0),
@@ -224,7 +215,7 @@ CREATE TABLE FacturaDetalle (
 
 -- Tipo de envio
 CREATE TABLE TipoEnvio (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombreEnvio VARCHAR(50) NOT NULL,
     tiempoEstimadoEntrega INT NOT NULL CHECK (tiempoEstimadoEntrega >= 0),
     costoEnvio DECIMAL(10, 2) NOT NULL CHECK (costoEnvio >= 0)
@@ -232,7 +223,7 @@ CREATE TABLE TipoEnvio (
 
 -- Orden online 
 CREATE TABLE OrdenOnline (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     clienteId INT,
     nroOrden INT CHECK (nroOrden >= 0),
     fechaCreacion DATE,
@@ -245,7 +236,7 @@ CREATE TABLE OrdenOnline (
 
 -- Detalle de orden 
 CREATE TABLE OrdenDetalle (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     ordenId INT,
     productoId INT,
     cantidad INT CHECK (cantidad >= 0),
@@ -259,22 +250,22 @@ CREATE TABLE VentaFisica (
     facturaId INT,
     sucursalId INT, 
     empleadoId INT, 
-	PRIMARY KEY (facturaId, sucursalId, empleadoId),
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
     FOREIGN KEY (sucursalId) REFERENCES Sucursal(id),
-    FOREIGN KEY (empleadoId) REFERENCES Empleado(id)
+    FOREIGN KEY (empleadoId) REFERENCES Empleado(id),
+    PRIMARY KEY (facturaId, sucursalId, empleadoId)
 );
 
 -- Forma de pago
 CREATE TABLE FormaPago (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    descripcion TEXT -- TOFIX: VARCHAR(50) 
+    descripcion TEXT
 );
 
 -- Pago
 CREATE TABLE Pago (
-    facturaId INT PRIMARY KEY,
+    facturaId INT IDENTITY(1, 1) PRIMARY KEY,
     nroTransaccion VARCHAR(50),
     metodoPagoId INT,
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
@@ -283,7 +274,7 @@ CREATE TABLE Pago (
 
 -- Promo
 CREATE TABLE Promo (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     slogan VARCHAR(50),
     codigo VARCHAR(50),
@@ -296,7 +287,7 @@ CREATE TABLE Promo (
 
 -- Promo especializada
 CREATE TABLE PromoEspecializada (
-    id INT PRIMARY KEY,
+    id INT IDENTITY(1, 1) PRIMARY KEY,
     promoId INT,
     productoId INT,
     categoriaId INT, 
@@ -311,7 +302,7 @@ CREATE TABLE PromoEspecializada (
 CREATE TABLE FacturaPromo (
     facturaId INT,
     promoId INT,
-    PRIMARY KEY (facturaId, promoId),
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
     FOREIGN KEY (promoId) REFERENCES Promo(id),
+    PRIMARY KEY (facturaId, promoId)
 );
