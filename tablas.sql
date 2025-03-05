@@ -40,7 +40,7 @@ CREATE TABLE Sucursal (
 CREATE TABLE Cargo (
     id INT,
     nombre VARCHAR(50) NOT NULL,
-    descripcion TEXT,
+    descripcion TEXT, -- TOFIX: VARCHAR(50)
     salarioBasePorHora DECIMAL(10,2) CHECK (salarioBasePorHora >= 0),
     PRIMARY KEY(id)
 );
@@ -51,7 +51,7 @@ CREATE TABLE Empleado (
     CI VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50),
-    sexo CHAR(1) CHECK (sexo IN ('M', 'F')),
+    sexo VARCHAR(1) CHECK (sexo IN ('M', 'F')), 
     direccionCorta VARCHAR(50),
     cargoId INT,
     empleadoSupervisorId INT,
@@ -105,7 +105,7 @@ CREATE TABLE Inventario (
     PRIMARY KEY(id)
 );
 
--- ProductoRecomendadoParaProducto
+-- Producto recomendado para Producto
 CREATE TABLE ProductoRecomendadoParaProducto (
     productoId INT NOT NULL,
     productoRecomendadoId INT NOT NULL,
@@ -127,7 +127,7 @@ CREATE TABLE Cliente (
     fechaRegistro DATETIME NOT NULL
 );
 
--- ClienteDirección
+-- Cliente tiene Direccion
 CREATE TABLE ClienteDireccion (
     id INT PRIMARY KEY,
     clienteId INT NOT NULL,
@@ -138,19 +138,18 @@ CREATE TABLE ClienteDireccion (
     FOREIGN KEY (ciudadId) REFERENCES Ciudad(id)
 );
 
--- ProductoRecomendadoParaCliente
+-- Producto recomendado para Cliente
 CREATE TABLE ProductoRecomendadoParaCliente (
     clienteId INT NOT NULL,
     productoRecomendadoId INT NOT NULL,
     fechaRecomendacion DATETIME NOT NULL,
     mensaje VARCHAR(50),
-    PRIMARY KEY (clienteId, productoRecomendadoId),
+    PRIMARY KEY (clienteId, productoRecomendadoId), -- TOFIX fechaRecomendacion tambien es PK
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id)
 );
 
-
--- HistorialClienteProducto
+-- Historial de Cliente y Producto
 CREATE TABLE HistorialClienteProducto (
     clienteId INT NOT NULL,
     productoId INT NOT NULL,
@@ -168,7 +167,7 @@ CREATE TABLE Carrito (
     fechaAgregado DATETIME NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad >= 0),
     precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
-    PRIMARY KEY (clienteId, productoId, fechaAgregado),
+    PRIMARY KEY (clienteId, productoId, fechaAgregado), -- TOFIX: fechaAgregado no es PK
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
@@ -223,15 +222,16 @@ CREATE TABLE FacturaDetalle (
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
 
--- Factura promocion 
+-- Factura tiene Promo 
 CREATE TABLE FacturaPromo (
     facturaId INT,
     promoId INT,
     PRIMARY KEY (facturaId, promoId),
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
+    -- TOFIX: promoId es FK
 );
 
--- TipoEnvio
+-- Tipo de envio
 CREATE TABLE TipoEnvio (
     id INT PRIMARY KEY,
     nombreEnvio VARCHAR(50) NOT NULL,
@@ -252,7 +252,7 @@ CREATE TABLE OrdenOnline (
     FOREIGN KEY (facturaId) REFERENCES Factura(id)
 );
 
--- Detalles de orden 
+-- Detalle de orden 
 CREATE TABLE OrdenDetalle (
     id INT PRIMARY KEY,
     ordenId INT,
@@ -290,7 +290,7 @@ CREATE TABLE Pago (
     FOREIGN KEY (metodoPagoId) REFERENCES FormaPago(id)
 );
 
--- Promocion
+-- Promo
 CREATE TABLE Promo (
     id INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
@@ -303,7 +303,7 @@ CREATE TABLE Promo (
     tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Fisica', 'Ambos'))
 );
 
--- Promocion especializada
+-- Promo especializada
 CREATE TABLE PromoEspecializada (
     id INT PRIMARY KEY,
     promoId INT,
