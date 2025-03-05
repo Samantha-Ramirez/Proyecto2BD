@@ -1582,3 +1582,84 @@ INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) 
 -- Cliente 25 tiene 2 productos en el carrito
 (25, 43, '2023-10-25', 1, 2.00),
 (25, 44, '2023-10-25', 1, 3.80);
+
+INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES
+-- Recomendaciones para el Cliente 1
+(1, 1, '2023-10-01', 'Recomendado por compras anteriores'),
+(1, 2, '2023-10-01', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 2
+(2, 3, '2023-10-02', 'Recomendado por compras anteriores'),
+(2, 4, '2023-10-02', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 3
+(3, 5, '2023-10-03', 'Recomendado por compras anteriores'),
+(3, 6, '2023-10-03', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 4
+(4, 7, '2023-10-04', 'Recomendado por compras anteriores'),
+(4, 8, '2023-10-04', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 5
+(5, 9, '2023-10-05', 'Recomendado por compras anteriores'),
+(5, 10, '2023-10-05', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 6
+(6, 11, '2023-10-06', 'Recomendado por compras anteriores'),
+(6, 12, '2023-10-06', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 7
+(7, 13, '2023-10-07', 'Recomendado por compras anteriores'),
+(7, 14, '2023-10-07', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 8
+(8, 15, '2023-10-08', 'Recomendado por compras anteriores'),
+(8, 16, '2023-10-08', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 9
+(9, 17, '2023-10-09', 'Recomendado por compras anteriores'),
+(9, 18, '2023-10-09', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 10
+(10, 19, '2023-10-10', 'Recomendado por compras anteriores'),
+(10, 20, '2023-10-10', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 11
+(11, 21, '2023-10-11', 'Recomendado por compras anteriores'),
+(11, 22, '2023-10-11', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 12
+(12, 23, '2023-10-12', 'Recomendado por compras anteriores'),
+(12, 24, '2023-10-12', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 13
+(13, 25, '2023-10-13', 'Recomendado por compras anteriores'),
+(13, 26, '2023-10-13', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 14
+(14, 27, '2023-10-14', 'Recomendado por compras anteriores'),
+(14, 28, '2023-10-14', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 15
+(15, 29, '2023-10-15', 'Recomendado por compras anteriores'),
+(15, 30, '2023-10-15', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 16
+(16, 31, '2023-10-16', 'Recomendado por compras anteriores'),
+(16, 32, '2023-10-16', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 17
+(17, 33, '2023-10-17', 'Recomendado por compras anteriores'),
+(17, 34, '2023-10-17', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 18
+(18, 35, '2023-10-18', 'Recomendado por compras anteriores'),
+(18, 36, '2023-10-18', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 19
+(19, 37, '2023-10-19', 'Recomendado por compras anteriores'),
+(19, 38, '2023-10-19', 'Recomendado por compras anteriores'),
+
+-- Recomendaciones para el Cliente 20
+(20, 39, '2023-10-20', 'Recomendado por compras anteriores'),
+(20, 40, '2023-10-20', 'Recomendado por compras anteriores');
