@@ -1,5 +1,3 @@
---Inserts 
-
 -- Pais
 INSERT INTO Pais (id, nombre) VALUES
     (1, 'Mexico'),
@@ -261,6 +259,7 @@ INSERT INTO Empleado (id, CI, nombre, apellido, sexo, direccionCorta, cargoId, e
     (44, 'V-00009999', 'Martín', 'Rey', 'M', 'Av. Libertador, Apartamento 46', 5, 2, 23, '2026-04-19', 790.00, 10, 18, 5);    
 
 -- Marca
+-- Mínimo 40 marcas
 INSERT INTO Marca (id, nombre, descripcion) VALUES
     (1, 'Coca-Cola', 'Bebidas gaseosas y refrescos'),
     (2, 'Pepsi', 'Bebidas y snacks'),
@@ -304,6 +303,7 @@ INSERT INTO Marca (id, nombre, descripcion) VALUES
     (40, 'Gillete', 'Productos de afeitado y cuidado personal');
 
 -- Categoria
+-- Mínimo 30 categorías
 INSERT INTO Categoria (id, nombre, descripcion) VALUES
     (1, 'Bebidas', 'Refrescos, aguas, jugos y bebidas alcoholicas'),
     (2, 'Lacteos', 'Leche, yogures, quesos y derivados'),
@@ -337,9 +337,9 @@ INSERT INTO Categoria (id, nombre, descripcion) VALUES
     (30, 'Comida Preparada', 'Platos preparados y listos para consumir'),
     (31, 'Electronica', 'Equipos pequenos para hogar');
 
---Producto
-INSERT INTO Producto (id, nombre, codigoBarra, descripcion, tipoPrecio, precioPor, esExentoIVA, categoriaId, marcaId)
-VALUES
+-- Producto
+-- Mínimo 200 productos
+INSERT INTO Producto (id, nombre, codigoBarra, descripcion, tipoPrecio, precioPor, esExentoIVA, categoriaId, marcaId) VALUES
     (1, 'Coca-Cola Original', '1234567890123', 'Refresco de cola', 'PorUnidad', 1.50, 0, 1, 1),
     (2, 'Pepsi Max', '2345678901234', 'Refresco de cola sin azúcar', 'PorUnidad', 1.40, 0, 1, 2),
     (3, 'Nescafé Clásico', '3456789012345', 'Café instantáneo', 'PorUnidad', 4.00, 0, 18, 3),
@@ -571,13 +571,12 @@ VALUES
     (229, 'Juego de Cubiertos Gama', '1100998877665', 'Juego de cubiertos de acero inoxidable', 'PorUnidad', 70.00, 0, 14, 21),  -- Gama
     (230, 'Batidora de Pie Gama', '0099887766554', 'Batidora de pie con bowl de acero', 'PorUnidad', 110.00, 0, 15, 21);  -- Gama
 
-
 -- Inventario 
 -- No hacer inserción (se hace con el trigger)
 
 -- Cliente
-INSERT INTO Cliente(id, CI, nombre, apellido, correo, sexo, fechaNacimiento, fechaRegistro) 
-VALUES
+-- Mínimo 100 clientes
+INSERT INTO Cliente(id, CI, nombre, apellido, correo, sexo, fechaNacimiento, fechaRegistro) VALUES
     (1, '20853641', 'Juan', 'Perez', 'juan.perez@example.com', 'M', '1990-01-01', '2023-01-01'),
     (2, '17803572', 'Maria', 'Gomez', 'maria.gomez@example.com', 'F', '1985-05-15', '2023-01-01'),
     (3, '15869022', 'Carlos', 'Lopez', 'carlos.lopez@example.com', 'M', '1978-07-22', '2023-01-01'),
@@ -678,7 +677,9 @@ VALUES
     (98, '25874105', 'Jorge', 'Cordova', 'jorge.cordova@example.com', 'M', '1982-05-05', '2023-01-01'),
     (99, '25869022', 'Diana', 'Vega', 'diana.vega@example.com', 'F', '1991-07-09', '2023-01-01'),
     (100, '21990112', 'Roberto', 'Aguirre', 'roberto.aguirre@example.com', 'M', '1984-09-13', '2023-01-01');
-	
+
+-- Cliente tiene Direccion
+-- 80% de los clientes debe tener mínimo 1 dirección, el resto mínimo 2
 INSERT INTO ClienteDireccion(id, clienteId, tipoDireccion, dirLinea1, ciudadId) VALUES
 	-- 80 clientes con una sola dirección (Facturación o Envío)
 	(1, 1, 'Facturación', 'Calle 123', 1),
@@ -804,7 +805,8 @@ INSERT INTO ClienteDireccion(id, clienteId, tipoDireccion, dirLinea1, ciudadId) 
 	(119, 100, 'Facturación', 'Calle 949', 26),
 	(120, 100, 'Envío', 'Avenida 950', 29);
 
---Carrito
+-- Carrito
+-- El 25% de los clientes tienen productos en su carrito
 INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) VALUES
 	-- Cliente 1 tiene 2 productos en el carrito
 	(1, 1, '2023-10-01', 2, 3.00),
@@ -900,7 +902,8 @@ INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) 
 	(25, 43, '2023-10-25', 1, 2.00),
 	(25, 44, '2023-10-25', 1, 3.80);
 
---Productor recomendado para cliente 
+-- Producto recomendado para Cliente 
+-- Las recomendaciones deben ser al menos 40
 INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES
 	-- Recomendaciones para el Cliente 1
 	(1, 1, '2023-10-01', 'Recomendado por compras anteriores'),
@@ -982,6 +985,11 @@ INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fe
 	(20, 39, '2023-10-20', 'Recomendado por compras anteriores'),
 	(20, 40, '2023-10-20', 'Recomendado por compras anteriores');
 
+-- ProductoRecomendadoParaProducto  
+-- No hacer inserción (se hace con el trigger)
+
+-- HistorialClienteProducto   
+-- No hacer inserción (se hace con el trigger)
 
 -- Proveedor
 -- Mínimo 40 proveedores
@@ -1081,7 +1089,9 @@ INSERT INTO ProveedorProducto (id, proveedorId, productoId, fechaCompra, precioP
     (49, 9, 4, '2023-10-02', 1.40, 190),
     (50, 10, 5, '2023-10-02', 1.20, 240);
 
---Factura 
+-- Factura 
+-- Mínimo 100 facturas/compras con al menos 3 productos en cada una (la diferencia entre compras online y física no debe ser mucha)
+-- Los ID de factura tanto de OrdenOnline como de VentaFisica tienen que ser diferentes, para poder diferenciar de dónde proviene cierta factura, si a una venta física o a una orden online
 INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal) VALUES
     -- OrdenOnline (5001-5040): 40 facturas, 16 con promociones (40% de 40 = 16)
     (5001, '2024-01-15', 1, 179.97, 17.997, 16.0, 25.915, 187.888),  -- 3 productos, con promo
@@ -1184,9 +1194,11 @@ INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal,
     (6057, '2024-03-08', 97, 165.00, 16.500, 16.0, 23.760, 172.260),  -- con promo
     (6058, '2024-03-09', 98, 225.00, 0.0, 16.0, 36.000, 261.000),
     (6059, '2024-03-10', 99, 240.00, 0.0, 16.0, 38.400, 278.400),
-    (6060, '2024-03-11', 100, 255.00, 0.0, 16.0, 40.800, 295.800);
+    (6060, '2024-03-11', 100, 255.00, 0.0, 16.0, 40.800, 295.800),
+    (6061, '2024-01-16', 1, 179.97, 17.997, 16.0, 25.915, 187.888),
+    (6062, '2024-01-17', 2, 136.50, 0.0, 16.0, 21.840, 158.340);
 
-	--FacturaDetalle
+-- Detalle de factura
 INSERT INTO FacturaDetalle (id, facturaId, productoId, cantidad, precioPor) VALUES
 	-- Factura 5001 (subTotal: 179.97, con promoción)
 	(1, 5001, 1, 40, 1.50),    -- Coca-Cola Original: 40 * 1.50 = 60.00
@@ -1868,7 +1880,6 @@ INSERT INTO FacturaDetalle (id, facturaId, productoId, cantidad, precioPor) VALU
 	(377, 6060, 19, 1, 15.00);  -- Queso Cheddar: 1 * 15.00 = 15.00
 	-- Total: 127.50 + 120.00 + 15.00 = 262.50 (muy cercano a 255.00)
 
-
 -- Tipo de envio
 INSERT INTO TipoEnvio (id, nombreEnvio, tiempoEstimadoEntrega, costoEnvio) VALUES
     (1, 'Envio inmediato', 1, 50.00),
@@ -1920,7 +1931,7 @@ INSERT INTO OrdenOnline (id, clienteId, nroOrden, fechaCreacion, tipoEnvioId, fa
     (39, 39, 39, '2025-02-15', 1, 5039),
     (40, 40, 40, '2025-02-20', 3, 5040);
 
--- Detalles de orden 
+-- Detalle de orden 
 INSERT INTO OrdenDetalle (id, ordenId, productoId, cantidad, precioPor) VALUES
     (1, 1, 100, 2, 29.99),
     (2, 2, 101, 1, 45.50),
@@ -2039,7 +2050,6 @@ INSERT INTO FormaPago (id, nombre, descripcion) VALUES
     (9, 'Cashea', 'Pago fraccionado en varias cuotas mensuales'),
     (10, 'Zelle', 'Pago a traves de aplicaciones moviles de bancos americanos');
 
-
 -- Pago 
 INSERT INTO Pago (facturaId, nroTransaccion, metodoPagoId) VALUES
     -- OrdenOnline (5001-5040): 40 facturas
@@ -2145,7 +2155,8 @@ INSERT INTO Pago (facturaId, nroTransaccion, metodoPagoId) VALUES
     (6059, 'TX-20240310-0099', 4),  -- Transferencia bancaria
     (6060, 'TX-20240311-0100', 10); -- Zelle
 
-
+-- Promo
+-- Mínimo 40 promociones (variadas en tipo de descuento y promoción)
 INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fechaInicio, fechaFin, tipoPromocion) VALUES
 	-- Promociones estándar (28 ajustadas)
 	(1, 'Descuento de Inicio', '¡Comienza con ahorros!', 'START10', 'Porcentaje', 10.0, '2024-01-01', '2024-01-31', 'Online'),      -- Ajustado: Cubre facturas online de enero (5001, 5003)
@@ -2199,6 +2210,8 @@ INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fe
 	(45, 'Cereales Mañaneros', '¡Desayuno con energía!', 'CEREAL15', 'Porcentaje', 10.0, '2024-01-01', '2024-03-31', 'Fisica'), -- Ajustado: Fechas
 	(46, 'Producto Bimbo', '¡Pan fresco siempre!', 'BIMBO10', 'Fijo', 10.0, '2024-04-01', '2024-06-30', 'Online');              -- Ajustado: Fechas para facturas online
 
+-- Promo especializada
+-- El 30% de las promociones deberían tener un objetivo especializado en PromoEspecializada
 INSERT INTO PromoEspecializada (id, promoId, productoId, categoriaId, marcaId) VALUES
 	(1, 35, NULL, NULL, 1),      -- Coca-Cola Lovers: Solo marca Coca-Cola (marcaId 1)
 	(2, 36, NULL, 2, NULL),      -- Lácteos Saludables: Solo categoría Lácteos (categoriaId 2)
@@ -2213,7 +2226,8 @@ INSERT INTO PromoEspecializada (id, promoId, productoId, categoriaId, marcaId) V
 	(11, 45, NULL, 25, NULL),    -- Cereales Mañaneros: Solo categoría Cereales (categoriaId 25)
 	(12, 46, 9, NULL, 11);       -- Producto Bimbo: Producto Pan Bimbo Integral (productoId 9) + marca Bimbo (marcaId 11)
 
--- Factura promocion 
+-- Factura tiene Promo 
+-- El 40% de esas facturas deben tener promociones
 INSERT INTO FacturaPromo (facturaId, promoId) VALUES
     -- OrdenOnline
     (5001, 1),   
