@@ -149,6 +149,7 @@ CREATE TABLE ProductoRecomendadoParaCliente (
     FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id)
 );
 
+
 -- HistorialClienteProducto
 CREATE TABLE HistorialClienteProducto (
     clienteId INT NOT NULL,
@@ -277,7 +278,7 @@ CREATE TABLE VentaFisica (
 CREATE TABLE FormaPago (
     id INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    descripcion VARCHAR(50)
+    descripcion VARCHAR(100)
 );
 
 -- Pago
