@@ -222,15 +222,6 @@ CREATE TABLE FacturaDetalle (
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
 
--- Factura tiene Promo 
-CREATE TABLE FacturaPromo (
-    facturaId INT,
-    promoId INT,
-    PRIMARY KEY (facturaId, promoId),
-    FOREIGN KEY (facturaId) REFERENCES Factura(id),
-    FOREIGN KEY (promoId) REFERENCES Promo(id),
-);
-
 -- Tipo de envio
 CREATE TABLE TipoEnvio (
     id INT PRIMARY KEY,
@@ -314,4 +305,13 @@ CREATE TABLE PromoEspecializada (
     FOREIGN KEY (productoId) REFERENCES Producto(id),
     FOREIGN KEY (categoriaId) REFERENCES Categoria(id),
     FOREIGN KEY (marcaId) REFERENCES Marca(id)
+);
+
+-- Factura tiene Promo 
+CREATE TABLE FacturaPromo (
+    facturaId INT,
+    promoId INT,
+    PRIMARY KEY (facturaId, promoId),
+    FOREIGN KEY (facturaId) REFERENCES Factura(id),
+    FOREIGN KEY (promoId) REFERENCES Promo(id),
 );

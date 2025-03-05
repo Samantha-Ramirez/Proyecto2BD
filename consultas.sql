@@ -150,7 +150,7 @@ MasVendidos AS (
 
 SELECT
     P.*, -- Informacion de los productos
-    (TP.total/TI.total) * 100 AS porcentajeIngresos -- Contribución en porcentaje al total de ingresos
+    (TP.total * 100/TI.total) AS porcentajeIngresos -- Contribución en porcentaje al total de ingresos
 FROM Producto P
 JOIN MasVendidos MV ON MV.productoId = P.id
 JOIN TotalIngresosPorProducto TP ON TP.productoId = P.id
@@ -169,4 +169,4 @@ SELECT
 FROM Producto P
 JOIN Categoria C ON C.id = P.categoriaId -- Categoria del producto
 JOIN Inventario I ON I.productoId = P.id -- Inventario del producto
-WHERE C.nombre = 'Chucherías' -- Categoria Chucherías 
+WHERE C.nombre = 'Chucherías' -- Categoria Chucherías (id=6)
