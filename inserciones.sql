@@ -923,6 +923,48 @@ INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) 
 
 -- ProductoRecomendadoParaProducto  
 -- Las recomendaciones deben ser al menos 40
+INSERT INTO ProductoRecomendadoParaProducto(productoId, productoRecomendadoId, mensaje) VALUES
+(1, 2, 'Si te gusta Coca-Cola, prueba Pepsi Max.'),
+(3, 25, 'Disfruta tu café instantáneo con café molido para filtro.'),
+(4, 5, 'Combina la leche entera con yogur natural.'),
+(6, 32, 'Prueba los cereales de maíz con cereales de avena.'),
+(7, 31, 'Salsa de tomate con salsa barbacoa para más sabor.'),
+(8, 33, 'Galletas Oreo con galletas de avena y miel.'),
+(9, 22, 'Pan integral con pan de centeno.'),
+(10, 16, 'Cerveza Quilmes con agua mineral.'),
+(11, 21, 'Manzanas frescas con bananas.'),
+(12, 20, 'Carne de res con filete de pollo.'),
+(13, 19, 'Queso Gouda con queso cheddar.'),
+(14, 29, 'Pescado fresco con atún en lata.'),
+(15, 30, 'Arroz integral con ravioles de ricotta.'),
+(16, 17, 'Agua mineral con jugo de naranja.'),
+(18, 24, 'Yogur de frutas con helado de vainilla.'),
+(23, 43, 'Papas fritas clásicas con papas fritas sabor queso.'),
+(26, 46, 'Aceite de oliva con aceite de girasol.'),
+(27, 47, 'Sal marina con pimienta negra.'),
+(28, 48, 'Chocolate amargo con chocolate con leche.'),
+(34, 74, 'Maíz en lata con choclo en conserva.'),
+(35, 75, 'Huevos frescos con huevos de codorniz.'),
+(36, 76, 'Leche deslactosada con leche de soja.'),
+(37, 77, 'Yogur griego con yogur de durazno.'),
+(38, 78, 'Jugo de manzana con jugo de zanahoria.'),
+(39, 79, 'Queso mozzarella con queso ricotta.'),
+(40, 80, 'Pechuga de pavo con chuleta de cordero.'),
+(41, 61, 'Naranjas frescas con uvas.'),
+(42, 62, 'Pan de trigo con pan de avena.'),
+(44, 64, 'Helado de chocolate con helado de fresa.'),
+(45, 215, 'Afeitadora Gillette con secador de pelo Oster.'),
+(52, 54, 'Detergente líquido Ariel con limpiador multiuso Cif.'),
+(53, 56, 'Jabón en barra Dove con jabón facial Dove.'),
+(55, 57, 'Jabón en polvo Ariel con suavizante.'),
+(58, 138, 'Jugo de piña con jugo de maracuyá.'),
+(59, 99, 'Queso parmesano con queso azul.'),
+(60, 100, 'Lomo de cerdo con costillas de cerdo.'),
+(63, 103, 'Papas fritas light con papas fritas sabor jalapeño.'),
+(65, 85, 'Té negro con té de manzanilla.'),
+(66, 86, 'Aceite de coco con aceite de maíz.'),
+(67, 87, 'Orégano con comino.'),
+(68, 88, 'Chocolate blanco con chocolate con almendras.');
 
 -- Proveedor
 -- Mínimo 40 proveedores
