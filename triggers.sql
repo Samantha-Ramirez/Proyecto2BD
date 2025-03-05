@@ -74,12 +74,12 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
         DECLARE @productoId INT, @clienteId INT, @cantidadComprasProducto INT;
         SELECT 
             @clienteId = F.clienteId,
-            @productoId = inserted.productoId,
+            @productoId = inserted.productoId
         FROM inserted
         JOIN Factura F ON F.id = inserted.facturaId;
 
         SELECT 
-            @cantidadComprasProducto = COUNT(*),
+            @cantidadComprasProducto = COUNT(*)
         FROM FacturaDetalle FD
         JOIN Factura F ON F.id = FD.facturaId
         WHERE FD.productoId = @productoId
@@ -91,25 +91,27 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
             END;
         
         DECLARE @productoRecomendadoId INT, @mensaje VARCHAR(50);
-        DECLARE cursor CURSOR FOR
+        DECLARE cur CURSOR FOR
         -- Buscar productos recomendados para ese producto 
-        SELECT productoRecomendadoId, mensaje
+        SELECT 
+            productoRecomendadoId, 
+            mensaje
         FROM ProductoRecomendadoParaProducto
         WHERE productoId = @productoId;
 
-        OPEN cursor;
-        FETCH NEXT FROM cursor INTO @productoRecomendadoId, @mensaje;
+        OPEN cur;
+        FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
         WHILE @@FETCH_STATUS = 0
         BEGIN
             -- Recomendarlos al cliente
             INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje)
             VALUES (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
 
-            FETCH NEXT FROM cursor INTO @productoRecomendadoId, @mensaje;
+            FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
         END;
 
-        CLOSE cursor;
-        DEALLOCATE cursor; 
+        CLOSE cur;
+        DEALLOCATE cur; 
     END;
 
 -- ProductoRecomendadoParaCliente 
@@ -122,14 +124,15 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
         DECLARE @productoId INT, @clienteId INT, @cantidadBusquedasProducto INT;
         SELECT 
             @clienteId = clienteId,
-            @productoId = productoId,
+            @productoId = productoId
         FROM inserted;
 
         SELECT 
-            @cantidadBusquedasProducto = COUNT(*),
+            @cantidadBusquedasProducto = COUNT(*)
         FROM HistorialClienteProducto 
-        WHERE productoId = @productoId
-        AND clienteId = @clienteId;
+        WHERE productoId = @
+        AND clienteId = @clienteId
+        AND tipoAccion = 'Búsqueda';
 
         IF (@cantidadBusquedasProducto <= 3)
             BEGIN
@@ -137,25 +140,27 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
             END;
         
         DECLARE @productoRecomendadoId INT, @mensaje VARCHAR(50);
-        DECLARE cursor CURSOR FOR
+        DECLARE cur CURSOR FOR
         -- Buscar productos recomendados para ese producto 
-        SELECT productoRecomendadoId, mensaje
+        SELECT 
+            productoRecomendadoId, 
+            mensaje
         FROM ProductoRecomendadoParaProducto
         WHERE productoId = @productoId;
 
-        OPEN cursor;
-        FETCH NEXT FROM cursor INTO @productoRecomendadoId, @mensaje;
+        OPEN cur;
+        FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
         WHILE @@FETCH_STATUS = 0
         BEGIN
             -- Recomendarlos al cliente
             INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje)
             VALUES (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
 
-            FETCH NEXT FROM cursor INTO @productoRecomendadoId, @mensaje;
+            FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
         END;
 
-        CLOSE cursor;
-        DEALLOCATE cursor; 
+        CLOSE cur;
+        DEALLOCATE cur; 
     END;
 
 -- Trigger B
