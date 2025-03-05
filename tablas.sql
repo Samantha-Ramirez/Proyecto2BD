@@ -144,7 +144,7 @@ CREATE TABLE ProductoRecomendadoParaCliente (
     productoRecomendadoId INT NOT NULL,
     fechaRecomendacion DATETIME NOT NULL,
     mensaje VARCHAR(50),
-    PRIMARY KEY (clienteId, productoRecomendadoId), -- TOFIX fechaRecomendacion tambien es PK
+    PRIMARY KEY (clienteId, productoRecomendadoId, fechaRecomendacion),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id)
 );
@@ -167,7 +167,7 @@ CREATE TABLE Carrito (
     fechaAgregado DATETIME NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad >= 0),
     precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
-    PRIMARY KEY (clienteId, productoId, fechaAgregado), -- TOFIX: fechaAgregado no es PK
+    PRIMARY KEY (clienteId, productoId),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
@@ -228,7 +228,7 @@ CREATE TABLE FacturaPromo (
     promoId INT,
     PRIMARY KEY (facturaId, promoId),
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
-    -- TOFIX: promoId es FK
+    FOREIGN KEY (promoId) REFERENCES Promo(id),
 );
 
 -- Tipo de envio
@@ -278,7 +278,7 @@ CREATE TABLE VentaFisica (
 CREATE TABLE FormaPago (
     id INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    descripcion VARCHAR(100)
+    descripcion TEXT -- TOFIX: VARCHAR(50) 
 );
 
 -- Pago
