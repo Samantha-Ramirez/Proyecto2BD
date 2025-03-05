@@ -278,7 +278,7 @@ CREATE TABLE VentaFisica (
 CREATE TABLE FormaPago (
     id INT PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    descripcion TEXT -- TOFIX: VARCHAR(50)
+    descripcion TEXT -- TOFIX: VARCHAR(50) 
 );
 
 -- Pago
