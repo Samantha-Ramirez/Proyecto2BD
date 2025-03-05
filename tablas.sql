@@ -65,14 +65,14 @@ CREATE TABLE Empleado (
 CREATE TABLE Marca (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    descripcion VARCHAR(50)
+    descripcion TEXT
 );
 
 -- Categoria
 CREATE TABLE Categoria (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    descripcion VARCHAR(50)
+    descripcion TEXT
 );
 
 -- Producto
@@ -80,7 +80,7 @@ CREATE TABLE Producto (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     codigoBarra VARCHAR(50) NOT NULL,
-    descripcion VARCHAR(50),
+    descripcion TEXT,
     tipoPrecio VARCHAR(50) CHECK (tipoPrecio IN ('PorUnidad', 'PorPesoKg')),
     precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
     esExentoIVA BIT NOT NULL,
@@ -102,7 +102,7 @@ CREATE TABLE Inventario (
 CREATE TABLE ProductoRecomendadoParaProducto (
     productoId INT NOT NULL,
     productoRecomendadoId INT NOT NULL,
-    mensaje VARCHAR(50),
+    mensaje TEXT,
     FOREIGN KEY (productoId) REFERENCES Producto(id),
     FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id),
     PRIMARY KEY (productoId, productoRecomendadoId)
