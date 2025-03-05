@@ -1487,3 +1487,98 @@ INSERT INTO ClienteDireccion(id, clienteId, tipoDireccion, dirLinea1, ciudadId) 
 (118, 99, 'Envío', 'Avenida 948', 23),
 (119, 100, 'Facturación', 'Calle 949', 26),
 (120, 100, 'Envío', 'Avenida 950', 29);
+
+INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) VALUES
+-- Cliente 1 tiene 2 productos en el carrito
+(1, 1, '2023-10-01', 2, 3.00),
+(1, 2, '2023-10-01', 1, 1.40),
+
+-- Cliente 2 tiene 1 producto en el carrito
+(2, 3, '2023-10-02', 1, 4.00),
+
+-- Cliente 3 tiene 3 productos en el carrito
+(3, 4, '2023-10-03', 1, 1.20),
+(3, 5, '2023-10-03', 2, 1.60),
+(3, 6, '2023-10-03', 1, 3.50),
+
+-- Cliente 4 tiene 1 producto en el carrito
+(4, 7, '2023-10-04', 1, 2.00),
+
+-- Cliente 5 tiene 2 productos en el carrito
+(5, 8, '2023-10-05', 1, 2.50),
+(5, 9, '2023-10-05', 1, 1.80),
+
+-- Cliente 6 tiene 1 producto en el carrito
+(6, 10, '2023-10-06', 1, 2.00),
+
+-- Cliente 7 tiene 3 productos en el carrito
+(7, 11, '2023-10-07', 2, 6.00),
+(7, 12, '2023-10-07', 1, 8.50),
+(7, 13, '2023-10-07', 1, 12.00),
+
+-- Cliente 8 tiene 1 producto en el carrito
+(8, 14, '2023-10-08', 1, 10.00),
+
+-- Cliente 9 tiene 2 productos en el carrito
+(9, 15, '2023-10-09', 1, 2.50),
+(9, 16, '2023-10-09', 1, 0.90),
+
+-- Cliente 10 tiene 1 producto en el carrito
+(10, 17, '2023-10-10', 1, 2.20),
+
+-- Cliente 11 tiene 3 productos en el carrito
+(11, 18, '2023-10-11', 1, 1.00),
+(11, 19, '2023-10-11', 1, 15.00),
+(11, 20, '2023-10-11', 1, 7.00),
+
+-- Cliente 12 tiene 1 producto en el carrito
+(12, 21, '2023-10-12', 1, 2.50),
+
+-- Cliente 13 tiene 2 productos en el carrito
+(13, 22, '2023-10-13', 1, 2.00),
+(13, 23, '2023-10-13', 1, 1.80),
+
+-- Cliente 14 tiene 1 producto en el carrito
+(14, 24, '2023-10-14', 1, 3.50),
+
+-- Cliente 15 tiene 3 productos en el carrito
+(15, 25, '2023-10-15', 1, 5.00),
+(15, 26, '2023-10-15', 1, 8.00),
+(15, 27, '2023-10-15', 1, 1.50),
+
+-- Cliente 16 tiene 1 producto en el carrito
+(16, 28, '2023-10-16', 1, 4.00),
+
+-- Cliente 17 tiene 2 productos en el carrito
+(17, 29, '2023-10-17', 1, 2.20),
+(17, 30, '2023-10-17', 1, 3.00),
+
+-- Cliente 18 tiene 1 producto en el carrito
+(18, 31, '2023-10-18', 1, 2.80),
+
+-- Cliente 19 tiene 3 productos en el carrito
+(19, 32, '2023-10-19', 1, 3.20),
+(19, 33, '2023-10-19', 1, 2.00),
+(19, 34, '2023-10-19', 1, 1.50),
+
+-- Cliente 20 tiene 1 producto en el carrito
+(20, 35, '2023-10-20', 1, 2.00),
+
+-- Cliente 21 tiene 2 productos en el carrito
+(21, 36, '2023-10-21', 1, 1.50),
+(21, 37, '2023-10-21', 1, 1.20),
+
+-- Cliente 22 tiene 1 producto en el carrito
+(22, 38, '2023-10-22', 1, 2.00),
+
+-- Cliente 23 tiene 3 productos en el carrito
+(23, 39, '2023-10-23', 1, 10.00),
+(23, 40, '2023-10-23', 1, 9.00),
+(23, 41, '2023-10-23', 1, 2.00),
+
+-- Cliente 24 tiene 1 producto en el carrito
+(24, 42, '2023-10-24', 1, 1.80),
+
+-- Cliente 25 tiene 2 productos en el carrito
+(25, 43, '2023-10-25', 1, 2.00),
+(25, 44, '2023-10-25', 1, 3.80);
