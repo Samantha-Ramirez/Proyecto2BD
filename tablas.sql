@@ -9,7 +9,7 @@ CREATE TABLE Estado (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     paisId INT,
-    FOREIGN KEY(paisId) REFERENCES Pais(id)
+    FOREIGN KEY (paisId) REFERENCES Pais(id)
 );
 
 -- Ciudad
@@ -17,7 +17,7 @@ CREATE TABLE Ciudad (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     estadoId INT,
-    FOREIGN KEY(estadoId) REFERENCES Estado(id)
+    FOREIGN KEY (estadoId) REFERENCES Estado(id)
 );
 
 -- Sucursal
@@ -29,7 +29,7 @@ CREATE TABLE Sucursal (
     horaAbrir INT CHECK (horaAbrir >= 0 AND horaAbrir <= 23),
     horaCerrar INT CHECK (horaCerrar >= 0 AND horaCerrar <= 23),
     ciudadId INT,
-    FOREIGN KEY(ciudadId) REFERENCES Ciudad(id)
+    FOREIGN KEY (ciudadId) REFERENCES Ciudad(id)
 );
 
 -- Cargo
@@ -56,9 +56,9 @@ CREATE TABLE Empleado (
     horaInicio INT CHECK (horaInicio >= 0 AND horaInicio <= 23),
     horaFin INT CHECK (horaFin >= 0 AND horaFin <= 23),
     cantidadDiasTrabajoPorSemana INT CHECK (cantidadDiasTrabajoPorSemana >= 1 AND cantidadDiasTrabajoPorSemana <= 7),
-    FOREIGN KEY(cargoId) REFERENCES Cargo(id),
-    FOREIGN KEY(empleadoSupervisorId) REFERENCES Empleado(id),
-    FOREIGN KEY(sucursalId) REFERENCES Sucursal(id)
+    FOREIGN KEY (cargoId) REFERENCES Cargo(id),
+    FOREIGN KEY (empleadoSupervisorId) REFERENCES Empleado(id),
+    FOREIGN KEY (sucursalId) REFERENCES Sucursal(id)
 );
 
 -- Marca
@@ -81,8 +81,8 @@ CREATE TABLE Producto (
     nombre VARCHAR(50) NOT NULL,
     codigoBarra VARCHAR(50) NOT NULL,
     descripcion VARCHAR(50),
-    tipoPrecio VARCHAR(50) NOT NULL CHECK (tipoPrecio IN ('PorUnidad', 'PorPesoKg')),
-    precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
+    tipoPrecio VARCHAR(50) CHECK (tipoPrecio IN ('PorUnidad', 'PorPesoKg')),
+    precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
     esExentoIVA BIT NOT NULL,
     categoriaId INT NOT NULL,
     marcaId INT NOT NULL,
@@ -95,7 +95,7 @@ CREATE TABLE Inventario (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     productoId INT,
     cantidad INT CHECK (cantidad >= 0),
-    FOREIGN KEY(productoId) REFERENCES Producto(id)
+    FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
 
 -- Producto recomendado para Producto
@@ -115,7 +115,7 @@ CREATE TABLE Cliente (
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
     correo VARCHAR(50) NOT NULL,
-    sexo VARCHAR(1) NOT NULL CHECK (sexo IN ('M', 'F')),
+    sexo VARCHAR(1) CHECK (sexo IN ('M', 'F')),
     fechaNacimiento DATE NOT NULL,
     fechaRegistro DATETIME NOT NULL
 );
@@ -124,7 +124,7 @@ CREATE TABLE Cliente (
 CREATE TABLE ClienteDireccion (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     clienteId INT NOT NULL,
-    tipoDireccion VARCHAR(50) NOT NULL CHECK (tipoDireccion IN ('Facturación', 'Envío')),
+    tipoDireccion VARCHAR(50) CHECK (tipoDireccion IN ('Facturación', 'Envío')),
     dirLinea1 VARCHAR(50) NOT NULL,
     ciudadId INT NOT NULL,
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
@@ -147,7 +147,7 @@ CREATE TABLE HistorialClienteProducto (
     clienteId INT NOT NULL,
     productoId INT NOT NULL,
     fecha DATETIME NOT NULL,
-    tipoAccion VARCHAR(50) NOT NULL CHECK (tipoAccion IN ('Búsqueda', 'Carrito', 'Compra')),
+    tipoAccion VARCHAR(50) CHECK (tipoAccion IN ('Búsqueda', 'Carrito', 'Compra')),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id),
     PRIMARY KEY (clienteId, productoId, fecha)
@@ -158,8 +158,8 @@ CREATE TABLE Carrito (
     clienteId INT NOT NULL,
     productoId INT NOT NULL,
     fechaAgregado DATETIME NOT NULL,
-    cantidad INT NOT NULL CHECK (cantidad >= 0),
-    precioPor DECIMAL(10, 2) NOT NULL CHECK (precioPor >= 0),
+    cantidad INT CHECK (cantidad >= 0),
+    precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id),
     PRIMARY KEY (clienteId, productoId)
@@ -174,7 +174,7 @@ CREATE TABLE Proveedor (
     telefono VARCHAR(50),
     correo VARCHAR(50),
     ciudadId INT,
-    FOREIGN KEY(ciudadId) REFERENCES Ciudad(id)
+    FOREIGN KEY (ciudadId) REFERENCES Ciudad(id)
 );
 
 -- Proveedor provee Producto 
@@ -185,8 +185,8 @@ CREATE TABLE ProveedorProducto (
     fechaCompra DATE,
     precioPor DECIMAL(10,2) CHECK (precioPor >= 0),
     cantidad INT CHECK (cantidad >= 0),
-    FOREIGN KEY(proveedorId) REFERENCES Proveedor(id),
-    FOREIGN KEY(productoId) REFERENCES Producto(id)
+    FOREIGN KEY (proveedorId) REFERENCES Proveedor(id),
+    FOREIGN KEY (productoId) REFERENCES Producto(id)
 );
 
 -- Factura
@@ -217,8 +217,8 @@ CREATE TABLE FacturaDetalle (
 CREATE TABLE TipoEnvio (
     id INT IDENTITY(1, 1) PRIMARY KEY,
     nombreEnvio VARCHAR(50) NOT NULL,
-    tiempoEstimadoEntrega INT NOT NULL CHECK (tiempoEstimadoEntrega >= 0),
-    costoEnvio DECIMAL(10, 2) NOT NULL CHECK (costoEnvio >= 0)
+    tiempoEstimadoEntrega INT CHECK (tiempoEstimadoEntrega >= 0),
+    costoEnvio DECIMAL(10, 2) CHECK (costoEnvio >= 0)
 );
 
 -- Orden online 
