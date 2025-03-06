@@ -1,111 +1,103 @@
 --Funciones
--- Función para obtener el costo de envío
-CREATE FUNCTION dbo.costoEnvio(@ordenId INT)
+--Costo Envio
+IF EXISTS (SELECT * FROM sys.objects WHERE name = 'costoEnvio' AND type IN ('FN', 'IF', 'TF'))
+    DROP FUNCTION dbo.costoEnvio;
+GO
+
+CREATE FUNCTION dbo.costoEnvio(@facturaId INT)
 RETURNS DECIMAL(10, 2)
 AS
 BEGIN
     DECLARE @costo DECIMAL(10, 2);
     
     SELECT @costo = te.costoEnvio
-    FROM OrdenOnline oo 
+    FROM OrdenOnline oo
     JOIN TipoEnvio te ON oo.tipoEnvioId = te.id
-    WHERE oo.id = @ordenId;
+    WHERE oo.facturaId = @facturaId;
     
     RETURN ISNULL(@costo, 0);
 END;
 GO
 
--- Función para obtener el subtotal
+--Subtotal
+IF EXISTS (SELECT * FROM sys.objects WHERE name = 'subTotal' AND type IN ('FN', 'IF', 'TF'))
+    DROP FUNCTION dbo.subTotal;
+GO
+
 CREATE FUNCTION dbo.subTotal(@facturaId INT)
 RETURNS DECIMAL(10, 2)
 AS
 BEGIN
     DECLARE @subtotal DECIMAL(10, 2);
     
-    SELECT @subtotal = f.subTotal
-    FROM Factura f
-    WHERE f.id = @facturaId;
+    SELECT @subtotal = SUM(fd.cantidad * fd.precioPor)
+    FROM FacturaDetalle fd
+    WHERE fd.facturaId = @facturaId;
     
     RETURN ISNULL(@subtotal, 0);
 END;
 GO
 
--- Función para obtener el monto de descuento total
+--Monto descuento 
+IF EXISTS (SELECT * FROM sys.objects WHERE name = 'montoDescuentoTotal' AND type IN ('FN', 'IF', 'TF'))
+    DROP FUNCTION dbo.montoDescuentoTotal;
+GO
+
 CREATE FUNCTION dbo.montoDescuentoTotal(@facturaId INT)
 RETURNS DECIMAL(10, 2)
 AS
 BEGIN
-    DECLARE @descuento DECIMAL(10, 2);
+    DECLARE @descuentoTotal DECIMAL(10, 2);
     
-    SELECT @descuento = f.montoDescuentoTotal
-    FROM Factura f
-    WHERE f.id = @facturaId;
+    SELECT @descuentoTotal = SUM(
+        CASE 
+            WHEN p.tipoDescuento = 'Fijo' THEN p.valorDescuento
+            WHEN p.tipoDescuento = 'Porcentaje' THEN (dbo.subTotal(@facturaId) * p.valorDescuento / 100)
+            ELSE 0
+        END
+    )
+    FROM FacturaPromo fp
+    JOIN Promo p ON fp.promoId = p.id
+    WHERE fp.facturaId = @facturaId;
     
-    RETURN ISNULL(@descuento, 0);
+    RETURN ISNULL(@descuentoTotal, 0);
 END;
 GO
 
--- Función para obtener el monto IVA
+-- Monto IVA
+IF EXISTS (SELECT * FROM sys.objects WHERE name = 'montoIVA' AND type IN ('FN', 'IF', 'TF'))
+    DROP FUNCTION dbo.montoIVA;
+GO
+
 CREATE FUNCTION dbo.montoIVA(@facturaId INT)
 RETURNS DECIMAL(10, 2)
 AS
 BEGIN
     DECLARE @iva DECIMAL(10, 2);
+    DECLARE @porcentajeIVA DECIMAL(10, 2);
     
-    SELECT @iva = f.montoIVA
+    SELECT @porcentajeIVA = f.porcentajeIVA
     FROM Factura f
     WHERE f.id = @facturaId;
+    
+    SELECT @iva = SUM(
+        CASE 
+            WHEN p.esExentoIVA = 0 THEN (fd.cantidad * fd.precioPor)
+            ELSE 0
+        END
+    ) * (@porcentajeIVA / 100)
+    FROM FacturaDetalle fd
+    JOIN Producto p ON fd.productoId = p.id
+    WHERE fd.facturaId = @facturaId;
+    
+    DECLARE @subtotalSinDescuento DECIMAL(10, 2) = dbo.subTotal(@facturaId);
+    DECLARE @descuentoTotal DECIMAL(10, 2) = dbo.montoDescuentoTotal(@facturaId);
+    IF @subtotalSinDescuento > 0
+        SET @iva = @iva * (1 - @descuentoTotal / @subtotalSinDescuento);
     
     RETURN ISNULL(@iva, 0);
 END;
 GO
 
--- Función para obtener el monto total
-CREATE FUNCTION dbo.montoTotal(@facturaId INT, @ordenId INT)
-RETURNS DECIMAL(10, 2)
-AS
-BEGIN
-    DECLARE @total DECIMAL(10, 2);
-    
-    SET @total = (dbo.subTotal(@facturaId) - dbo.montoDescuentoTotal(@facturaId)) 
-                  + dbo.montoIVA(@facturaId) 
-                  + dbo.costoEnvio(@ordenId);
-    
-    RETURN @total;
-END;
-GO
+--Promocion valida 
 
--- Función para verificar si una promoción es válida
-CREATE FUNCTION dbo.esPromoValida(@facturaId INT)
-RETURNS BIT
-AS
-BEGIN
-    DECLARE @esValida BIT = 0;
-    DECLARE @fechaFin DATE;
-    DECLARE @tipoPromocion VARCHAR(50);
-    DECLARE @tipoCompra VARCHAR(50);
-
-    -- Obtener la fechaFin y el tipoPromocion de la factura relacionada con la promo
-    SELECT TOP 1 @fechaFin = p.fechaFin, @tipoPromocion = p.tipoPromocion
-    FROM FacturaPromo fp
-    JOIN Promo p ON fp.promoId = p.id
-    WHERE fp.facturaId = @facturaId;
-
-    -- Obtener el tipo de compra (online o física)
-    SELECT @tipoCompra = CASE 
-                             WHEN oo.id IS NOT NULL THEN 'Online' 
-                             ELSE 'Fisica' 
-                         END
-    FROM Factura f
-    LEFT JOIN OrdenOnline oo ON f.id = oo.facturaId
-    WHERE f.id = @facturaId;
-
-    -- Verificar si la promo es válida
-    IF (GETDATE() <= @fechaFin) AND (@tipoPromocion = @tipoCompra)
-    BEGIN
-        SET @esValida = 1; -- TRUE
-    END
-
-    RETURN @esValida;
-END;
-GO
