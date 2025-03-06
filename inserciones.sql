@@ -924,47 +924,47 @@ INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) 
 -- ProductoRecomendadoParaProducto  
 -- Las recomendaciones deben ser al menos 40
 INSERT INTO ProductoRecomendadoParaProducto(productoId, productoRecomendadoId, mensaje) VALUES
-(1, 2, 'Si te gusta Coca-Cola, prueba Pepsi Max.'),
-(3, 25, 'Disfruta tu café instantáneo con café molido para filtro.'),
-(4, 5, 'Combina la leche entera con yogur natural.'),
-(6, 32, 'Prueba los cereales de maíz con cereales de avena.'),
-(7, 31, 'Salsa de tomate con salsa barbacoa para más sabor.'),
-(8, 33, 'Galletas Oreo con galletas de avena y miel.'),
-(9, 22, 'Pan integral con pan de centeno.'),
-(10, 16, 'Cerveza Quilmes con agua mineral.'),
-(11, 21, 'Manzanas frescas con bananas.'),
-(12, 20, 'Carne de res con filete de pollo.'),
-(13, 19, 'Queso Gouda con queso cheddar.'),
-(14, 29, 'Pescado fresco con atún en lata.'),
-(15, 30, 'Arroz integral con ravioles de ricotta.'),
-(16, 17, 'Agua mineral con jugo de naranja.'),
-(18, 24, 'Yogur de frutas con helado de vainilla.'),
-(23, 43, 'Papas fritas clásicas con papas fritas sabor queso.'),
-(26, 46, 'Aceite de oliva con aceite de girasol.'),
-(27, 47, 'Sal marina con pimienta negra.'),
-(28, 48, 'Chocolate amargo con chocolate con leche.'),
-(34, 74, 'Maíz en lata con choclo en conserva.'),
-(35, 75, 'Huevos frescos con huevos de codorniz.'),
-(36, 76, 'Leche deslactosada con leche de soja.'),
-(37, 77, 'Yogur griego con yogur de durazno.'),
-(38, 78, 'Jugo de manzana con jugo de zanahoria.'),
-(39, 79, 'Queso mozzarella con queso ricotta.'),
-(40, 80, 'Pechuga de pavo con chuleta de cordero.'),
-(41, 61, 'Naranjas frescas con uvas.'),
-(42, 62, 'Pan de trigo con pan de avena.'),
-(44, 64, 'Helado de chocolate con helado de fresa.'),
-(45, 215, 'Afeitadora Gillette con secador de pelo Oster.'),
-(52, 54, 'Detergente líquido Ariel con limpiador multiuso Cif.'),
-(53, 56, 'Jabón en barra Dove con jabón facial Dove.'),
-(55, 57, 'Jabón en polvo Ariel con suavizante.'),
-(58, 138, 'Jugo de piña con jugo de maracuyá.'),
-(59, 99, 'Queso parmesano con queso azul.'),
-(60, 100, 'Lomo de cerdo con costillas de cerdo.'),
-(63, 103, 'Papas fritas light con papas fritas sabor jalapeño.'),
-(65, 85, 'Té negro con té de manzanilla.'),
-(66, 86, 'Aceite de coco con aceite de maíz.'),
-(67, 87, 'Orégano con comino.'),
-(68, 88, 'Chocolate blanco con chocolate con almendras.');
+    (1, 2, 'Si te gusta Coca-Cola, prueba Pepsi Max.'),
+    (3, 25, 'Disfruta tu café instantáneo con café molido para filtro.'),
+    (4, 5, 'Combina la leche entera con yogur natural.'),
+    (6, 32, 'Prueba los cereales de maíz con cereales de avena.'),
+    (7, 31, 'Salsa de tomate con salsa barbacoa para más sabor.'),
+    (8, 33, 'Galletas Oreo con galletas de avena y miel.'),
+    (9, 22, 'Pan integral con pan de centeno.'),
+    (10, 16, 'Cerveza Quilmes con agua mineral.'),
+    (11, 21, 'Manzanas frescas con bananas.'),
+    (12, 20, 'Carne de res con filete de pollo.'),
+    (13, 19, 'Queso Gouda con queso cheddar.'),
+    (14, 29, 'Pescado fresco con atún en lata.'),
+    (15, 30, 'Arroz integral con ravioles de ricotta.'),
+    (16, 17, 'Agua mineral con jugo de naranja.'),
+    (18, 24, 'Yogur de frutas con helado de vainilla.'),
+    (23, 43, 'Papas fritas clásicas con papas fritas sabor queso.'),
+    (26, 46, 'Aceite de oliva con aceite de girasol.'),
+    (27, 47, 'Sal marina con pimienta negra.'),
+    (28, 48, 'Chocolate amargo con chocolate con leche.'),
+    (34, 74, 'Maíz en lata con choclo en conserva.'),
+    (35, 75, 'Huevos frescos con huevos de codorniz.'),
+    (36, 76, 'Leche deslactosada con leche de soja.'),
+    (37, 77, 'Yogur griego con yogur de durazno.'),
+    (38, 78, 'Jugo de manzana con jugo de zanahoria.'),
+    (39, 79, 'Queso mozzarella con queso ricotta.'),
+    (40, 80, 'Pechuga de pavo con chuleta de cordero.'),
+    (41, 61, 'Naranjas frescas con uvas.'),
+    (42, 62, 'Pan de trigo con pan de avena.'),
+    (44, 64, 'Helado de chocolate con helado de fresa.'),
+    (45, 215, 'Afeitadora Gillette con secador de pelo Oster.'),
+    (52, 54, 'Detergente líquido Ariel con limpiador multiuso Cif.'),
+    (53, 56, 'Jabón en barra Dove con jabón facial Dove.'),
+    (55, 57, 'Jabón en polvo Ariel con suavizante.'),
+    (58, 138, 'Jugo de piña con jugo de maracuyá.'),
+    (59, 99, 'Queso parmesano con queso azul.'),
+    (60, 100, 'Lomo de cerdo con costillas de cerdo.'),
+    (63, 103, 'Papas fritas light con papas fritas sabor jalapeño.'),
+    (65, 85, 'Té negro con té de manzanilla.'),
+    (66, 86, 'Aceite de coco con aceite de maíz.'),
+    (67, 87, 'Orégano con comino.'),
+    (68, 88, 'Chocolate blanco con chocolate con almendras.');
 
 -- Proveedor
 -- Mínimo 40 proveedores
@@ -1176,7 +1176,9 @@ INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal,
     (6059, '2024-03-10', 99, 240.00, 0.0, 16.0, 38.400, 278.400),
     (6060, '2024-03-11', 100, 255.00, 0.0, 16.0, 40.800, 295.800),
     (6061, '2024-01-16', 1, 179.97, 17.997, 16.0, 25.915, 187.888),
-    (6062, '2024-01-17', 2, 136.50, 0.0, 16.0, 21.840, 158.340);
+    (6062, '2024-01-17', 2, 136.50, 0.0, 16.0, 21.840, 158.340),
+    (5041, '2023-06-15', 1, 345.00, 0.00, 16.00, 55.20, 400.20),  -- con promo
+    (5042, '2023-08-20', 1, 220.00, 0.00, 16.00, 35.20, 255.20);  -- con promo
 SET IDENTITY_INSERT Factura OFF;
 
 -- Detalle de factura
@@ -1859,8 +1861,17 @@ INSERT INTO FacturaDetalle (id, facturaId, productoId, cantidad, precioPor) VALU
 	-- Factura 6060 (subTotal: 255.00, sin promoción)
 	(375, 6060, 12, 15, 8.50),  -- Carne de Res: 15 * 8.50 = 127.50
 	(376, 6060, 13, 10, 12.00), -- Queso Gouda: 10 * 12.00 = 120.00
-	(377, 6060, 19, 1, 15.00);  -- Queso Cheddar: 1 * 15.00 = 15.00
+	(377, 6060, 19, 1, 15.00),  -- Queso Cheddar: 1 * 15.00 = 15.00
 	-- Total: 127.50 + 120.00 + 15.00 = 262.50 (muy cercano a 255.00)
+
+    -- Factura 5041 (subTotal: 345.00, con promoción)
+    (379, 5041, 210, 1, 90.00),
+    (380, 5041, 214, 1, 110.00),
+    (381, 5041, 217, 1, 85.00),
+    (382, 5041, 220, 1, 60.00),
+
+    -- Factura 5042 (subTotal: 220.00, con promoción)
+    (383, 5042, 214, 2, 110.00);
 SET IDENTITY_INSERT FacturaDetalle OFF;
 
 -- Tipo de envio
@@ -1915,7 +1926,9 @@ INSERT INTO OrdenOnline (id, clienteId, nroOrden, fechaCreacion, tipoEnvioId, fa
     (37, 37, 37, '2025-02-05', 3, 5037),
     (38, 38, 38, '2025-02-10', 2, 5038),
     (39, 39, 39, '2025-02-15', 1, 5039),
-    (40, 40, 40, '2025-02-20', 3, 5040);
+    (40, 40, 40, '2025-02-20', 3, 5040),
+    (41, 41, 41, '2024-06-16', 1, 5041),
+    (42, 42, 42, '2024-08-21', 1, 5042);
 SET IDENTITY_INSERT OrdenOnline OFF;
 
 -- Detalle de orden
@@ -1960,7 +1973,12 @@ INSERT INTO OrdenDetalle (id, ordenId, productoId, cantidad, precioPor) VALUES
     (37, 37, 136, 1, 38.88),
     (38, 38, 137, 5, 17.77),
     (39, 39, 138, 3, 69.99),
-    (40, 40, 139, 2, 52.50);
+    (40, 40, 139, 2, 52.50),
+    (41, 41, 210, 1, 90.00),
+    (42, 41, 214, 1, 110.00),
+    (43, 41, 217, 1, 85.00),
+    (44, 41, 220, 1, 60.00),
+    (45, 42, 214, 2, 110.00);
 SET IDENTITY_INSERT OrdenDetalle OFF;
 
 -- Venta fisica 
@@ -2152,7 +2170,7 @@ SET IDENTITY_INSERT Promo ON;
 INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fechaInicio, fechaFin, tipoPromocion) VALUES
 	-- Promociones estándar (28 ajustadas)
 	(1, 'Descuento de Inicio', '¡Comienza con ahorros!', 'START10', 'Porcentaje', 10.0, '2024-01-01', '2024-01-31', 'Online'),      -- Ajustado: Cubre facturas online de enero (5001, 5003)
-	(2, 'Verano en Gama', '¡Ahorra en verano!', 'SUMMER20', 'Fijo', 20.0, '2024-01-01', '2024-03-31', 'Fisica'),            -- Ajustado: Fechas para cubrir facturas físicas (6001-6060)
+	(2, 'Verano en Sucursal', '¡Ahorra en verano!', 'SUMMER20', 'Fijo', 20.0, '2024-01-01', '2024-03-31', 'Fisica'),            -- Ajustado: Fechas para cubrir facturas físicas (6001-6060)
 	(3, 'Compra Doble', '¡Más compras, más descuentos!', 'DOUBLE15', 'Porcentaje', 15.0, '2024-01-01', '2024-03-31', 'Ambos'),    -- Ajustado: Fechas para cubrir facturas online y físicas
 	(4, 'Fin de Semana Online', '¡Solo este fin de semana!', 'WEEKEND5', 'Fijo', 5.0, '2024-02-01', '2024-02-28', 'Online'),      -- Ajustado: Fechas para cubrir facturas online (5005, 5007)
 	(5, 'Lunes en Tienda', '¡Lunes de locura!', 'MONDAY25', 'Porcentaje', 10.0, '2024-01-01', '2024-03-31', 'Fisica'),           -- Ajustado: Fechas y valor (10% para ser coherente con facturas físicas)
@@ -2200,7 +2218,8 @@ INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fe
 	(43, 'Bebidas Refrescantes', '¡Refréscate ya!', 'DRINK20', 'Porcentaje', 10.0, '2024-04-01', '2024-06-30', 'Online'),       -- Ajustado: Fechas para facturas online
 	(44, 'Sprite Party', '¡Fiesta con Sprite!', 'SPRITE30', 'Fijo', 10.0, '2025-01-01', '2025-02-28', 'Online'),                -- Ajustado: Fechas para facturas como 5031, 5035
 	(45, 'Cereales Mañaneros', '¡Desayuno con energía!', 'CEREAL15', 'Porcentaje', 10.0, '2024-01-01', '2024-03-31', 'Fisica'), -- Ajustado: Fechas
-	(46, 'Producto Bimbo', '¡Pan fresco siempre!', 'BIMBO10', 'Fijo', 10.0, '2024-04-01', '2024-06-30', 'Online');              -- Ajustado: Fechas para facturas online
+	(46, 'Producto Bimbo', '¡Pan fresco siempre!', 'BIMBO10', 'Fijo', 10.0, '2024-04-01', '2024-06-30', 'Online'),              -- Ajustado: Fechas para facturas online
+    (47, 'Verano en Gama', 'Disfruta el verano con Gama', 'VERANO2023', 'Porcentaje', 10.00, '2023-06-01', '2025-08-31', 'Ambos');
 SET IDENTITY_INSERT Promo OFF;
 
 -- Promo especializada
@@ -2218,7 +2237,9 @@ INSERT INTO PromoEspecializada (id, promoId, productoId, categoriaId, marcaId) V
 	(9, 43, NULL, 1, NULL),      -- Bebidas Refrescantes: Solo categoría Bebidas (categoriaId 1)
 	(10, 44, NULL, NULL, 1),     -- Sprite Party: Solo marca Coca-Cola (marcaId 1, ajustado porque Sprite no está en las marcas iniciales)
 	(11, 45, NULL, 25, NULL),    -- Cereales Mañaneros: Solo categoría Cereales (categoriaId 25)
-	(12, 46, 9, NULL, 11);       -- Producto Bimbo: Producto Pan Bimbo Integral (productoId 9) + marca Bimbo (marcaId 11)
+	(12, 46, 9, NULL, 11),       -- Producto Bimbo: Producto Pan Bimbo Integral (productoId 9) + marca Bimbo (marcaId 11)
+    (13, 47, 210, NULL, NULL),
+    (14, 47, NULL, NULL, 21);
 SET IDENTITY_INSERT PromoEspecializada OFF;
 
 -- Factura tiene Promo 
@@ -2240,7 +2261,9 @@ INSERT INTO FacturaPromo (facturaId, promoId) VALUES
     (5027, 24),  
     (5031, 32), 
     (5035, 37),  
-    (5039, 40),  
+    (5039, 40), 
+    (5041, 47),
+    (5042, 47),
     -- VentaFisica 
     (6001, 2),   
     (6003, 5),   
@@ -2265,7 +2288,7 @@ INSERT INTO FacturaPromo (facturaId, promoId) VALUES
     (6041, 24),  
     (6043, 32),  
     (6045, 12),  
-    (6047, 39);  
+    (6047, 39);
 
 -- Inventario 
 -- No hacer inserción (se hace con el trigger)

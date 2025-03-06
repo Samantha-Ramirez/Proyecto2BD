@@ -24,15 +24,15 @@ CREATE TRIGGER ProveedorProductoInsertarInventario
 
 -- Factura, FacturaDetalle 
 CREATE TRIGGER OrdenDetalleInsertarFacturaFacturaDetalle
-    ON OrdenDetalle
+    ON OrdenOnline
     AFTER INSERT -- Al tener datos nuevos
     AS
     BEGIN
         DECLARE @ordenId INT, @facturaId INT;
 
-        -- Obtener OrdenOnline
+        -- Obtener ordenId
         SELECT 
-            @ordenId = inserted
+            @ordenId = id
         FROM inserted;
 
         -- Crear Factura
