@@ -3,80 +3,121 @@
 CREATE TRIGGER ProveedorProductoInsertarInventario
     ON ProveedorProducto
     AFTER INSERT -- Al tener datos nuevos
-    AS
-    BEGIN
+    AS BEGIN
         -- Si el producto no existe: crea el registro
         IF NOT EXISTS (SELECT 1 FROM Inventario I JOIN inserted ON inserted.productoId = I.productoId)
             BEGIN 
                 INSERT INTO Inventario (productoId, cantidad)
-                SELECT productoId, cantidad
-                FROM inserted;
+                    SELECT 
+                        productoId, 
+                        cantidad
+                    FROM inserted;
             END
         -- else: actualizar cantidad
         ELSE 
             BEGIN
                 UPDATE Inventario
-                SET cantidad = I.cantidad + inserted.cantidad
-                FROM Inventario I
-                JOIN inserted ON inserted.productoId = I.productoId;
+                    SET cantidad = I.cantidad + inserted.cantidad
+                    FROM Inventario I
+                    JOIN inserted ON inserted.productoId = I.productoId;
             END
     END;
+    GO
 
--- Factura, FacturaDetalle 
-CREATE TRIGGER OrdenDetalleInsertarFacturaFacturaDetalle
+-- Factura 
+CREATE TRIGGER OrdenOnlineInsertarFactura
     ON OrdenOnline
     AFTER INSERT -- Al tener datos nuevos
-    AS
-    BEGIN
-        DECLARE @ordenId INT, @facturaId INT;
+    AS BEGIN
+        DECLARE @ordenId INT, @facturaId INT, @clienteId INT, @subTotal DECIMAL(10,2), @montoDescuentoTotal DECIMAL(10,2), @porcentajeIVA DECIMAL(10,2), @montoIVA DECIMAL(10,2), @montoTotal DECIMAL(10,2);
 
-        -- Obtener ordenId
+        -- Obtener ordenId, clienteId
         SELECT 
-            @ordenId = id
+            @ordenId = id,
+            @clienteId = clienteId,
         FROM inserted;
+
+        -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
+        SET @subTotal = dbo.subTotal(@ordenId);
+        SET @montoDescuentoTotal = dbo.montoDescuentoTotal(@ordenId);
+        SET @porcentajeIVA = 16;
+        SET @montoIVA = dbo.montoIVA(@ordenId);
+        SET @montoTotal = dbo.esPmontoTotal(@ordenId);
 
         -- Crear Factura
-        INSERT INTO Factura (fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal)
-        SELECT fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
-        FROM inserted;
+        INSERT INTO Factura (fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal) VALUES 
+            (GETDATE(), @clienteId, @subTotal, @montoDescuentoTotal, @porcentajeIVA, @montoIVA, @montoTotal)
+        
+        -- Obtener facturaId
+        SELECT 
+            @facturaId = MAX(id),
+        FROM Factura;
 
-        -- Asociar OrdenOnline a la Factura
-
-        -- Crear FacturaDetalle y copiar OrdenDetalle por completo
-        INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor)
-        SELECT @facturaId, productoId, cantidad, precioPor
-        FROM inserted;
+        -- Asociar OrdenOnline y Factura
+        UPDATE OrdenOnline
+            SET facturaId = @facturaId
+            WHERE id = @ordenId;
     END;
+    GO
+
+-- FacturaDetalle
+CREATE TRIGGER OrdenDetalleInsertarFacturaDetalle
+    ON OrdenDetalle
+    AFTER INSERT -- Al tener datos nuevos
+    AS BEGIN
+        DECLARE @facturaId INT, @productoId INT, @cantidad INT, @precioPor DECIMAL(10,2);
+
+        -- Obtener facturaId, productoId, cantidad, precioPor
+        SELECT 
+            @facturaId = OO.facturaId,
+            @productoId = inserted.productoId, 
+            @cantidad = inserted.cantidad, 
+            @precioPor = inserted.precioPor
+        FROM OrdenOnline OO
+        JOIN inserted ON inserted.ordenId = OO.id;
+
+        -- Crear FacturaDetalle y copiar contenido de OrdenDetalle
+        INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES 
+            (@facturaId, @productoId, @cantidad, @precioPor)
+    END;
+    GO
 
 -- HistorialClienteProducto 
 CREATE TRIGGER CarritoInsertarHistorialClienteProducto
     ON Carrito
     AFTER INSERT -- Al agregar al carrito un producto
-    AS
-    BEGIN
+    AS BEGIN
         INSERT INTO HistorialClienteProducto (clienteId, productoId, fecha, tipoAccion)
-        SELECT clienteId, productoId, fechaAgregado, 'Carrito'
-        FROM inserted;
+            SELECT 
+                clienteId, 
+                productoId, 
+                fechaAgregado, 
+                'Carrito'
+            FROM inserted;
     END;
+    GO
 
 -- HistorialClienteProducto 
 CREATE TRIGGER FacturaDetalleInsertarHistorialClienteProducto
     ON FacturaDetalle
     AFTER INSERT -- Al comprar un producto
-    AS
-    BEGIN
+    AS BEGIN
         INSERT INTO HistorialClienteProducto (clienteId, productoId, fecha, tipoAccion)
-        SELECT F.clienteId, inserted.productoId, F.fechaEmision, 'Compra'
-        FROM inserted 
-        JOIN Factura F ON F.id = inserted.facturaId;
+            SELECT 
+                F.clienteId, 
+                inserted.productoId, 
+                F.fechaEmision, 
+                'Compra'
+            FROM inserted 
+            JOIN Factura F ON F.id = inserted.facturaId;
     END;
+    GO
 
 -- ProductoRecomendadoParaCliente 
 CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
     ON FacturaDetalle
     AFTER INSERT -- Al comprar un producto 
-    AS
-    BEGIN
+    AS BEGIN
         -- Verificar más de 3 veces
         DECLARE @productoId INT, @clienteId INT, @cantidadComprasProducto INT;
         SELECT 
@@ -111,8 +152,8 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
         WHILE @@FETCH_STATUS = 0
         BEGIN
             -- Recomendarlos al cliente
-            INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje)
-            VALUES (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
+            INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES 
+                (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
 
             FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
         END;
@@ -120,13 +161,13 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
         CLOSE cur;
         DEALLOCATE cur; 
     END;
+    GO
 
 -- ProductoRecomendadoParaCliente 
 CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
     ON HistorialClienteProducto
     AFTER INSERT -- Al buscar un producto 
-    AS
-    BEGIN
+    AS BEGIN
         -- Verificar más de 3 veces
         DECLARE @productoId INT, @clienteId INT, @cantidadBusquedasProducto INT;
         SELECT 
@@ -160,8 +201,8 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
         WHILE @@FETCH_STATUS = 0
         BEGIN
             -- Recomendarlos al cliente
-            INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje)
-            VALUES (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
+            INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES 
+                (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
 
             FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
         END;
@@ -169,26 +210,26 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
         CLOSE cur;
         DEALLOCATE cur; 
     END;
+    GO
 
 -- Trigger B
 CREATE TRIGGER ProveedorProductoActualizarProducto
     ON ProveedorProducto
     AFTER INSERT -- Al comprar un producto al proveedor
-    AS
-    BEGIN
+    AS BEGIN
         -- Actualizar el precioPor del Producto
         UPDATE Producto
-        SET precioPor = inserted.precioPor * 1.30 -- Tomar como base el precioPor el que se le compró al proveedor y sumarle un 30%
-        FROM Producto P
-        JOIN inserted ON inserted.productoId = P.id;
+            SET precioPor = inserted.precioPor * 1.30 -- Tomar como base el precioPor el que se le compró al proveedor y sumarle un 30%
+            FROM Producto P
+            JOIN inserted ON inserted.productoId = P.id;
     END;
+    GO
 
 -- Trigger C
 CREATE TRIGGER FacturaPromoVerificarValida
     ON FacturaPromo
     INSTEAD OF INSERT -- Al insertar datos
-    AS
-    BEGIN
+    AS BEGIN
         DECLARE @facturaId INT, @promoId INT, @esPromoValida BIT;
         SELECT 
             @facturaId = facturaId, 
@@ -207,18 +248,18 @@ CREATE TRIGGER FacturaPromoVerificarValida
         ELSE
             BEGIN
                 INSERT INTO FacturaPromo (facturaId, promoId)
-                SELECT facturaId, promoId
-                FROM inserted;
+                    SELECT facturaId, promoId
+                    FROM inserted;
             END;     
     END;
+    GO
 
 -- Trigger D
 -- Evitar compras de productos agotados en órdenes online
 CREATE TRIGGER OrdenDetalleVerificarInventario
     ON OrdenDetalle 
     INSTEAD OF INSERT -- Antes de insertar un producto en una orden
-    AS
-    BEGIN
+    AS BEGIN
         DECLARE @productoId INT, @cantidadSolicitada INT, @cantidadStock INT;
 
         -- Cantidad solicitada del producto
@@ -248,16 +289,20 @@ CREATE TRIGGER OrdenDetalleVerificarInventario
 
         -- Si hay suficiente stock
         INSERT INTO OrdenDetalle (ordenId, productoId, cantidad, precioPor)
-        SELECT ordenId, productoId, cantidad, precioPor
-        FROM inserted;
+            SELECT 
+                ordenId, 
+                productoId, 
+                cantidad, 
+                precioPor
+            FROM inserted;
     END;
+    GO
 
 -- Evitar compras de productos agotados en órdenes físicas
 CREATE TRIGGER FacturaDetalleVerificarInventario
     ON FacturaDetalle
     INSTEAD OF INSERT -- Antes de insertar un producto en una orden
-    AS
-    BEGIN
+    AS BEGIN
         DECLARE @productoId INT, @cantidadSolicitada INT, @cantidadStock INT;
 
         -- Cantidad solicitada del producto
@@ -288,19 +333,24 @@ CREATE TRIGGER FacturaDetalleVerificarInventario
 
         -- Si hay suficiente stock
         INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor)
-        SELECT facturaId, productoId, cantidad, precioPor
-        FROM inserted;
+            SELECT 
+                facturaId, 
+                productoId, 
+                cantidad, 
+                precioPor
+            FROM inserted;
     END;
+    GO
 
 -- Trigger E
 CREATE TRIGGER FacturaDetalleActualizarInventario
     ON FacturaDetalle
     AFTER DELETE -- Al eliminar un registro (devolución)
-    AS
-    BEGIN
+    AS BEGIN
         -- Reintegrar automáticamente la cantidad al inventario del producto correspondiente
         UPDATE Inventario
-        SET cantidad = I.cantidad + deleted.cantidad
-        FROM Inventario I
-        JOIN deleted ON deleted.productoId = I.productoId;
+            SET cantidad = I.cantidad + deleted.cantidad
+            FROM Inventario I
+            JOIN deleted ON deleted.productoId = I.productoId;
     END;
+    GO
