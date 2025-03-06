@@ -28,14 +28,21 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaFacturaDetalle
     AFTER INSERT -- Al tener datos nuevos
     AS
     BEGIN
+        DECLARE @ordenId INT, @facturaId INT;
+
+        -- Obtener OrdenOnline
+        SELECT 
+            @ordenId = inserted
+        FROM inserted;
+
         -- Crear Factura
         INSERT INTO Factura (fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal)
         SELECT fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
         FROM inserted;
 
-        DECLARE @facturaId;
+        -- Asociar OrdenOnline a la Factura
 
-        -- Crear y copiar OrdenDetalle por completo a FacturaDetalle
+        -- Crear FacturaDetalle y copiar OrdenDetalle por completo
         INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor)
         SELECT @facturaId, productoId, cantidad, precioPor
         FROM inserted;
