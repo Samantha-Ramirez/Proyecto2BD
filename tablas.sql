@@ -265,7 +265,7 @@ CREATE TABLE FormaPago (
 
 -- Pago
 CREATE TABLE Pago (
-    facturaId INT IDENTITY(1, 1) PRIMARY KEY,
+    facturaId INT PRIMARY KEY,
     nroTransaccion VARCHAR(50),
     metodoPagoId INT,
     FOREIGN KEY (facturaId) REFERENCES Factura(id),
