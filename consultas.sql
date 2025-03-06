@@ -38,8 +38,7 @@ LEFT JOIN Promo Pr ON Pr.id = FP.promoId -- Promo de la promo especializada
 LEFT JOIN PromoEspecializada PE ON (PE.productoId = P.id OR PE.categoriaId = P.categoriaId OR PE.marcaId = M.id) -- Promo especializada del producto, de su categoria o de su marca
 WHERE M.nombre = 'Gama' -- Marca Gama (id=21)
 AND MONTH(F.fechaEmision) IN (6, 8) -- Compra en junio y agosto
-AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa
-AND Pr.fechaFin <= GETDATE() -- Promo activa
+AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa (id=2)
 
 -- Consulta G
 -- Ordenes válidas (condición b)
