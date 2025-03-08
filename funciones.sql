@@ -1,103 +1,128 @@
---Funciones
---Costo Envio
-IF EXISTS (SELECT * FROM sys.objects WHERE name = 'costoEnvio' AND type IN ('FN', 'IF', 'TF'))
-    DROP FUNCTION dbo.costoEnvio;
-GO
-
-CREATE FUNCTION dbo.costoEnvio(@facturaId INT)
-RETURNS DECIMAL(10, 2)
+--Costo envio 
+CREATE FUNCTION dbo.GetCostoEnvio (@ordenId INT)
+RETURNS DECIMAL(10,2)
 AS
 BEGIN
-    DECLARE @costo DECIMAL(10, 2);
-    
-    SELECT @costo = te.costoEnvio
+    DECLARE @costoEnvio DECIMAL(10,2);
+    SELECT @costoEnvio = te.costoEnvio
     FROM OrdenOnline oo
     JOIN TipoEnvio te ON oo.tipoEnvioId = te.id
-    WHERE oo.facturaId = @facturaId;
-    
-    RETURN ISNULL(@costo, 0);
+    WHERE oo.id = @ordenId;
+    RETURN ISNULL(@costoEnvio, 0);
 END;
-GO
+
 
 --Subtotal
-IF EXISTS (SELECT * FROM sys.objects WHERE name = 'subTotal' AND type IN ('FN', 'IF', 'TF'))
-    DROP FUNCTION dbo.subTotal;
-GO
-
-CREATE FUNCTION dbo.subTotal(@facturaId INT)
-RETURNS DECIMAL(10, 2)
+CREATE FUNCTION dbo.GetSubTotal (@ordenId INT)
+RETURNS DECIMAL(10,2)
 AS
 BEGIN
-    DECLARE @subtotal DECIMAL(10, 2);
-    
-    SELECT @subtotal = SUM(fd.cantidad * fd.precioPor)
-    FROM FacturaDetalle fd
-    WHERE fd.facturaId = @facturaId;
-    
-    RETURN ISNULL(@subtotal, 0);
+    DECLARE @subTotal DECIMAL(10,2);
+    SELECT @subTotal = SUM(od.cantidad * od.precioPor)
+    FROM OrdenOnline oo
+    JOIN OrdenDetalle od ON oo.id = od.ordenId
+    WHERE oo.id = @ordenId;
+    RETURN ISNULL(@subTotal, 0);
 END;
-GO
 
---Monto descuento 
-IF EXISTS (SELECT * FROM sys.objects WHERE name = 'montoDescuentoTotal' AND type IN ('FN', 'IF', 'TF'))
-    DROP FUNCTION dbo.montoDescuentoTotal;
-GO
-
-CREATE FUNCTION dbo.montoDescuentoTotal(@facturaId INT)
-RETURNS DECIMAL(10, 2)
+--Descuento
+CREATE FUNCTION dbo.GetMontoDescuentoTotal (@ordenId INT)
+RETURNS DECIMAL(10,2)
 AS
 BEGIN
-    DECLARE @descuentoTotal DECIMAL(10, 2);
-    
-    SELECT @descuentoTotal = SUM(
+    DECLARE @montoDescuentoTotal DECIMAL(10,2);
+    SELECT @montoDescuentoTotal = SUM(
         CASE 
+            WHEN p.tipoDescuento = 'Porcentaje' THEN (od.cantidad * od.precioPor * p.valorDescuento / 100)
             WHEN p.tipoDescuento = 'Fijo' THEN p.valorDescuento
-            WHEN p.tipoDescuento = 'Porcentaje' THEN (dbo.subTotal(@facturaId) * p.valorDescuento / 100)
             ELSE 0
         END
     )
-    FROM FacturaPromo fp
+    FROM OrdenOnline oo
+    JOIN Factura f ON oo.facturaId = f.id
+    JOIN FacturaPromo fp ON f.id = fp.facturaId
     JOIN Promo p ON fp.promoId = p.id
-    WHERE fp.facturaId = @facturaId;
-    
-    RETURN ISNULL(@descuentoTotal, 0);
+    JOIN OrdenDetalle od ON oo.id = od.ordenId
+    WHERE oo.id = @ordenId
+    AND p.fechaFin >= GETDATE()
+    AND p.tipoPromocion IN ('Online', 'Ambos');
+    RETURN ISNULL(@montoDescuentoTotal, 0);
 END;
-GO
 
--- Monto IVA
-IF EXISTS (SELECT * FROM sys.objects WHERE name = 'montoIVA' AND type IN ('FN', 'IF', 'TF'))
-    DROP FUNCTION dbo.montoIVA;
-GO
-
-CREATE FUNCTION dbo.montoIVA(@facturaId INT)
-RETURNS DECIMAL(10, 2)
+--Monto IVA
+CREATE FUNCTION dbo.GetMontoIVA (@ordenId INT)
+RETURNS DECIMAL(10,2)
 AS
 BEGIN
-    DECLARE @iva DECIMAL(10, 2);
-    DECLARE @porcentajeIVA DECIMAL(10, 2);
-    
-    SELECT @porcentajeIVA = f.porcentajeIVA
-    FROM Factura f
-    WHERE f.id = @facturaId;
-    
-    SELECT @iva = SUM(
+    DECLARE @montoIVA DECIMAL(10,2);
+    SELECT @montoIVA = SUM(
         CASE 
-            WHEN p.esExentoIVA = 0 THEN (fd.cantidad * fd.precioPor)
+            WHEN pr.esExentoIVA = 0 THEN 
+                (od.cantidad * od.precioPor - 
+                 ISNULL((
+                     CASE 
+                         WHEN p.tipoDescuento = 'Porcentaje' THEN (od.cantidad * od.precioPor * p.valorDescuento / 100)
+                         WHEN p.tipoDescuento = 'Fijo' THEN p.valorDescuento
+                         ELSE 0
+                     END
+                 ), 0)) * (f.porcentajeIVA / 100)
             ELSE 0
         END
-    ) * (@porcentajeIVA / 100)
-    FROM FacturaDetalle fd
-    JOIN Producto p ON fd.productoId = p.id
-    WHERE fd.facturaId = @facturaId;
-    
-    DECLARE @subtotalSinDescuento DECIMAL(10, 2) = dbo.subTotal(@facturaId);
-    DECLARE @descuentoTotal DECIMAL(10, 2) = dbo.montoDescuentoTotal(@facturaId);
-    IF @subtotalSinDescuento > 0
-        SET @iva = @iva * (1 - @descuentoTotal / @subtotalSinDescuento);
-    
-    RETURN ISNULL(@iva, 0);
+    )
+    FROM OrdenOnline oo
+    JOIN Factura f ON oo.facturaId = f.id
+    JOIN OrdenDetalle od ON oo.id = od.ordenId
+    JOIN Producto pr ON od.productoId = pr.id
+    LEFT JOIN FacturaPromo fp ON f.id = fp.facturaId
+    LEFT JOIN Promo p ON fp.promoId = p.id
+    WHERE oo.id = @ordenId;
+    RETURN ISNULL(@montoIVA, 0);
 END;
-GO
 
---Promocion valida 
 
+--Total
+CREATE FUNCTION dbo.GetMontoTotal (@ordenId INT)
+RETURNS DECIMAL(10,2)
+AS
+BEGIN
+    DECLARE @subTotal DECIMAL(10,2) = dbo.GetSubTotal(@ordenId);
+    DECLARE @montoDescuentoTotal DECIMAL(10,2) = dbo.GetMontoDescuentoTotal(@ordenId);
+    DECLARE @montoIVA DECIMAL(10,2) = dbo.GetMontoIVA(@ordenId);
+    DECLARE @costoEnvio DECIMAL(10,2) = dbo.GetCostoEnvio(@ordenId);
+    
+    RETURN (@subTotal - @montoDescuentoTotal) + @montoIVA + @costoEnvio;
+END;
+
+--Promo valida
+CREATE FUNCTION dbo.IsPromoValida (@facturaId INT, @promoId INT)
+RETURNS BIT
+AS
+BEGIN
+    DECLARE @esValida BIT = 0;
+    DECLARE @fechaActual DATE = GETDATE();
+    DECLARE @tipoPromocion VARCHAR(50);
+    DECLARE @fechaFin DATE;
+    DECLARE @esOrdenOnline BIT;
+    DECLARE @esVentaFisica BIT;
+
+    -- Obtener información de la promoción
+    SELECT @tipoPromocion = tipoPromocion, @fechaFin = fechaFin
+    FROM Promo
+    WHERE id = @promoId;
+
+    -- Verificar si la factura está asociada a una orden online o venta física
+    SET @esOrdenOnline = (SELECT COUNT(*) FROM OrdenOnline WHERE facturaId = @facturaId);
+    SET @esVentaFisica = (SELECT COUNT(*) FROM VentaFisica WHERE facturaId = @facturaId);
+
+    -- Verificar validez
+    IF @fechaFin >= @fechaActual
+    BEGIN
+        IF (@esOrdenOnline = 1 AND @tipoPromocion IN ('Online', 'Ambos'))
+            OR (@esVentaFisica = 1 AND @tipoPromocion IN ('Fisica', 'Ambos'))
+        BEGIN
+            SET @esValida = 1;
+        END
+    END
+
+    RETURN @esValida;
+END;
