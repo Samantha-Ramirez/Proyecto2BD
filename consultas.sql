@@ -25,6 +25,8 @@ WHERE
     );
 
 -- Consulta F
+-- TOFIX: Promociones del producto (no de la marca, categoria)
+-- TOFIX: Es lo mismo que la compra tenga promo 
 SELECT 
     P.*, -- Informacion de los productos
     Pr.nombre, -- Nombre promo 'Verano EN GaMa'

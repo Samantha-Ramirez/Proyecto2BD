@@ -40,11 +40,12 @@ CREATE TRIGGER OrdenOnlineInsertarFactura
         -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
         SET @subTotal = dbo.subTotal(@ordenId);
         SET @montoDescuentoTotal = dbo.montoDescuentoTotal(@ordenId);
-        SET @porcentajeIVA = 16;
+        SET @porcentajeIVA = 16.0; -- Asumir IVA 16%
         SET @montoIVA = dbo.montoIVA(@ordenId);
         SET @montoTotal = dbo.esPmontoTotal(@ordenId);
 
         -- Crear Factura
+        -- TOFIX: Validacion de que no tenga ninguna factura asociada
         INSERT INTO Factura (fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal) VALUES 
             (GETDATE(), @clienteId, @subTotal, @montoDescuentoTotal, @porcentajeIVA, @montoIVA, @montoTotal)
         
@@ -126,6 +127,7 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
         FROM inserted
         JOIN Factura F ON F.id = inserted.facturaId;
 
+        -- TOFIX: 3 compras o 3 cantidades?
         SELECT 
             @cantidadComprasProducto = COUNT(*)
         FROM FacturaDetalle FD
@@ -175,6 +177,7 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
             @productoId = productoId
         FROM inserted;
 
+        -- TOFIX: 3 busquedas o 3 cantidades?
         SELECT 
             @cantidadBusquedasProducto = COUNT(*)
         FROM HistorialClienteProducto 
