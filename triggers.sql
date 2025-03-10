@@ -34,15 +34,15 @@ CREATE TRIGGER OrdenOnlineInsertarFactura
         -- Obtener ordenId, clienteId
         SELECT 
             @ordenId = id,
-            @clienteId = clienteId,
+            @clienteId = clienteId
         FROM inserted;
 
         -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
-        SET @subTotal = dbo.subTotal(@ordenId);
-        SET @montoDescuentoTotal = dbo.montoDescuentoTotal(@ordenId);
+        SET @subTotal = dbo.GetsubTotal(@ordenId);
+        SET @montoDescuentoTotal = dbo.GetmontoDescuentoTotal(@ordenId);
         SET @porcentajeIVA = 16;
-        SET @montoIVA = dbo.montoIVA(@ordenId);
-        SET @montoTotal = dbo.esPmontoTotal(@ordenId);
+        SET @montoIVA = dbo.GetmontoIVA(@ordenId);
+        SET @montoTotal = dbo.GetMontoTotal(@ordenId);
 
         -- Crear Factura
         INSERT INTO Factura (fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal) VALUES 
@@ -50,7 +50,7 @@ CREATE TRIGGER OrdenOnlineInsertarFactura
         
         -- Obtener facturaId
         SELECT 
-            @facturaId = MAX(id),
+            @facturaId = MAX(id)
         FROM Factura;
 
         -- Asociar OrdenOnline y Factura
@@ -178,7 +178,7 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
         SELECT 
             @cantidadBusquedasProducto = COUNT(*)
         FROM HistorialClienteProducto 
-        WHERE productoId = @
+        WHERE productoId = @productoId
         AND clienteId = @clienteId
         AND tipoAccion = 'Búsqueda';
 
@@ -237,7 +237,7 @@ CREATE TRIGGER FacturaPromoVerificarValida
         FROM inserted;
 
         -- Llamar al verificador de promo válida 
-        SET @esPromoValida = dbo.esPromoValida(@facturaId);
+        SET @esPromoValida = dbo.esPromoValida(@facturaId, @promoId);
 
         -- No aceptar el registro
         IF (@esPromoValida = 0)
