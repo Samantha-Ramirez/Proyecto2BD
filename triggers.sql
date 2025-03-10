@@ -25,24 +25,18 @@ CREATE TRIGGER ProveedorProductoInsertarInventario
     GO
 
 -- Factura 
--- Trigger factura y factura detalle es solo para cuando es una compra online? Sí, y la física es más a mano
--- TOFIX: si la factura no existe y no existe orden detalle entonces crear factura en 0 excepto el iva y fecha despues actualizarla
--- TOFIX: Solo use orden Id para calcular el costo del envío jajaja
+-- Solo para ordenes online
+-- Obviar el pago
 -- Venta fisica pasa directo a factura no tiene orden detalle pero si factura detalle 
--- TOFIX: lo del pago lo puedes obviar simplemente a;adir la factura
--- ir actualizando los montos cada vez que entra un orden detalle
--- Con los triggers entonces tengo que crear la factura toda en 0 , luego crear las facturas detalles y luego con las funciones de Paty llenar la factura según su factura detalle?
--- lo que si puede tener es una verificación de que si no hay ordenDetalle no cree factura detalles y la factura tenga los montos en null o 0
--- Validaciones de los triggers
-[8:00 PM, 3/9/2025] Juan: por ejemplo el de crear factura y factura detalle
-[8:00 PM, 3/9/2025] Juan: se ejecutan antes de meter orden y orden detalle
-[8:01 PM, 3/9/2025] Juan: entonces un ejemplo en los insert nosotros ya le damos una factura a ordenOnline pero se se activa el trigger y mete otrra ?
-[8:02 PM, 3/9/2025] Juan: y el ordenDetalle mete copias de mas porque esta la que ya son del incert de facturaDetalle mas las que se crearon por ordenDetalle y el trigge
-[10:26 PM, 3/9/2025] Juan: oye Sam pensé esto como tu trigge crea la factura cuando se introduce se crea una orden en ves de llenar  en ese
-[10:26 PM, 3/9/2025] Juan: llena y actualiza es cuando se guarda un orden detalle
-en este caso la factura comienza siendo tendrai todos los montos en null
-aquí cada ves que se guarde orden detalle crea la factura detalle y usa la función de patricia para actualizar los montos de la factura
-
+-- Al crear ordenOnline crear Factura en NULL, luego ir actualizando los montos cada vez que entra un orden detalle 
+-- TOFIX: si no hay ordenDetalle no crear facturaDetalle y crear factura con los montos en NULL
+-- TOFIX: con los inserts  ya le damos una factura a ordenOnline pero se se activa el trigger y mete otra ?
+-- Proceso
+-- Factura se inicializa en nulo
+-- Busca entradas en factura detalle y opera 
+-- Llena factura con el calculo 
+-- Funcion recibe id factura 
+-- Excepto costo envio porque venta fisica no tiene y no aplica para ellas
 CREATE TRIGGER OrdenOnlineInsertarFactura
     ON OrdenOnline
     AFTER INSERT -- Al tener datos nuevos
