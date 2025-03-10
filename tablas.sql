@@ -1,12 +1,12 @@
 -- Pais
 CREATE TABLE Pais (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL
 );
 
 -- Estado
 CREATE TABLE Estado (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     paisId INT,
     FOREIGN KEY (paisId) REFERENCES Pais(id)
@@ -14,7 +14,7 @@ CREATE TABLE Estado (
 
 -- Ciudad
 CREATE TABLE Ciudad (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     estadoId INT,
     FOREIGN KEY (estadoId) REFERENCES Estado(id)
@@ -22,7 +22,7 @@ CREATE TABLE Ciudad (
 
 -- Sucursal
 CREATE TABLE Sucursal (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     direccion VARCHAR(50),
     telefono VARCHAR(50),
@@ -34,7 +34,7 @@ CREATE TABLE Sucursal (
 
 -- Cargo
 CREATE TABLE Cargo (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     descripcion TEXT,
     salarioBasePorHora DECIMAL(10,2) CHECK (salarioBasePorHora >= 0)
@@ -42,7 +42,7 @@ CREATE TABLE Cargo (
 
 -- Empleado
 CREATE TABLE Empleado (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     CI VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50),
@@ -63,21 +63,21 @@ CREATE TABLE Empleado (
 
 -- Marca
 CREATE TABLE Marca (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     descripcion TEXT
 );
 
 -- Categoria
 CREATE TABLE Categoria (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     descripcion TEXT
 );
 
 -- Producto
 CREATE TABLE Producto (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     codigoBarra VARCHAR(50) NOT NULL,
     descripcion TEXT,
@@ -92,7 +92,7 @@ CREATE TABLE Producto (
 
 -- Inventario 
 CREATE TABLE Inventario (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     productoId INT,
     cantidad INT CHECK (cantidad >= 0),
     FOREIGN KEY (productoId) REFERENCES Producto(id)
@@ -110,7 +110,7 @@ CREATE TABLE ProductoRecomendadoParaProducto (
 
 -- Cliente
 CREATE TABLE Cliente (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     CI VARCHAR(20) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
@@ -122,7 +122,7 @@ CREATE TABLE Cliente (
 
 -- Cliente tiene Direccion
 CREATE TABLE ClienteDireccion (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     clienteId INT NOT NULL,
     tipoDireccion VARCHAR(50) CHECK (tipoDireccion IN ('Facturación', 'Envío')),
     dirLinea1 VARCHAR(50) NOT NULL,
@@ -167,7 +167,7 @@ CREATE TABLE Carrito (
 
 -- Proveedor
 CREATE TABLE Proveedor (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     RIF VARCHAR(50) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     contacto VARCHAR(50),
@@ -179,7 +179,7 @@ CREATE TABLE Proveedor (
 
 -- Proveedor provee Producto 
 CREATE TABLE ProveedorProducto (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     proveedorId INT,
     productoId INT,
     fechaCompra DATE,
@@ -191,7 +191,7 @@ CREATE TABLE ProveedorProducto (
 
 -- Factura
 CREATE TABLE Factura (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     fechaEmision DATE,
     clienteId INT,
     subTotal DECIMAL(10,2) CHECK (subTotal >= 0),
@@ -204,7 +204,7 @@ CREATE TABLE Factura (
 
 -- Detalle de factura
 CREATE TABLE FacturaDetalle (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     facturaId INT,
     productoId INT, 
     cantidad INT CHECK (cantidad >= 0),
@@ -215,7 +215,7 @@ CREATE TABLE FacturaDetalle (
 
 -- Tipo de envio
 CREATE TABLE TipoEnvio (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombreEnvio VARCHAR(50) NOT NULL,
     tiempoEstimadoEntrega INT CHECK (tiempoEstimadoEntrega >= 0),
     costoEnvio DECIMAL(10, 2) CHECK (costoEnvio >= 0)
@@ -223,7 +223,7 @@ CREATE TABLE TipoEnvio (
 
 -- Orden online 
 CREATE TABLE OrdenOnline (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     clienteId INT,
     nroOrden INT CHECK (nroOrden >= 0),
     fechaCreacion DATE,
@@ -236,7 +236,7 @@ CREATE TABLE OrdenOnline (
 
 -- Detalle de orden 
 CREATE TABLE OrdenDetalle (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     ordenId INT,
     productoId INT,
     cantidad INT CHECK (cantidad >= 0),
@@ -258,7 +258,7 @@ CREATE TABLE VentaFisica (
 
 -- Forma de pago
 CREATE TABLE FormaPago (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     descripcion TEXT
 );
@@ -274,7 +274,7 @@ CREATE TABLE Pago (
 
 -- Promo
 CREATE TABLE Promo (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
     slogan VARCHAR(50),
     codigo VARCHAR(50),
@@ -287,7 +287,7 @@ CREATE TABLE Promo (
 
 -- Promo especializada
 CREATE TABLE PromoEspecializada (
-    id INT IDENTITY(1, 1) PRIMARY KEY,
+    id INT IDENTITY(1,1) PRIMARY KEY,
     promoId INT,
     productoId INT,
     categoriaId INT, 
