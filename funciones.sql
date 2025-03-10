@@ -100,14 +100,14 @@ END;
 GO
 
 --Monto IVA
-CREATE OR ALTER FUNCTION dbo.GetmontoIVA (@facturaId INT)
+CREATE FUNCTION dbo.GetmontoIVA (@facturaId INT)
 RETURNS DECIMAL(10,2)
 AS
 BEGIN
     DECLARE @montoIVA DECIMAL(10,2);
     DECLARE @subtotalProductosNoExentos DECIMAL(10,2);
     DECLARE @descuentoTotal DECIMAL(10,2);
-    DECLARE @tasaIVA DECIMAL(5,2); -- Obtenida de la factura
+    DECLARE @tasaIVA DECIMAL(5,2); 
 
     SELECT @tasaIVA = COALESCE(porcentajeIVA, 16.00) / 100.0 
     FROM Factura
