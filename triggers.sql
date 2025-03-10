@@ -25,11 +25,8 @@ CREATE TRIGGER ProveedorProductoInsertarInventario
     GO
 
 -- Factura 
--- TOFIX: si la factura no existe y no existe orden detalle entonces crear factura en 0 excepto el iva y fecha
--- despues actualizarla
--- TOFIX: Holis Chama, como corres tús triggers Porque me dicen error de sintaxis
--- TOFIX: Uno no me funciona, me sale y que error de sintaxis ordenOnlineInsertarFactura
--- TOFIX: historial cliente producto insertar  producto recomendado para cliente no funciona
+-- Trigger factura y factura detalle es solo para cuando es una compra online? Sí, y la física es más a mano
+-- TOFIX: si la factura no existe y no existe orden detalle entonces crear factura en 0 excepto el iva y fecha despues actualizarla
 -- TOFIX: Solo use orden Id para calcular el costo del envío jajaja
 -- Venta fisica pasa directo a factura no tiene orden detalle pero si factura detalle 
 -- TOFIX: lo del pago lo puedes obviar simplemente a;adir la factura
