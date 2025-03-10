@@ -70,10 +70,10 @@ BEGIN
         JOIN Producto pr ON od.productoId = pr.id
         LEFT JOIN PromoEspecializada pe ON p.id = pe.promoId
         WHERE oo.facturaId = @facturaId
-        AND p.fechaFin >= @fechaEmision -- Usar fechaEmision
+        AND p.fechaFin >= @fechaEmision 
         AND p.tipoPromocion IN ('Online', 'Ambos');
     ELSE IF @esVentaFisica = 1
-        -- Similar cambio para ventas físicas
+        
         SELECT @montoDescuentoTotal = SUM(
             CASE 
                 WHEN p.tipoDescuento = 'Porcentaje' 
@@ -100,73 +100,36 @@ END;
 GO
 
 --Monto IVA
-CREATE FUNCTION dbo.GetMontoIVA (@facturaId INT)
+CREATE FUNCTION dbo.GetmontoIVA (@facturaId INT)
 RETURNS DECIMAL(10,2)
 AS
 BEGIN
     DECLARE @montoIVA DECIMAL(10,2);
-    DECLARE @esOrdenOnline BIT = CASE WHEN EXISTS (SELECT 1 FROM OrdenOnline WHERE facturaId = @facturaId) THEN 1 ELSE 0 END;
-    DECLARE @esVentaFisica BIT = CASE WHEN EXISTS (SELECT 1 FROM VentaFisica WHERE facturaId = @facturaId) THEN 1 ELSE 0 END;
-    DECLARE @fechaEmision DATE;
+    DECLARE @subtotalProductosNoExentos DECIMAL(10,2);
+    DECLARE @descuentoTotal DECIMAL(10,2);
+    DECLARE @tasaIVA DECIMAL(5,2); 
 
-    -- Obtener la fecha de emisión para validar promociones
-    SELECT @fechaEmision = fechaEmision
+    SELECT @tasaIVA = COALESCE(porcentajeIVA, 16.00) / 100.0 
     FROM Factura
     WHERE id = @facturaId;
 
-    IF @esOrdenOnline = 1
-        SELECT @montoIVA = SUM(
-            CASE 
-                WHEN pr.esExentoIVA = 0 THEN 
-                    GREATEST(
-                        (od.cantidad * od.precioPor - 
-                         ISNULL((
-                             CASE 
-                                 WHEN p.tipoDescuento = 'Porcentaje' THEN (od.cantidad * od.precioPor * p.valorDescuento / 100)
-                                 WHEN p.tipoDescuento = 'Fijo' THEN p.valorDescuento
-                                 ELSE 0
-                             END
-                         ), 0)),
-                        0
-                    ) * (f.porcentajeIVA / 100)
-                ELSE 0
-            END
-        )
-        FROM OrdenOnline oo
-        JOIN Factura f ON oo.facturaId = f.id
-        JOIN OrdenDetalle od ON oo.id = od.ordenId
-        JOIN Producto pr ON od.productoId = pr.id
-        LEFT JOIN FacturaPromo fp ON f.id = fp.facturaId
-        LEFT JOIN Promo p ON fp.promoId = p.id
-        WHERE oo.facturaId = @facturaId
-        AND (p.id IS NULL OR (p.fechaInicio <= @fechaEmision AND p.fechaFin >= @fechaEmision));
+    -- Obtener el descuento total usando la función existente
+    SET @descuentoTotal = dbo.GetMontoDescuentoTotal(@facturaId);
 
-    ELSE IF @esVentaFisica = 1
-        SELECT @montoIVA = SUM(
-            CASE 
-                WHEN pr.esExentoIVA = 0 THEN 
-                    GREATEST(
-                        (fd.cantidad * fd.precioPor - 
-                         ISNULL((
-                             CASE 
-                                 WHEN p.tipoDescuento = 'Porcentaje' THEN (fd.cantidad * fd.precioPor * p.valorDescuento / 100)
-                                 WHEN p.tipoDescuento = 'Fijo' THEN p.valorDescuento
-                                 ELSE 0
-                             END
-                         ), 0)),
-                        0
-                    ) * (f.porcentajeIVA / 100)
-                ELSE 0
-            END
-        )
-        FROM Factura f
-        JOIN FacturaDetalle fd ON f.id = fd.facturaId
-        JOIN Producto pr ON fd.productoId = pr.id
-        LEFT JOIN FacturaPromo fp ON f.id = fp.facturaId
-        LEFT JOIN Promo p ON fp.promoId = p.id
-        WHERE f.id = @facturaId
-        AND (p.id IS NULL OR (p.fechaInicio <= @fechaEmision AND p.fechaFin >= @fechaEmision));
+    -- Calcular el subtotal de productos no exentos desde FacturaDetalle
+    SELECT @subtotalProductosNoExentos = ISNULL(SUM(fd.cantidad * fd.precioPor), 0)
+    FROM FacturaDetalle fd
+    JOIN Producto p ON fd.productoId = p.id
+    WHERE fd.facturaId = @facturaId
+    AND p.esExentoIVA = 0; -- Solo productos no exentos
 
+    SET @montoIVA = CASE 
+        WHEN (@subtotalProductosNoExentos - @descuentoTotal) < 0 
+        THEN 0 
+        ELSE (@subtotalProductosNoExentos - @descuentoTotal) * @tasaIVA 
+    END;
+
+    
     RETURN ISNULL(@montoIVA, 0);
 END;
 GO
