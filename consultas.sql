@@ -25,8 +25,6 @@ WHERE
     );
 
 -- Consulta F
--- TOFIX: Promociones del producto (no de la marca, categoria)
--- TOFIX: Es lo mismo que la compra tenga promo 
 SELECT 
     P.*, -- Informacion de los productos
     Pr.nombre, -- Nombre promo 'Verano EN GaMa'
@@ -37,7 +35,7 @@ JOIN FacturaDetalle FD ON FD.productoId = P.id -- Factura detalle del producto
 JOIN Factura F ON F.id = FD.facturaId -- Factura de la factura detalle
 LEFT JOIN FacturaPromo FP ON FP.facturaId = F.id
 LEFT JOIN Promo Pr ON Pr.id = FP.promoId -- Promo de la promo especializada
-LEFT JOIN PromoEspecializada PE ON (PE.productoId = P.id OR PE.categoriaId = P.categoriaId OR PE.marcaId = M.id) -- Promo especializada del producto, de su categoria o de su marca
+LEFT JOIN PromoEspecializada PE ON (PE.productoId = P.id OR PE.marcaId = M.id) -- Promo especializada del producto o de su marca
 WHERE M.nombre = 'Gama' -- Marca Gama (id=21)
 AND MONTH(F.fechaEmision) IN (6, 8) -- Compra en junio y agosto
 AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa (id=2)
