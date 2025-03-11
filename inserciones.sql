@@ -830,8 +830,11 @@ INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) 
 	(1, 1, '2023-10-01', 2, 3.00),
 	(1, 2, '2023-10-01', 1, 1.40),
 
-	-- Cliente 2 tiene 1 producto en el carrito
+	-- Cliente 2 tiene 4 producto en el carrito
+    (2, 2, '2025-03-03', 1, 1.40),
 	(2, 3, '2023-10-02', 1, 4.00),
+	(2, 5, '2025-03-03', 2, 1.60),
+	(2, 25, '2025-03-03', 1, 5.00),
 
 	-- Cliente 3 tiene 3 productos en el carrito
 	(3, 4, '2023-10-03', 1, 1.20),
@@ -1076,7 +1079,8 @@ INSERT INTO ProveedorProducto (id, proveedorId, productoId, fechaCompra, precioP
     (59, 10, 19, '2023-10-02', 1.20, 200),
     (60, 10, 24, '2023-10-02', 1.20, 200),
     (61, 10, 207, '2023-10-02', 1.20, 200), 
-    (62, 10, 205, '2023-10-02', 1.20, 200);
+    (62, 10, 205, '2023-10-02', 1.20, 200),
+    (63, 10, 25, '2023-10-02', 3.00, 200);
 SET IDENTITY_INSERT ProveedorProducto OFF;
 
 -- Factura 
@@ -1212,7 +1216,15 @@ INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal,
     (124, '2025-01-20', 3, 120.00, 12.00, 16.00, 17.28, 125.28), -- Hogar y Electronica
     (125, '2024-10-25', 4, 150.00, 11.00, 16.00, 22.24, 161.24), -- Hogar y Electronica
     (126, '2024-11-25', 4, 120.00, 12.00, 16.00, 17.28, 125.28), -- Hogar y Electronica
-    (127, '2024-12-25', 4, 170.00, 17.00, 16.00, 24.48, 177.48); -- Hogar y Electronica
+    (127, '2024-12-25', 4, 170.00, 17.00, 16.00, 24.48, 177.48), -- Hogar y Electronica
+    (128, '2025-03-08', 1, 15.00, 0.00, 16, 2.40, 17.4), 
+    (129, '2025-03-09', 1, 11.20, 0.00, 16, 1.70, 12.9),
+
+    (130, '2025-03-10', 1, 12.00, 0.00, 16, 1.92, 13.92), 
+    (131, '2025-03-11', 1, 8.00, 0.00, 16, 1.28, 9.28),
+
+    (132, '2025-03-10', 1, 40.00, 0.00, 16, 6.4, 46.4), 
+    (133, '2025-03-11', 1, 50.00, 0.00, 16, 8, 58);
 SET IDENTITY_INSERT Factura OFF;
 
 -- Detalle de factura
@@ -1767,7 +1779,13 @@ INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES
     (124, 225, 2, 50.00), (124, 205, 2, 40.00), -- Carlos
     (125, 213, 1, 130.00), (125, 201, 1, 50.00), -- Ana
     (126, 220, 1, 60.00), (126, 204, 1, 60.00), -- Ana
-    (127, 223, 1, 120.00), (127, 205, 2, 40.00); -- Ana
+    (127, 223, 1, 120.00), (127, 205, 2, 40.00), -- Ana
+
+    (128, 1, 10, 1.50), (129, 2, 8, 1.40),
+
+    (130, 4, 10, 1.20), (131, 5, 10, 0.80),
+
+    (132, 3, 10, 4.00), (133, 25, 10, 5.00);
 
 -- Tipo de envio
 SET IDENTITY_INSERT TipoEnvio ON;

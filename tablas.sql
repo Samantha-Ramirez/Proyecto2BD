@@ -136,7 +136,7 @@ CREATE TABLE ProductoRecomendadoParaCliente (
     clienteId INT,
     productoRecomendadoId INT,
     fechaRecomendacion DATETIME,
-    mensaje VARCHAR(50),
+    mensaje TEXT,
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id),
     PRIMARY KEY (clienteId, productoRecomendadoId, fechaRecomendacion)

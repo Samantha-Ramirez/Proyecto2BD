@@ -140,99 +140,88 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
     ON FacturaDetalle
     AFTER INSERT -- Al comprar un producto 
     AS BEGIN
-        DECLARE @productoId INT, @clienteId INT, @cantidadComprasProducto INT;
-        SELECT 
-            @clienteId = F.clienteId,
-            @productoId = inserted.productoId
-        FROM inserted
-        JOIN Factura F ON F.id = inserted.facturaId;
+        -- Usar tabla temporal
+        CREATE TABLE #InsertedData (
+            clienteId INT,
+            productoId INT,
+            cantidad INT
+        );
 
-        -- Obtener cantidad de compras del producto por el cliente
-        SELECT
-            @cantidadComprasProducto = SUM(cantidad)
-        FROM FacturaDetalle FD
-        JOIN Factura F ON F.id = FD.facturaId
-        WHERE FD.productoId = @productoId
-        AND F.clienteId = @clienteId;
+        INSERT INTO #InsertedData (clienteId, productoId, cantidad)
+            SELECT
+                F.clienteId,
+                inserted.productoId,
+                inserted.cantidad
+            FROM inserted
+            JOIN Factura F ON F.id = inserted.facturaId;
 
-        -- Verificar más de 3 veces
-        IF (@cantidadComprasProducto <= 3)
-            BEGIN
-                RETURN;
-            END;
-        
-         -- Buscar productos recomendados para ese producto 
-        DECLARE @productoRecomendadoId INT, @mensaje VARCHAR(50);
-        DECLARE cur CURSOR FOR
-            SELECT 
-                productoRecomendadoId, 
-                mensaje
-            FROM ProductoRecomendadoParaProducto
-            WHERE productoId = @productoId;
+        -- Procesar cada combinación de clienteId y productoId
+        INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) -- Recomendarlos al cliente
+            SELECT
+                id.clienteId,
+                PRP.productoRecomendadoId,
+                GETDATE(),
+                PRP.mensaje
+            FROM (
+                SELECT
+                    clienteId,
+                    productoId,
+                    SUM(cantidad) AS cantidadComprasProducto
+                FROM #InsertedData
+                GROUP BY clienteId, productoId
+            ) AS id
+            JOIN ProductoRecomendadoParaProducto PRP ON PRP.productoId = id.productoId -- Buscar productos recomendados para ese producto 
+            WHERE id.cantidadComprasProducto > 3; -- Verificar más de 3 veces
 
-        OPEN cur;
-        FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
-        WHILE @@FETCH_STATUS = 0
-        BEGIN
-            -- Recomendarlos al cliente
-            INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES 
-                (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
-
-            FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
-        END;
-
-        CLOSE cur;
-        DEALLOCATE cur; 
+        -- Eliminar tabla temporal
+        DROP TABLE #InsertedData;
     END;
     GO
 
 -- ProductoRecomendadoParaCliente 
 CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
-    ON HistorialClienteProducto
-    AFTER INSERT -- Al buscar un producto 
+    ON HistorialClienteProducto -- Al buscar un producto 
+    AFTER INSERT
     AS BEGIN
-        DECLARE @productoId INT, @clienteId INT, @cantidadBusquedasProducto INT;
-        SELECT 
-            @clienteId = clienteId,
-            @productoId = productoId
-        FROM inserted;
+        -- Usar tabla temporal
+        CREATE TABLE #InsertedData (
+            clienteId INT,
+            productoId INT
+        );
 
-        -- Obtener cantidad de busquedas del producto por el cliente
-        SELECT 
-            @cantidadBusquedasProducto = COUNT(*)
-        FROM HistorialClienteProducto 
-        WHERE productoId = @productoId
-        AND clienteId = @clienteId
-        AND tipoAccion = 'Búsqueda';
-
-        -- Verificar más de 3 veces
-        IF (@cantidadBusquedasProducto <= 3)
-            BEGIN
-                RETURN;
-            END;
-        
-         -- Buscar productos recomendados para ese producto 
-        DECLARE @productoRecomendadoId INT, @mensaje VARCHAR(50);
-        DECLARE cur CURSOR FOR
+        INSERT INTO #InsertedData (clienteId, productoId)
             SELECT 
-                productoRecomendadoId, 
-                mensaje
-            FROM ProductoRecomendadoParaProducto
-            WHERE productoId = @productoId;
+                clienteId, 
+                productoId
+            FROM inserted;
 
-        OPEN cur;
-        FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
-        WHILE @@FETCH_STATUS = 0
-        BEGIN
-            -- Recomendarlos al cliente
-            INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES 
-                (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
+        -- Procesar cada combinación de clienteId y productoId
+        INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) -- Recomendarlos al cliente
+            SELECT
+                id.clienteId,
+                PRP.productoRecomendadoId,
+                GETDATE(),
+                PRP.mensaje
+            FROM (
+                SELECT
+                    clienteId,
+                    productoId,
+                    COUNT(*) AS cantidadBusquedasProducto -- Obtener cantidad de busquedas del producto por el cliente
+                FROM HistorialClienteProducto
+                WHERE tipoAccion = 'Búsqueda'
+                AND EXISTS (
+                    SELECT 1
+                    FROM #InsertedData i
+                    WHERE i.clienteId = HistorialClienteProducto.clienteId
+                    AND i.productoId = HistorialClienteProducto.productoId
+                )
+                GROUP BY clienteId, productoId
+            ) AS id
+            JOIN ProductoRecomendadoParaProducto PRP ON PRP.productoId = id.productoId -- Buscar productos recomendados para ese producto 
+            WHERE id.cantidadBusquedasProducto > 3; -- Verificar más de 3 veces
 
-            FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
-        END;
-
-        CLOSE cur;
-        DEALLOCATE cur; 
+        -- Eliminar tabla temporal
+        DROP TABLE #InsertedData;
     END;
     GO
 
