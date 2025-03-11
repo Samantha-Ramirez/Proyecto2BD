@@ -81,13 +81,17 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaDetalle
         FROM OrdenOnline OO
         JOIN inserted ON inserted.ordenId = OO.id;
 
+        -- Si ya tiene una factura detalle asociada
+        IF EXISTS (SELECT 1 FROM FacturaDetalle FD WHERE FD.facturaId = @facturaId AND FD.productoId = @productoId)
+            BEGIN
+                RETURN;
+            END;
+
         -- Crear FacturaDetalle y copiar contenido de OrdenDetalle
-        -- TOFIX: validacion de que no tenga ninguna factura detalle asociada
         INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES 
             (@facturaId, @productoId, @cantidad, @precioPor)
 
         -- Recalcular los valores totales de Factura
-        -- TOFIX: funcion recibe facturaId (excepto costo envio)
         -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
         SET @subTotal = dbo.GetsubTotal(@ordenId);
         SET @montoDescuentoTotal = dbo.GetmontoDescuentoTotal(@ordenId);

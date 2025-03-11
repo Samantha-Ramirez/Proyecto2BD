@@ -79,13 +79,13 @@ CREATE TABLE Categoria (
 CREATE TABLE Producto (
     id INT IDENTITY(1,1) PRIMARY KEY,
     nombre VARCHAR(50) NOT NULL,
-    codigoBarra VARCHAR(50) NOT NULL,
+    codigoBarra VARCHAR(50),
     descripcion TEXT,
     tipoPrecio VARCHAR(50) CHECK (tipoPrecio IN ('PorUnidad', 'PorPesoKg')),
     precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
-    esExentoIVA BIT NOT NULL,
-    categoriaId INT NOT NULL,
-    marcaId INT NOT NULL,
+    esExentoIVA BIT,
+    categoriaId INT,
+    marcaId INT,
     FOREIGN KEY (categoriaId) REFERENCES Categoria(id),
     FOREIGN KEY (marcaId) REFERENCES Marca(id)
 );
@@ -100,8 +100,8 @@ CREATE TABLE Inventario (
 
 -- Producto recomendado para Producto
 CREATE TABLE ProductoRecomendadoParaProducto (
-    productoId INT NOT NULL,
-    productoRecomendadoId INT NOT NULL,
+    productoId INT,
+    productoRecomendadoId INT,
     mensaje TEXT,
     FOREIGN KEY (productoId) REFERENCES Producto(id),
     FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id),
@@ -114,28 +114,28 @@ CREATE TABLE Cliente (
     CI VARCHAR(20) UNIQUE,
     nombre VARCHAR(50) NOT NULL,
     apellido VARCHAR(50) NOT NULL,
-    correo VARCHAR(50) NOT NULL,
+    correo VARCHAR(50),
     sexo VARCHAR(1) CHECK (sexo IN ('M', 'F')),
-    fechaNacimiento DATE NOT NULL,
-    fechaRegistro DATETIME NOT NULL
+    fechaNacimiento DATE,
+    fechaRegistro DATETIME
 );
 
 -- Cliente tiene Direccion
 CREATE TABLE ClienteDireccion (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    clienteId INT NOT NULL,
+    clienteId INT,
     tipoDireccion VARCHAR(50) CHECK (tipoDireccion IN ('Facturación', 'Envío')),
-    dirLinea1 VARCHAR(50) NOT NULL,
-    ciudadId INT NOT NULL,
+    dirLinea1 VARCHAR(50),
+    ciudadId INT,
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (ciudadId) REFERENCES Ciudad(id)
 );
 
 -- Producto recomendado para Cliente
 CREATE TABLE ProductoRecomendadoParaCliente (
-    clienteId INT NOT NULL,
-    productoRecomendadoId INT NOT NULL,
-    fechaRecomendacion DATETIME NOT NULL,
+    clienteId INT,
+    productoRecomendadoId INT,
+    fechaRecomendacion DATETIME,
     mensaje VARCHAR(50),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoRecomendadoId) REFERENCES Producto(id),
@@ -144,9 +144,9 @@ CREATE TABLE ProductoRecomendadoParaCliente (
 
 -- Historial de Cliente y Producto
 CREATE TABLE HistorialClienteProducto (
-    clienteId INT NOT NULL,
-    productoId INT NOT NULL,
-    fecha DATETIME NOT NULL,
+    clienteId INT,
+    productoId INT,
+    fecha DATETIME,
     tipoAccion VARCHAR(50) CHECK (tipoAccion IN ('Búsqueda', 'Carrito', 'Compra')),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
     FOREIGN KEY (productoId) REFERENCES Producto(id),
@@ -155,9 +155,9 @@ CREATE TABLE HistorialClienteProducto (
 
 -- Carrito
 CREATE TABLE Carrito (
-    clienteId INT NOT NULL,
-    productoId INT NOT NULL,
-    fechaAgregado DATETIME NOT NULL,
+    clienteId INT,
+    productoId INT,
+    fechaAgregado DATETIME,
     cantidad INT CHECK (cantidad >= 0),
     precioPor DECIMAL(10, 2) CHECK (precioPor >= 0),
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
@@ -182,7 +182,7 @@ CREATE TABLE ProveedorProducto (
     id INT IDENTITY(1,1) PRIMARY KEY,
     proveedorId INT,
     productoId INT,
-    fechaCompra DATE,
+    fechaCompra DATETIME,
     precioPor DECIMAL(10,2) CHECK (precioPor >= 0),
     cantidad INT CHECK (cantidad >= 0),
     FOREIGN KEY (proveedorId) REFERENCES Proveedor(id),
@@ -192,7 +192,7 @@ CREATE TABLE ProveedorProducto (
 -- Factura
 CREATE TABLE Factura (
     id INT IDENTITY(1,1) PRIMARY KEY,
-    fechaEmision DATE,
+    fechaEmision DATETIME,
     clienteId INT,
     subTotal DECIMAL(10,2) CHECK (subTotal >= 0),
     montoDescuentoTotal DECIMAL(10,2) CHECK (montoDescuentoTotal >= 0),
@@ -226,7 +226,7 @@ CREATE TABLE OrdenOnline (
     id INT IDENTITY(1,1) PRIMARY KEY,
     clienteId INT,
     nroOrden INT CHECK (nroOrden >= 0),
-    fechaCreacion DATE,
+    fechaCreacion DATETIME,
     tipoEnvioId INT, 
     facturaId INT,
     FOREIGN KEY (clienteId) REFERENCES Cliente(id),
@@ -280,8 +280,8 @@ CREATE TABLE Promo (
     codigo VARCHAR(50),
     tipoDescuento VARCHAR(50) CHECK (tipoDescuento IN ('Porcentaje', 'Fijo')),
     valorDescuento DECIMAL(10,2) CHECK (valorDescuento >= 0),
-    fechaInicio DATE,
-    fechaFin DATE,
+    fechaInicio DATETIME,
+    fechaFin DATETIME,
     tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Fisica', 'Ambos'))
 );
 

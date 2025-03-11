@@ -43,7 +43,7 @@ BEGIN
     DECLARE @montoDescuentoTotal DECIMAL(10,2);
     DECLARE @esOrdenOnline BIT = CASE WHEN EXISTS (SELECT 1 FROM OrdenOnline WHERE facturaId = @facturaId) THEN 1 ELSE 0 END;
     DECLARE @esVentaFisica BIT = CASE WHEN EXISTS (SELECT 1 FROM VentaFisica WHERE facturaId = @facturaId) THEN 1 ELSE 0 END;
-    DECLARE @fechaEmision DATE;
+    DECLARE @fechaEmision DATETIME;
 
     -- Obtener la fecha de emisión de la factura
     SELECT @fechaEmision = fechaEmision
@@ -154,9 +154,9 @@ RETURNS BIT
 AS
 BEGIN
     DECLARE @esValida BIT = 0;
-    DECLARE @fechaEmision DATE; -- Fecha de la factura
+    DECLARE @fechaEmision DATETIME; -- Fecha de la factura
     DECLARE @tipoPromocion VARCHAR(50);
-    DECLARE @fechaFin DATE;
+    DECLARE @fechaFin DATETIME;
     DECLARE @esOrdenOnline BIT;
     DECLARE @esVentaFisica BIT;
 
