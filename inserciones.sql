@@ -334,7 +334,7 @@ INSERT INTO Categoria (id, nombre, descripcion) VALUES
     (12, 'Mascotas', 'Alimentos y accesorios para mascotas'),
     (13, 'Farmacia', 'Medicamentos y productos de salud'),
     (14, 'Hogar', 'Utensilios y articulos para el hogar'),
-    (15, 'Electrodomesticos', 'Pequenos electrodomesticos'),
+    (15, 'Electrónica', 'Pequenos electrodomesticos'),
     (16, 'Bebes', 'Panales, leches y productos para bebes'),
     (17, 'Helados', 'Helados y postres congelados'),
     (18, 'Cafe e Infusiones', 'Cafe, te y bebidas calientes'),
@@ -349,8 +349,7 @@ INSERT INTO Categoria (id, nombre, descripcion) VALUES
     (27, 'Enlatados', 'Productos enlatados y conservados'),
     (28, 'Huevos', 'Huevos frescos y derivados'),
     (29, 'Pescados y Mariscos', 'Pescados y mariscos frescos'),
-    (30, 'Comida Preparada', 'Platos preparados y listos para consumir'),
-    (31, 'Electronica', 'Equipos pequenos para hogar');
+    (30, 'Comida Preparada', 'Platos preparados y listos para consumir');
 SET IDENTITY_INSERT Categoria OFF;
 
 -- Producto
@@ -1076,7 +1075,8 @@ INSERT INTO ProveedorProducto (id, proveedorId, productoId, fechaCompra, precioP
     (58, 10, 14, '2023-10-02', 1.20, 200),
     (59, 10, 19, '2023-10-02', 1.20, 200),
     (60, 10, 24, '2023-10-02', 1.20, 200),
-    (61, 10, 207, '2023-10-02', 1.20, 200);
+    (61, 10, 207, '2023-10-02', 1.20, 200), 
+    (62, 10, 205, '2023-10-02', 1.20, 200);
 SET IDENTITY_INSERT ProveedorProducto OFF;
 
 -- Factura 
@@ -1135,11 +1135,6 @@ INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal,
 	(48, '2025-03-10', 48, 65.00, 5.00, 16, 9.60, 69.60),  -- Online, con promo
 	(49, '2025-03-15', 49, 30.00, 0.00, 16, 4.80, 34.80),  -- Online, sin promo
 	(50, '2025-03-20', 50, 45.00, 10.00, 16, 5.60, 40.60), -- Online, con promo
-    (101, '2024-06-10', 1, 100.00, 10.00, 16.00, 14.40, 104.40),
-    (102, '2024-06-15', 1, 150.00, 15.00, 16.00, 21.60, 156.60),
-    (103, '2024-08-05', 1, 90.00, 9.00, 16.00, 12.96, 93.96),
-    (104, '2024-08-20', 1, 120.00, 12.00, 16.00, 17.28, 125.28),
-
 	-- 50 facturas físicas (IDs 51 a 100)
 	(51, '2024-06-02', 51, 35.00, 0.00, 16, 5.60, 40.60),  -- Física, sin promo
 	(52, '2024-06-06', 52, 50.00, 5.00, 16, 7.20, 52.20),  -- Física, con promo
@@ -1190,7 +1185,34 @@ INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal,
 	(97, '2025-03-06', 97, 45.00, 0.00, 16, 7.20, 52.20),  -- Física, sin promo
 	(98, '2025-03-11', 98, 55.00, 5.00, 16, 8.00, 58.00),  -- Física, con promo
 	(99, '2025-03-16', 99, 30.00, 0.00, 16, 4.80, 34.80),  -- Física, sin promo
-	(100, '2025-03-21', 100, 65.00, 10.00, 16, 8.80, 63.80); -- Física, con promo
+	(100, '2025-03-21', 100, 65.00, 10.00, 16, 8.80, 63.80),
+    (101, '2024-06-10', 1, 100.00, 10.00, 16.00, 14.40, 104.40),
+    (102, '2024-06-15', 1, 150.00, 15.00, 16.00, 21.60, 156.60),
+    (103, '2024-08-05', 1, 90.00, 9.00, 16.00, 12.96, 93.96),
+    (104, '2024-08-20', 1, 120.00, 12.00, 16.00, 17.28, 125.28), -- Física, con promo
+    (105, '2024-01-05', 1, 100.00, 10.00, 16.00, 14.40, 104.40), -- Primera compra
+    (106, '2024-01-20', 1, 150.00, 15.00, 16.00, 21.60, 156.60), -- Segunda compra (dentro de 30 días)
+    (107, '2024-02-10', 2, 90.00, 9.00, 16.00, 12.96, 93.96), -- Primera compra
+    (108, '2024-02-25', 2, 120.00, 12.00, 16.00, 17.28, 125.28), -- Segunda compra (dentro de 30 días)
+    (109, '2024-03-01', 3, 80.00, 8.00, 16.00, 11.52, 83.52), -- Primera compra
+    (110, '2024-03-15', 3, 110.00, 11.00, 16.00, 15.84, 114.84), -- Segunda compra (dentro de 30 días)
+    (111, '2024-04-05', 4, 70.00, 7.00, 16.00, 10.08, 73.08), -- Primera compra
+    (112, '2024-04-20', 4, 100.00, 10.00, 16.00, 14.40, 104.40), -- Segunda compra (dentro de 30 días)
+    (113, '2024-10-01', 1, 180.00, 10.00, 16.00, 27.20, 197.20), -- Hogar y Electronica
+    (114, '2024-11-01', 1, 150.00, 15.00, 16.00, 21.60, 156.60), -- Hogar y Electronica
+    (115, '2024-12-01', 1, 200.00, 20.00, 16.00, 28.80, 208.80), -- Hogar y Electronica
+    (116, '2025-01-01', 1, 100.00, 10.00, 16.00, 14.40, 104.40), -- Hogar y Electronica
+    (117, '2024-10-15', 2, 160.00, 12.00, 16.00, 23.68, 171.68), -- Hogar y Electronica
+    (118, '2024-11-15', 2, 140.00, 14.00, 16.00, 20.16, 146.16), -- Hogar y Electronica
+    (119, '2024-12-15', 2, 190.00, 19.00, 16.00, 27.36, 198.36), -- Hogar y Electronica
+    (120, '2025-01-15', 2, 110.00, 11.00, 16.00, 15.84, 114.84), -- Hogar y Electronica
+    (121, '2024-10-20', 3, 170.00, 13.00, 16.00, 25.12, 182.12), -- Hogar y Electronica
+    (122, '2024-11-20', 3, 130.00, 13.00, 16.00, 18.72, 135.72), -- Hogar y Electronica
+    (123, '2024-12-20', 3, 180.00, 18.00, 16.00, 25.92, 187.92), -- Hogar y Electronica
+    (124, '2025-01-20', 3, 120.00, 12.00, 16.00, 17.28, 125.28), -- Hogar y Electronica
+    (125, '2024-10-25', 4, 150.00, 11.00, 16.00, 22.24, 161.24), -- Hogar y Electronica
+    (126, '2024-11-25', 4, 120.00, 12.00, 16.00, 17.28, 125.28), -- Hogar y Electronica
+    (127, '2024-12-25', 4, 170.00, 17.00, 16.00, 24.48, 177.48); -- Hogar y Electronica
 SET IDENTITY_INSERT Factura OFF;
 
 -- Tipo de envio
@@ -2017,7 +2039,47 @@ INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES
     (103, 205, 1, 40.00), -- Batidora de Mano Gama
 
     -- Factura 104 (subTotal 45.00)
-    (104, 207, 1, 45.00); -- Plancha a Vapor Gama
+    (104, 207, 1, 45.00), -- Plancha a Vapor Gama
+
+    -- Factura 105: Horno Eléctrico Gama
+    (105, 203, 1, 80.00), 
+
+    -- Factura 106: Batidora de Mano Gama (2 unidades)
+    (106, 205, 2, 40.00), 
+
+    -- Factura 107: Plancha a Vapor Gama
+    (107, 207, 1, 45.00), 
+
+    -- Factura 108: Freidora de Aire Gama
+    (108, 210, 1, 90.00), 
+
+    -- Factura 109: Tostadora Hogar
+    (109, 208, 1, 30.00), 
+
+    -- Factura 110: Horno Eléctrico Gama
+    (110, 203, 1, 80.00), 
+
+    -- Factura 111: Batidora de Mano Gama
+    (111, 205, 1, 40.00), 
+
+    -- Factura 112: Plancha a Vapor Gama (2 unidades)
+    (112, 207, 2, 45.00), 
+
+    (113, 213, 1, 130.00), (113, 201, 1, 50.00), -- Juan
+    (114, 220, 1, 60.00), (114, 204, 1, 60.00), -- Juan
+    (115, 223, 1, 120.00), (115, 205, 2, 40.00), -- Juan
+    (116, 225, 2, 50.00), (116, 201, 1, 50.00), -- Juan
+    (117, 213, 1, 130.00), (117, 204, 1, 60.00), -- Maria
+    (118, 220, 1, 60.00), (118, 205, 2, 40.00), -- Maria
+    (119, 223, 1, 120.00), (119, 201, 1, 50.00), -- Maria
+    (120, 225, 2, 50.00), (120, 204, 1, 60.00), -- Maria
+    (121, 213, 1, 130.00), (121, 205, 2, 40.00), -- Carlos
+    (122, 220, 1, 60.00), (122, 201, 1, 50.00), -- Carlos
+    (123, 223, 1, 120.00), (123, 204, 1, 60.00), -- Carlos
+    (124, 225, 2, 50.00), (124, 205, 2, 40.00), -- Carlos
+    (125, 213, 1, 130.00), (125, 201, 1, 50.00), -- Ana
+    (126, 220, 1, 60.00), (126, 204, 1, 60.00), -- Ana
+    (127, 223, 1, 120.00), (127, 205, 2, 40.00); -- Ana
 
 -- Venta fisica
 INSERT INTO VentaFisica (facturaId, sucursalId, empleadoId) VALUES
@@ -2192,7 +2254,11 @@ INSERT INTO Pago (facturaId, nroTransaccion, metodoPagoId) VALUES
     (97, 'TX-20250216-0097', 1),  -- Tarjeta de crédito
     (98, 'TX-20250217-0098', 2),  -- Tarjeta de débito
     (99, 'TX-20250218-0099', 4),  -- Transferencia bancaria
-    (100, 'TX-20250219-0100', 10); -- Zelle
+    (100, 'TX-20250219-0100', 10), -- Zelle
+    (113, 'TXN123', 1), 
+    (116, 'TXN456', 1), 
+    (119, 'TXN789', 1), 
+    (122, 'TXN012', 1);
 
 -- Promo
 -- Mínimo 40 promociones (variadas en tipo de descuento y promoción)

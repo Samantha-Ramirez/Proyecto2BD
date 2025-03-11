@@ -79,7 +79,7 @@ ClientesConCondiciones AS (
         c.id, c.CI, c.nombre, c.apellido, c.correo, c.sexo, c.fechaNacimiento, c.fechaRegistro
     HAVING 
         COUNT(ov.facturaId) >= 3 -- Condición a: al menos 3 órdenes
-        AND SUM(CASE WHEN ov.metodoPago = 'Tarjeta de Crédito' THEN 1 ELSE 0 END) >= 1 -- Condición c
+        AND SUM(CASE WHEN ov.metodoPago = 'Tarjeta de credito' THEN 1 ELSE 0 END) >= 1 -- Condición c
 ),
 -- Calcular el promedio de gasto de todos los clientes
 PromedioGasto AS (
