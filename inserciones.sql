@@ -1215,6 +1215,560 @@ INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal,
     (127, '2024-12-25', 4, 170.00, 17.00, 16.00, 24.48, 177.48); -- Hogar y Electronica
 SET IDENTITY_INSERT Factura OFF;
 
+-- Detalle de factura
+INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES
+	-- Orden 1 (Factura 1: subTotal 30.00)
+	(1, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
+	(1, 2, 8, 1.40),   -- Pepsi Max: 8 * 1.40 = 11.20
+	(1, 4, 3, 1.20),   -- Leche Entera La Serenísima: 3 * 1.20 = 3.60 (Total: 29.80 ≈ 30.00)
+
+	-- Orden 2 (Factura 2: subTotal 45.00, descuento 5.00)
+	(2, 12, 3, 8.50),  -- Carne de Res: 3 * 8.50 = 25.50
+	(2, 11, 4, 3.00),  -- Manzanas: 4 * 3.00 = 12.00
+	(2, 8, 3, 2.50),   -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 45.00)
+
+	-- Orden 3 (Factura 3: subTotal 25.00)
+	(3, 1, 6, 1.50),   -- Coca-Cola Original: 6 * 1.50 = 9.00
+	(3, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00
+	(3, 9, 4, 1.80),   -- Pan Bimbo Integral: 4 * 1.80 = 7.20 (Total: 24.20 ≈ 25.00)
+
+	-- Orden 4 (Factura 4: subTotal 60.00, descuento 10.00)
+	(4, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(4, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
+	(4, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 59.80 ≈ 60.00)
+
+	-- Orden 5 (Factura 5: subTotal 35.00)
+	(5, 3, 5, 4.00),   -- Nescafé Clásico: 5 * 4.00 = 20.00
+	(5, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(5, 7, 2, 2.00),   -- Salsa de Tomate Heinz: 2 * 2.00 = 4.00 (Total: 34.50 ≈ 35.00)
+
+	-- Orden 6 (Factura 6: subTotal 50.00, descuento 5.00)
+	(6, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
+	(6, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
+	(6, 8, 3, 2.50),   -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 50.50 ≈ 50.00)
+
+	-- Orden 7 (Factura 7: subTotal 40.00)
+	(7, 10, 10, 2.00), -- Cerveza Quilmes: 10 * 2.00 = 20.00
+	(7, 23, 5, 1.80),  -- Papas Fritas: 5 * 1.80 = 9.00
+	(7, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 39.00 ≈ 40.00)
+
+	-- Orden 8 (Factura 8: subTotal 55.00, descuento 10.00)
+	(8, 14, 3, 10.00), -- Pescado Fresco: 3 * 10.00 = 30.00
+	(8, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(8, 24, 2, 3.50),  -- Helado de Vainilla: 2 * 3.50 = 7.00 (Total: 52.00 ≈ 55.00)
+
+	-- Orden 9 (Factura 9: subTotal 28.00)
+	(9, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(9, 4, 6, 1.20),   -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
+	(9, 5, 8, 0.80),   -- Yogur Danone Natural: 8 * 0.80 = 6.40 (Total: 25.60 ≈ 28.00)
+
+	-- Orden 10 (Factura 10: subTotal 70.00, descuento 15.00)
+	(10, 12, 5, 8.50), -- Carne de Res: 5 * 8.50 = 42.50
+	(10, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
+	(10, 8, 2, 2.50),  -- Galletas Oreo: 2 * 2.50 = 5.00 (Total: 71.50 ≈ 70.00)
+
+	-- Orden 11 (Factura 11: subTotal 33.00)
+	(11, 3, 4, 4.00),  -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(11, 6, 3, 3.50),  -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(11, 9, 3, 1.80),  -- Pan Bimbo Integral: 3 * 1.80 = 5.40 (Total: 31.90 ≈ 33.00)
+
+	-- Orden 12 (Factura 12: subTotal 48.00, descuento 5.00)
+	(12, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
+	(12, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
+	(12, 24, 3, 3.50), -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 46.50 ≈ 48.00)
+
+	-- Orden 13 (Factura 13: subTotal 62.00)
+	(13, 14, 4, 10.00),-- Pescado Fresco: 4 * 10.00 = 40.00
+	(13, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
+	(13, 10, 3, 2.00), -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 61.00 ≈ 62.00)
+
+	-- Orden 14 (Factura 14: subTotal 39.00, descuento 5.00)
+	(14, 12, 2, 8.50), -- Carne de Res: 2 * 8.50 = 17.00
+	(14, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
+	(14, 8, 4, 2.50),  -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 39.00)
+
+	-- Orden 15 (Factura 15: subTotal 45.00)
+	(15, 3, 5, 4.00),  -- Nescafé Clásico: 5 * 4.00 = 20.00
+	(15, 6, 4, 3.50),  -- Cereal Kelloggs Corn Flakes: 4 * 3.50 = 14.00
+	(15, 15, 4, 2.50), -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 44.00 ≈ 45.00)
+
+	-- Orden 16 (Factura 16: subTotal 50.00, descuento 10.00)
+	(16, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
+	(16, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
+	(16, 16, 5, 0.90), -- Agua Mineral: 5 * 0.90 = 4.50 (Total: 49.50 ≈ 50.00)
+
+	-- Orden 17 (Factura 17: subTotal 30.00)
+	(17, 1, 8, 1.50),  -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(17, 4, 6, 1.20),  -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
+	(17, 5, 10, 0.80), -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 30.00)
+
+	-- Orden 18 (Factura 18: subTotal 65.00, descuento 5.00)
+	(18, 12, 5, 8.50), -- Carne de Res: 5 * 8.50 = 42.50
+	(18, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
+	(18, 24, 2, 3.50), -- Helado de Vainilla: 2 * 3.50 = 7.00 (Total: 64.50 ≈ 65.00)
+
+	-- Orden 19 (Factura 19: subTotal 42.00)
+	(19, 10, 8, 2.00), -- Cerveza Quilmes: 8 * 2.00 = 16.00
+	(19, 23, 6, 1.80), -- Papas Fritas: 6 * 1.80 = 10.80
+	(19, 15, 6, 2.50), -- Arroz Integral: 6 * 2.50 = 15.00 (Total: 41.80 ≈ 42.00)
+
+	-- Orden 20 (Factura 20: subTotal 55.00, descuento 10.00)
+	(20, 14, 3, 10.00),-- Pescado Fresco: 3 * 10.00 = 30.00
+	(20, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
+	(20, 8, 4, 2.50),  -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 55.00)
+
+	-- Orden 21 (Factura 21: subTotal 38.00)
+	(21, 3, 4, 4.00),  -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(21, 6, 3, 3.50),  -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(21, 9, 6, 1.80),  -- Pan Bimbo Integral: 6 * 1.80 = 10.80 (Total: 37.30 ≈ 38.00)
+
+	-- Orden 22 (Factura 22: subTotal 47.00, descuento 5.00)
+	(22, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
+	(22, 13, 1, 12.00),-- Queso Gouda: 1 * 12.00 = 12.00
+	(22, 24, 4, 3.50), -- Helado de Vainilla: 4 * 3.50 = 14.00 (Total: 47.00)
+
+	-- Orden 23 (Factura 23: subTotal 60.00)
+	(23, 12, 4, 8.50), -- Carne de Res: 4 * 8.50 = 34.00
+	(23, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
+	(23, 10, 5, 2.00), -- Cerveza Quilmes: 5 * 2.00 = 10.00 (Total: 59.00 ≈ 60.00)
+
+	-- Orden 24 (Factura 24: subTotal 35.00, descuento 5.00)
+	(24, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
+	(24, 8, 5, 2.50),  -- Galletas Oreo: 5 * 2.50 = 12.50
+	(24, 16, 8, 0.90), -- Agua Mineral: 8 * 0.90 = 7.20 (Total: 34.70 ≈ 35.00)
+
+	-- Orden 25 (Factura 25: subTotal 50.00)
+	(25, 14, 3, 10.00),-- Pescado Fresco: 3 * 10.00 = 30.00
+	(25, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50
+	(25, 23, 4, 1.80), -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 49.70 ≈ 50.00)
+
+	-- Orden 26 (Factura 26: subTotal 45.00, descuento 10.00)
+	(26, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
+	(26, 13, 1, 12.00),-- Queso Gouda: 1 * 12.00 = 12.00
+	(26, 24, 3, 3.50), -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 43.50 ≈ 45.00)
+
+	-- Orden 27 (Factura 27: subTotal 32.00)
+	(27, 1, 8, 1.50),  -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(27, 4, 6, 1.20),  -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
+	(27, 5, 10, 0.80), -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 32.00)
+
+	-- Orden 28 (Factura 28: subTotal 58.00, descuento 5.00)
+	(28, 12, 4, 8.50), -- Carne de Res: 4 * 8.50 = 34.00
+	(28, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
+	(28, 8, 3, 2.50),  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 56.50 ≈ 58.00)
+
+	-- Orden 29 (Factura 29: subTotal 40.00)
+	(29, 10, 10, 2.00),-- Cerveza Quilmes: 10 * 2.00 = 20.00
+	(29, 23, 5, 1.80), -- Papas Fritas: 5 * 1.80 = 9.00
+	(29, 15, 4, 2.50), -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 39.00 ≈ 40.00)
+
+	-- Orden 30 (Factura 30: subTotal 65.00, descuento 10.00)
+	(30, 14, 4, 10.00),-- Pescado Fresco: 4 * 10.00 = 40.00
+	(30, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
+	(30, 16, 2, 0.90), -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
+
+	-- Orden 31 (Factura 31: subTotal 38.00)
+	(31, 3, 4, 4.00),  -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(31, 6, 3, 3.50),  -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(31, 9, 6, 1.80),  -- Pan Bimbo Integral: 6 * 1.80 = 10.80 (Total: 37.30 ≈ 38.00)
+
+	-- Orden 32 (Factura 32: subTotal 52.00, descuento 5.00)
+	(32, 20, 4, 7.00), -- Filete de Pollo: 4 * 7.00 = 28.00
+	(32, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
+	(32, 8, 3, 2.50),  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 50.50 ≈ 52.00)
+
+	-- Orden 33 (Factura 33: subTotal 45.00)
+	(33, 12, 3, 8.50), -- Carne de Res: 3 * 8.50 = 25.50
+	(33, 15, 4, 2.50), -- Arroz Integral: 4 * 2.50 = 10.00
+	(33, 23, 5, 1.80), -- Papas Fritas: 5 * 1.80 = 9.00 (Total: 44.50 ≈ 45.00)
+
+	-- Orden 34 (Factura 34: subTotal 60.00, descuento 10.00)
+	(34, 14, 3, 10.00),-- Pescado Fresco: 3 * 10.00 = 30.00
+	(34, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
+	(34, 24, 4, 3.50), -- Helado de Vainilla: 4 * 3.50 = 14.00 (Total: 59.00 ≈ 60.00)
+
+	-- Orden 35 (Factura 35: subTotal 30.00)
+	(35, 1, 8, 1.50),  -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(35, 4, 6, 1.20),  -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
+	(35, 5, 10, 0.80), -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 30.00)
+
+	-- Orden 36 (Factura 36: subTotal 48.00, descuento 5.00)
+	(36, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
+	(36, 13, 1, 12.00),-- Queso Gouda: 1 * 12.00 = 12.00
+	(36, 24, 4, 3.50), -- Helado de Vainilla: 4 * 3.50 = 14.00 (Total: 47.00 ≈ 48.00)
+
+	-- Orden 37 (Factura 37: subTotal 55.00)
+	(37, 12, 4, 8.50), -- Carne de Res: 4 * 8.50 = 34.00
+	(37, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50
+	(37, 23, 4, 1.80), -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
+
+	-- Orden 38 (Factura 38: subTotal 42.00, descuento 5.00)
+	(38, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
+	(38, 8, 5, 2.50),  -- Galletas Oreo: 5 * 2.50 = 12.50
+	(38, 10, 6, 2.00), -- Cerveza Quilmes: 6 * 2.00 = 12.00 (Total: 39.50 ≈ 42.00)
+
+	-- Orden 39 (Factura 39: subTotal 35.00)
+	(39, 3, 4, 4.00),  -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(39, 6, 3, 3.50),  -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(39, 9, 5, 1.80),  -- Pan Bimbo Integral: 5 * 1.80 = 9.00 (Total: 35.50 ≈ 35.00)
+
+	-- Orden 40 (Factura 40: subTotal 50.00, descuento 10.00)
+	(40, 20, 4, 7.00), -- Filete de Pollo: 4 * 7.00 = 28.00
+	(40, 13, 1, 12.00),-- Queso Gouda: 1 * 12.00 = 12.00
+	(40, 24, 3, 3.50), -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
+
+	-- Orden 41 (Factura 41: subTotal 38.00)
+	(41, 10, 8, 2.00), -- Cerveza Quilmes: 8 * 2.00 = 16.00
+	(41, 23, 6, 1.80), -- Papas Fritas: 6 * 1.80 = 10.80
+	(41, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50 (Total: 39.30 ≈ 38.00)
+
+	-- Orden 42 (Factura 42: subTotal 45.00, descuento 5.00)
+	(42, 12, 3, 8.50), -- Carne de Res: 3 * 8.50 = 25.50
+	(42, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
+	(42, 8, 3, 2.50),  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 45.00)
+
+	-- Orden 43 (Factura 43: subTotal 60.00)
+	(43, 14, 4, 10.00),-- Pescado Fresco: 4 * 10.00 = 40.00
+	(43, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
+	(43, 10, 2, 2.00), -- Cerveza Quilmes: 2 * 2.00 = 4.00 (Total: 59.00 ≈ 60.00)
+
+	-- Orden 44 (Factura 44: subTotal 32.00, descuento 5.00)
+	(44, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
+	(44, 8, 4, 2.50),  -- Galletas Oreo: 4 * 2.50 = 10.00
+	(44, 16, 10, 0.90),-- Agua Mineral: 10 * 0.90 = 9.00 (Total: 31.00 ≈ 32.00)
+
+	-- Orden 45 (Factura 45: subTotal 48.00)
+	(45, 12, 3, 8.50), -- Carne de Res: 3 * 8.50 = 25.50
+	(45, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50
+	(45, 23, 5, 1.80), -- Papas Fritas: 5 * 1.80 = 9.00 (Total: 47.00 ≈ 48.00)
+
+	-- Orden 46 (Factura 46: subTotal 55.00, descuento 10.00)
+	(46, 20, 4, 7.00), -- Filete de Pollo: 4 * 7.00 = 28.00
+	(46, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
+	(46, 16, 3, 0.90), -- Agua Mineral: 3 * 0.90 = 2.70 (Total: 54.70 ≈ 55.00)
+
+	-- Orden 47 (Factura 47: subTotal 40.00)
+	(47, 10, 8, 2.00), -- Cerveza Quilmes: 8 * 2.00 = 16.00
+	(47, 23, 6, 1.80), -- Papas Fritas: 6 * 1.80 = 10.80
+	(47, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50 (Total: 39.30 ≈ 40.00)
+
+	-- Orden 48 (Factura 48: subTotal 65.00, descuento 5.00)
+	(48, 14, 4, 10.00),-- Pescado Fresco: 4 * 10.00 = 40.00
+	(48, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
+	(48, 24, 3, 3.50), -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 65.50 ≈ 65.00)
+
+	-- Orden 49 (Factura 49: subTotal 30.00)
+	(49, 1, 8, 1.50),  -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(49, 4, 6, 1.20),  -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
+	(49, 5, 10, 0.80), -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 30.00)
+
+    -- Orden 50 (Factura 50: subTotal 45.00, descuento 10.00)
+	(50, 12, 3, 8.50), -- Carne de Res: 3 * 8.50 = 25.50
+	(50, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
+	(50, 8, 3, 2.50),  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 45.00)
+
+	-- Factura 51 (subTotal 35.00)
+	(51, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
+	(51, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00
+	(51, 9, 6, 1.80),   -- Pan Bimbo Integral: 6 * 1.80 = 10.80 (Total: 33.80 ≈ 35.00)
+
+	-- Factura 52 (subTotal 50.00, descuento 5.00)
+	(52, 12, 3, 8.50),  -- Carne de Res: 3 * 8.50 = 25.50
+	(52, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
+	(52, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 50.50 ≈ 50.00)
+
+	-- Factura 53 (subTotal 40.00)
+	(53, 10, 10, 2.00), -- Cerveza Quilmes: 10 * 2.00 = 20.00
+	(53, 23, 6, 1.80),  -- Papas Fritas: 6 * 1.80 = 10.80
+	(53, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 40.80 ≈ 40.00)
+
+	-- Factura 54 (subTotal 55.00, descuento 10.00)
+	(54, 14, 3, 10.00), -- Pescado Fresco: 3 * 10.00 = 30.00
+	(54, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(54, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 55.50 ≈ 55.00)
+
+	-- Factura 55 (subTotal 30.00)
+	(55, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(55, 6, 2, 3.50),   -- Cereal Kelloggs Corn Flakes: 2 * 3.50 = 7.00
+	(55, 7, 3, 2.00),   -- Salsa de Tomate Heinz: 3 * 2.00 = 6.00 (Total: 29.00 ≈ 30.00)
+
+	-- Factura 56 (subTotal 45.00, descuento 5.00)
+	(56, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
+	(56, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
+	(56, 16, 10, 0.90), -- Agua Mineral: 10 * 0.90 = 9.00 (Total: 42.00 ≈ 45.00)
+
+	-- Factura 57 (subTotal 38.00)
+	(57, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(57, 4, 8, 1.20),   -- Leche Entera La Serenísima: 8 * 1.20 = 9.60
+	(57, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 36.00 ≈ 38.00)
+
+	-- Factura 58 (subTotal 60.00, descuento 10.00)
+	(58, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(58, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(58, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
+
+	-- Factura 59 (subTotal 32.00)
+	(59, 10, 6, 2.00),  -- Cerveza Quilmes: 6 * 2.00 = 12.00
+	(59, 23, 5, 1.80),  -- Papas Fritas: 5 * 1.80 = 9.00
+	(59, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 31.00 ≈ 32.00)
+
+	-- Factura 60 (subTotal 65.00, descuento 15.00)
+	(60, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
+	(60, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
+	(60, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
+
+	-- Factura 61 (subTotal 40.00)
+	(61, 3, 5, 4.00),   -- Nescafé Clásico: 5 * 4.00 = 20.00
+	(61, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(61, 7, 5, 2.00),   -- Salsa de Tomate Heinz: 5 * 2.00 = 10.00 (Total: 40.50 ≈ 40.00)
+
+	-- Factura 62 (subTotal 48.00, descuento 5.00)
+	(62, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
+	(62, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
+	(62, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 46.00 ≈ 48.00)
+
+	-- Factura 63 (subTotal 55.00)
+	(63, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(63, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50
+	(63, 23, 4, 1.80),  -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
+
+	-- Factura 64 (subTotal 42.00, descuento 5.00)
+	(64, 14, 2, 10.00), -- Pescado Fresco: 2 * 10.00 = 20.00
+	(64, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(64, 10, 3, 2.00),  -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 41.00 ≈ 42.00)
+
+	-- Factura 65 (subTotal 35.00)
+	(65, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(65, 4, 6, 1.20),   -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
+	(65, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 35.00)
+
+	-- Factura 66 (subTotal 50.00, descuento 10.00)
+	(66, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
+	(66, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
+	(66, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
+
+	-- Factura 67 (subTotal 38.00)
+	(67, 10, 8, 2.00),  -- Cerveza Quilmes: 8 * 2.00 = 16.00
+	(67, 23, 6, 1.80),  -- Papas Fritas: 6 * 1.80 = 10.80
+	(67, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50 (Total: 39.30 ≈ 38.00)
+
+	-- Factura 68 (subTotal 60.00, descuento 5.00)
+	(68, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(68, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(68, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
+
+	-- Factura 69 (subTotal 32.00)
+	(69, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(69, 6, 2, 3.50),   -- Cereal Kelloggs Corn Flakes: 2 * 3.50 = 7.00
+	(69, 7, 4, 2.00),   -- Salsa de Tomate Heinz: 4 * 2.00 = 8.00 (Total: 31.00 ≈ 32.00)
+
+	-- Factura 70 (subTotal 65.00, descuento 10.00)
+	(70, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
+	(70, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
+	(70, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
+
+	-- Factura 71 (subTotal 40.00)
+	(71, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
+	(71, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00
+	(71, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 37.40 ≈ 40.00)
+
+	-- Factura 72 (subTotal 48.00, descuento 5.00)
+	(72, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
+	(72, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
+	(72, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 46.00 ≈ 48.00)
+
+	-- Factura 73 (subTotal 55.00)
+	(73, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(73, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50
+	(73, 23, 4, 1.80),  -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
+
+	-- Factura 74 (subTotal 42.00, descuento 5.00)
+	(74, 14, 2, 10.00), -- Pescado Fresco: 2 * 10.00 = 20.00
+	(74, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(74, 10, 3, 2.00),  -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 41.00 ≈ 42.00)
+
+	-- Factura 75 (subTotal 35.00)
+	(75, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(75, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(75, 7, 4, 2.00),   -- Salsa de Tomate Heinz: 4 * 2.00 = 8.00 (Total: 34.50 ≈ 35.00)
+
+	-- Factura 76 (subTotal 50.00, descuento 10.00)
+	(76, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
+	(76, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
+	(76, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
+
+	-- Factura 77 (subTotal 38.00)
+	(77, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(77, 4, 8, 1.20),   -- Leche Entera La Serenísima: 8 * 1.20 = 9.60
+	(77, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 36.00 ≈ 38.00)
+
+	-- Factura 78 (subTotal 60.00, descuento 5.00)
+	(78, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(78, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(78, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
+
+	-- Factura 79 (subTotal 32.00)
+	(79, 10, 6, 2.00),  -- Cerveza Quilmes: 6 * 2.00 = 12.00
+	(79, 23, 5, 1.80),  -- Papas Fritas: 5 * 1.80 = 9.00
+	(79, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 31.00 ≈ 32.00)
+
+	-- Factura 80 (subTotal 65.00, descuento 10.00)
+	(80, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
+	(80, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
+	(80, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
+
+	-- Factura 81 (subTotal 40.00)
+	(81, 3, 5, 4.00),   -- Nescafé Clásico: 5 * 4.00 = 20.00
+	(81, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(81, 7, 5, 2.00),   -- Salsa de Tomate Heinz: 5 * 2.00 = 10.00 (Total: 40.50 ≈ 40.00)
+
+	-- Factura 82 (subTotal 48.00, descuento 5.00)
+	(82, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
+	(82, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
+	(82, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 46.00 ≈ 48.00)
+
+	-- Factura 83 (subTotal 55.00)
+	(83, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(83, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50
+	(83, 23, 4, 1.80),  -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
+
+	-- Factura 84 (subTotal 42.00, descuento 5.00)
+	(84, 14, 2, 10.00), -- Pescado Fresco: 2 * 10.00 = 20.00
+	(84, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(84, 10, 3, 2.00),  -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 41.00 ≈ 42.00)
+
+	-- Factura 85 (subTotal 35.00)
+	(85, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(85, 4, 6, 1.20),   -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
+	(85, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 35.00)
+
+	-- Factura 86 (subTotal 50.00, descuento 10.00)
+	(86, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
+	(86, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
+	(86, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
+
+	-- Factura 87 (subTotal 38.00)
+	(87, 10, 8, 2.00),  -- Cerveza Quilmes: 8 * 2.00 = 16.00
+	(87, 23, 6, 1.80),  -- Papas Fritas: 6 * 1.80 = 10.80
+	(87, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50 (Total: 39.30 ≈ 38.00)
+
+	-- Factura 88 (subTotal 60.00, descuento 5.00)
+	(88, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(88, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(88, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
+
+	-- Factura 89 (subTotal 32.00)
+	(89, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(89, 6, 2, 3.50),   -- Cereal Kelloggs Corn Flakes: 2 * 3.50 = 7.00
+	(89, 7, 4, 2.00),   -- Salsa de Tomate Heinz: 4 * 2.00 = 8.00 (Total: 31.00 ≈ 32.00)
+
+	-- Factura 90 (subTotal 65.00, descuento 10.00)
+	(90, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
+	(90, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
+	(90, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
+
+	-- Factura 91 (subTotal 40.00)
+	(91, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
+	(91, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00
+	(91, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 37.40 ≈ 40.00)
+
+	-- Factura 92 (subTotal 48.00)
+	(92, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
+	(92, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
+	(92, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 46.00 ≈ 48.00)
+
+	-- Factura 93 (subTotal 55.00)
+	(93, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(93, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50
+	(93, 23, 4, 1.80),  -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
+
+	-- Factura 94 (subTotal 42.00)
+	(94, 14, 2, 10.00), -- Pescado Fresco: 2 * 10.00 = 20.00
+	(94, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(94, 10, 3, 2.00),  -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 41.00 ≈ 42.00)
+
+	-- Factura 95 (subTotal 35.00)
+	(95, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
+	(95, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
+	(95, 7, 4, 2.00),   -- Salsa de Tomate Heinz: 4 * 2.00 = 8.00 (Total: 34.50 ≈ 35.00)
+
+	-- Factura 96 (subTotal 50.00)
+	(96, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
+	(96, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
+	(96, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
+
+	-- Factura 97 (subTotal 38.00)
+	(97, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
+	(97, 4, 8, 1.20),   -- Leche Entera La Serenísima: 8 * 1.20 = 9.60
+	(97, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 36.00 ≈ 38.00)
+
+	-- Factura 98 (subTotal 60.00)
+	(98, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
+	(98, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
+	(98, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
+
+	-- Factura 99 (subTotal 32.00)
+	(99, 10, 6, 2.00),  -- Cerveza Quilmes: 6 * 2.00 = 12.00
+	(99, 23, 5, 1.80),  -- Papas Fritas: 5 * 1.80 = 9.00
+	(99, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 31.00 ≈ 32.00)
+
+	-- Factura 100 (subTotal 65.00)
+	(100, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
+	(100, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
+	(100, 16, 2, 0.90), -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
+
+    -- Factura 101 (subTotal 90.00)
+    (101, 210, 1, 90.00), -- Freidora de Aire Gama
+
+    -- Factura 102 (subTotal 80.00)
+    (102, 203, 1, 80.00), -- Horno Eléctrico Gama
+
+    -- Factura 103 (subTotal 40.00)
+    (103, 205, 1, 40.00), -- Batidora de Mano Gama
+
+    -- Factura 104 (subTotal 45.00)
+    (104, 207, 1, 45.00), -- Plancha a Vapor Gama
+
+    -- Factura 105: Horno Eléctrico Gama
+    (105, 203, 1, 80.00), 
+
+    -- Factura 106: Batidora de Mano Gama (2 unidades)
+    (106, 205, 2, 40.00), 
+
+    -- Factura 107: Plancha a Vapor Gama
+    (107, 207, 1, 45.00), 
+
+    -- Factura 108: Freidora de Aire Gama
+    (108, 210, 1, 90.00), 
+
+    -- Factura 109: Tostadora Hogar
+    (109, 208, 1, 30.00), 
+
+    -- Factura 110: Horno Eléctrico Gama
+    (110, 203, 1, 80.00), 
+
+    -- Factura 111: Batidora de Mano Gama
+    (111, 205, 1, 40.00), 
+
+    -- Factura 112: Plancha a Vapor Gama (2 unidades)
+    (112, 207, 2, 45.00), 
+
+    (113, 213, 1, 130.00), (113, 201, 1, 50.00), -- Juan
+    (114, 220, 1, 60.00), (114, 204, 1, 60.00), -- Juan
+    (115, 223, 1, 120.00), (115, 205, 2, 40.00), -- Juan
+    (116, 225, 2, 50.00), (116, 201, 1, 50.00), -- Juan
+    (117, 213, 1, 130.00), (117, 204, 1, 60.00), -- Maria
+    (118, 220, 1, 60.00), (118, 205, 2, 40.00), -- Maria
+    (119, 223, 1, 120.00), (119, 201, 1, 50.00), -- Maria
+    (120, 225, 2, 50.00), (120, 204, 1, 60.00), -- Maria
+    (121, 213, 1, 130.00), (121, 205, 2, 40.00), -- Carlos
+    (122, 220, 1, 60.00), (122, 201, 1, 50.00), -- Carlos
+    (123, 223, 1, 120.00), (123, 204, 1, 60.00), -- Carlos
+    (124, 225, 2, 50.00), (124, 205, 2, 40.00), -- Carlos
+    (125, 213, 1, 130.00), (125, 201, 1, 50.00), -- Ana
+    (126, 220, 1, 60.00), (126, 204, 1, 60.00), -- Ana
+    (127, 223, 1, 120.00), (127, 205, 2, 40.00); -- Ana
+
 -- Tipo de envio
 SET IDENTITY_INSERT TipoEnvio ON;
 INSERT INTO TipoEnvio (id, nombreEnvio, tiempoEstimadoEntrega, costoEnvio) VALUES
@@ -1531,555 +2085,6 @@ INSERT INTO OrdenDetalle (ordenId, productoId, cantidad, precioPor) VALUES
 	(50, 12, 3, 8.50), -- Carne de Res: 3 * 8.50 = 25.50
 	(50, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
 	(50, 8, 3, 2.50);  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 45.00)
-
--- Detalle de factura
-INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES
-	-- Orden 1 (Factura 1: subTotal 30.00)
-	(1, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
-	(1, 2, 8, 1.40),   -- Pepsi Max: 8 * 1.40 = 11.20
-	(1, 4, 3, 1.20),   -- Leche Entera La Serenísima: 3 * 1.20 = 3.60 (Total: 29.80 ≈ 30.00)
-
-	-- Orden 2 (Factura 2: subTotal 45.00, descuento 5.00)
-	(2, 12, 3, 8.50),  -- Carne de Res: 3 * 8.50 = 25.50
-	(2, 11, 4, 3.00),  -- Manzanas: 4 * 3.00 = 12.00
-	(2, 8, 3, 2.50),   -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 45.00)
-
-	-- Orden 3 (Factura 3: subTotal 25.00)
-	(3, 1, 6, 1.50),   -- Coca-Cola Original: 6 * 1.50 = 9.00
-	(3, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00
-	(3, 9, 4, 1.80),   -- Pan Bimbo Integral: 4 * 1.80 = 7.20 (Total: 24.20 ≈ 25.00)
-
-	-- Orden 4 (Factura 4: subTotal 60.00, descuento 10.00)
-	(4, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(4, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
-	(4, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 59.80 ≈ 60.00)
-
-	-- Orden 5 (Factura 5: subTotal 35.00)
-	(5, 3, 5, 4.00),   -- Nescafé Clásico: 5 * 4.00 = 20.00
-	(5, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(5, 7, 2, 2.00),   -- Salsa de Tomate Heinz: 2 * 2.00 = 4.00 (Total: 34.50 ≈ 35.00)
-
-	-- Orden 6 (Factura 6: subTotal 50.00, descuento 5.00)
-	(6, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
-	(6, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
-	(6, 8, 3, 2.50),   -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 50.50 ≈ 50.00)
-
-	-- Orden 7 (Factura 7: subTotal 40.00)
-	(7, 10, 10, 2.00), -- Cerveza Quilmes: 10 * 2.00 = 20.00
-	(7, 23, 5, 1.80),  -- Papas Fritas: 5 * 1.80 = 9.00
-	(7, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 39.00 ≈ 40.00)
-
-	-- Orden 8 (Factura 8: subTotal 55.00, descuento 10.00)
-	(8, 14, 3, 10.00), -- Pescado Fresco: 3 * 10.00 = 30.00
-	(8, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(8, 24, 2, 3.50),  -- Helado de Vainilla: 2 * 3.50 = 7.00 (Total: 52.00 ≈ 55.00)
-
-	-- Orden 9 (Factura 9: subTotal 28.00)
-	(9, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(9, 4, 6, 1.20),   -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
-	(9, 5, 8, 0.80),   -- Yogur Danone Natural: 8 * 0.80 = 6.40 (Total: 25.60 ≈ 28.00)
-
-	-- Orden 10 (Factura 10: subTotal 70.00, descuento 15.00)
-	(10, 12, 5, 8.50), -- Carne de Res: 5 * 8.50 = 42.50
-	(10, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
-	(10, 8, 2, 2.50),  -- Galletas Oreo: 2 * 2.50 = 5.00 (Total: 71.50 ≈ 70.00)
-
-	-- Orden 11 (Factura 11: subTotal 33.00)
-	(11, 3, 4, 4.00),  -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(11, 6, 3, 3.50),  -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(11, 9, 3, 1.80),  -- Pan Bimbo Integral: 3 * 1.80 = 5.40 (Total: 31.90 ≈ 33.00)
-
-	-- Orden 12 (Factura 12: subTotal 48.00, descuento 5.00)
-	(12, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
-	(12, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
-	(12, 24, 3, 3.50), -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 46.50 ≈ 48.00)
-
-	-- Orden 13 (Factura 13: subTotal 62.00)
-	(13, 14, 4, 10.00),-- Pescado Fresco: 4 * 10.00 = 40.00
-	(13, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
-	(13, 10, 3, 2.00), -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 61.00 ≈ 62.00)
-
-	-- Orden 14 (Factura 14: subTotal 39.00, descuento 5.00)
-	(14, 12, 2, 8.50), -- Carne de Res: 2 * 8.50 = 17.00
-	(14, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
-	(14, 8, 4, 2.50),  -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 39.00)
-
-	-- Orden 15 (Factura 15: subTotal 45.00)
-	(15, 3, 5, 4.00),  -- Nescafé Clásico: 5 * 4.00 = 20.00
-	(15, 6, 4, 3.50),  -- Cereal Kelloggs Corn Flakes: 4 * 3.50 = 14.00
-	(15, 15, 4, 2.50), -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 44.00 ≈ 45.00)
-
-	-- Orden 16 (Factura 16: subTotal 50.00, descuento 10.00)
-	(16, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
-	(16, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
-	(16, 16, 5, 0.90), -- Agua Mineral: 5 * 0.90 = 4.50 (Total: 49.50 ≈ 50.00)
-
-	-- Orden 17 (Factura 17: subTotal 30.00)
-	(17, 1, 8, 1.50),  -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(17, 4, 6, 1.20),  -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
-	(17, 5, 10, 0.80), -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 30.00)
-
-	-- Orden 18 (Factura 18: subTotal 65.00, descuento 5.00)
-	(18, 12, 5, 8.50), -- Carne de Res: 5 * 8.50 = 42.50
-	(18, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
-	(18, 24, 2, 3.50), -- Helado de Vainilla: 2 * 3.50 = 7.00 (Total: 64.50 ≈ 65.00)
-
-	-- Orden 19 (Factura 19: subTotal 42.00)
-	(19, 10, 8, 2.00), -- Cerveza Quilmes: 8 * 2.00 = 16.00
-	(19, 23, 6, 1.80), -- Papas Fritas: 6 * 1.80 = 10.80
-	(19, 15, 6, 2.50), -- Arroz Integral: 6 * 2.50 = 15.00 (Total: 41.80 ≈ 42.00)
-
-	-- Orden 20 (Factura 20: subTotal 55.00, descuento 10.00)
-	(20, 14, 3, 10.00),-- Pescado Fresco: 3 * 10.00 = 30.00
-	(20, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
-	(20, 8, 4, 2.50),  -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 55.00)
-
-	-- Orden 21 (Factura 21: subTotal 38.00)
-	(21, 3, 4, 4.00),  -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(21, 6, 3, 3.50),  -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(21, 9, 6, 1.80),  -- Pan Bimbo Integral: 6 * 1.80 = 10.80 (Total: 37.30 ≈ 38.00)
-
-	-- Orden 22 (Factura 22: subTotal 47.00, descuento 5.00)
-	(22, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
-	(22, 13, 1, 12.00),-- Queso Gouda: 1 * 12.00 = 12.00
-	(22, 24, 4, 3.50), -- Helado de Vainilla: 4 * 3.50 = 14.00 (Total: 47.00)
-
-	-- Orden 23 (Factura 23: subTotal 60.00)
-	(23, 12, 4, 8.50), -- Carne de Res: 4 * 8.50 = 34.00
-	(23, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
-	(23, 10, 5, 2.00), -- Cerveza Quilmes: 5 * 2.00 = 10.00 (Total: 59.00 ≈ 60.00)
-
-	-- Orden 24 (Factura 24: subTotal 35.00, descuento 5.00)
-	(24, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
-	(24, 8, 5, 2.50),  -- Galletas Oreo: 5 * 2.50 = 12.50
-	(24, 16, 8, 0.90), -- Agua Mineral: 8 * 0.90 = 7.20 (Total: 34.70 ≈ 35.00)
-
-	-- Orden 25 (Factura 25: subTotal 50.00)
-	(25, 14, 3, 10.00),-- Pescado Fresco: 3 * 10.00 = 30.00
-	(25, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50
-	(25, 23, 4, 1.80), -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 49.70 ≈ 50.00)
-
-	-- Orden 26 (Factura 26: subTotal 45.00, descuento 10.00)
-	(26, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
-	(26, 13, 1, 12.00),-- Queso Gouda: 1 * 12.00 = 12.00
-	(26, 24, 3, 3.50), -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 43.50 ≈ 45.00)
-
-	-- Orden 27 (Factura 27: subTotal 32.00)
-	(27, 1, 8, 1.50),  -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(27, 4, 6, 1.20),  -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
-	(27, 5, 10, 0.80), -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 32.00)
-
-	-- Orden 28 (Factura 28: subTotal 58.00, descuento 5.00)
-	(28, 12, 4, 8.50), -- Carne de Res: 4 * 8.50 = 34.00
-	(28, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
-	(28, 8, 3, 2.50),  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 56.50 ≈ 58.00)
-
-	-- Orden 29 (Factura 29: subTotal 40.00)
-	(29, 10, 10, 2.00),-- Cerveza Quilmes: 10 * 2.00 = 20.00
-	(29, 23, 5, 1.80), -- Papas Fritas: 5 * 1.80 = 9.00
-	(29, 15, 4, 2.50), -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 39.00 ≈ 40.00)
-
-	-- Orden 30 (Factura 30: subTotal 65.00, descuento 10.00)
-	(30, 14, 4, 10.00),-- Pescado Fresco: 4 * 10.00 = 40.00
-	(30, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
-	(30, 16, 2, 0.90), -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
-
-	-- Orden 31 (Factura 31: subTotal 38.00)
-	(31, 3, 4, 4.00),  -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(31, 6, 3, 3.50),  -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(31, 9, 6, 1.80),  -- Pan Bimbo Integral: 6 * 1.80 = 10.80 (Total: 37.30 ≈ 38.00)
-
-	-- Orden 32 (Factura 32: subTotal 52.00, descuento 5.00)
-	(32, 20, 4, 7.00), -- Filete de Pollo: 4 * 7.00 = 28.00
-	(32, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
-	(32, 8, 3, 2.50),  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 50.50 ≈ 52.00)
-
-	-- Orden 33 (Factura 33: subTotal 45.00)
-	(33, 12, 3, 8.50), -- Carne de Res: 3 * 8.50 = 25.50
-	(33, 15, 4, 2.50), -- Arroz Integral: 4 * 2.50 = 10.00
-	(33, 23, 5, 1.80), -- Papas Fritas: 5 * 1.80 = 9.00 (Total: 44.50 ≈ 45.00)
-
-	-- Orden 34 (Factura 34: subTotal 60.00, descuento 10.00)
-	(34, 14, 3, 10.00),-- Pescado Fresco: 3 * 10.00 = 30.00
-	(34, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
-	(34, 24, 4, 3.50), -- Helado de Vainilla: 4 * 3.50 = 14.00 (Total: 59.00 ≈ 60.00)
-
-	-- Orden 35 (Factura 35: subTotal 30.00)
-	(35, 1, 8, 1.50),  -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(35, 4, 6, 1.20),  -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
-	(35, 5, 10, 0.80), -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 30.00)
-
-	-- Orden 36 (Factura 36: subTotal 48.00, descuento 5.00)
-	(36, 20, 3, 7.00), -- Filete de Pollo: 3 * 7.00 = 21.00
-	(36, 13, 1, 12.00),-- Queso Gouda: 1 * 12.00 = 12.00
-	(36, 24, 4, 3.50), -- Helado de Vainilla: 4 * 3.50 = 14.00 (Total: 47.00 ≈ 48.00)
-
-	-- Orden 37 (Factura 37: subTotal 55.00)
-	(37, 12, 4, 8.50), -- Carne de Res: 4 * 8.50 = 34.00
-	(37, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50
-	(37, 23, 4, 1.80), -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
-
-	-- Orden 38 (Factura 38: subTotal 42.00, descuento 5.00)
-	(38, 11, 5, 3.00), -- Manzanas: 5 * 3.00 = 15.00
-	(38, 8, 5, 2.50),  -- Galletas Oreo: 5 * 2.50 = 12.50
-	(38, 10, 6, 2.00), -- Cerveza Quilmes: 6 * 2.00 = 12.00 (Total: 39.50 ≈ 42.00)
-
-	-- Orden 39 (Factura 39: subTotal 35.00)
-	(39, 3, 4, 4.00),  -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(39, 6, 3, 3.50),  -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(39, 9, 5, 1.80),  -- Pan Bimbo Integral: 5 * 1.80 = 9.00 (Total: 35.50 ≈ 35.00)
-
-	-- Orden 40 (Factura 40: subTotal 50.00, descuento 10.00)
-	(40, 20, 4, 7.00), -- Filete de Pollo: 4 * 7.00 = 28.00
-	(40, 13, 1, 12.00),-- Queso Gouda: 1 * 12.00 = 12.00
-	(40, 24, 3, 3.50), -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
-
-	-- Orden 41 (Factura 41: subTotal 38.00)
-	(41, 10, 8, 2.00), -- Cerveza Quilmes: 8 * 2.00 = 16.00
-	(41, 23, 6, 1.80), -- Papas Fritas: 6 * 1.80 = 10.80
-	(41, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50 (Total: 39.30 ≈ 38.00)
-
-	-- Orden 42 (Factura 42: subTotal 45.00, descuento 5.00)
-	(42, 12, 3, 8.50), -- Carne de Res: 3 * 8.50 = 25.50
-	(42, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
-	(42, 8, 3, 2.50),  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 45.00)
-
-	-- Orden 43 (Factura 43: subTotal 60.00)
-	(43, 14, 4, 10.00),-- Pescado Fresco: 4 * 10.00 = 40.00
-	(43, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
-	(43, 10, 2, 2.00), -- Cerveza Quilmes: 2 * 2.00 = 4.00 (Total: 59.00 ≈ 60.00)
-
-	-- Orden 44 (Factura 44: subTotal 32.00, descuento 5.00)
-	(44, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
-	(44, 8, 4, 2.50),  -- Galletas Oreo: 4 * 2.50 = 10.00
-	(44, 16, 10, 0.90),-- Agua Mineral: 10 * 0.90 = 9.00 (Total: 31.00 ≈ 32.00)
-
-	-- Orden 45 (Factura 45: subTotal 48.00)
-	(45, 12, 3, 8.50), -- Carne de Res: 3 * 8.50 = 25.50
-	(45, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50
-	(45, 23, 5, 1.80), -- Papas Fritas: 5 * 1.80 = 9.00 (Total: 47.00 ≈ 48.00)
-
-	-- Orden 46 (Factura 46: subTotal 55.00, descuento 10.00)
-	(46, 20, 4, 7.00), -- Filete de Pollo: 4 * 7.00 = 28.00
-	(46, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
-	(46, 16, 3, 0.90), -- Agua Mineral: 3 * 0.90 = 2.70 (Total: 54.70 ≈ 55.00)
-
-	-- Orden 47 (Factura 47: subTotal 40.00)
-	(47, 10, 8, 2.00), -- Cerveza Quilmes: 8 * 2.00 = 16.00
-	(47, 23, 6, 1.80), -- Papas Fritas: 6 * 1.80 = 10.80
-	(47, 15, 5, 2.50), -- Arroz Integral: 5 * 2.50 = 12.50 (Total: 39.30 ≈ 40.00)
-
-	-- Orden 48 (Factura 48: subTotal 65.00, descuento 5.00)
-	(48, 14, 4, 10.00),-- Pescado Fresco: 4 * 10.00 = 40.00
-	(48, 19, 1, 15.00),-- Queso Cheddar: 1 * 15.00 = 15.00
-	(48, 24, 3, 3.50), -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 65.50 ≈ 65.00)
-
-	-- Orden 49 (Factura 49: subTotal 30.00)
-	(49, 1, 8, 1.50),  -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(49, 4, 6, 1.20),  -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
-	(49, 5, 10, 0.80), -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 30.00)
-
-	-- Factura 51 (subTotal 35.00)
-	(51, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
-	(51, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00
-	(51, 9, 6, 1.80),   -- Pan Bimbo Integral: 6 * 1.80 = 10.80 (Total: 33.80 ≈ 35.00)
-
-	-- Factura 52 (subTotal 50.00, descuento 5.00)
-	(52, 12, 3, 8.50),  -- Carne de Res: 3 * 8.50 = 25.50
-	(52, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
-	(52, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 50.50 ≈ 50.00)
-
-	-- Factura 53 (subTotal 40.00)
-	(53, 10, 10, 2.00), -- Cerveza Quilmes: 10 * 2.00 = 20.00
-	(53, 23, 6, 1.80),  -- Papas Fritas: 6 * 1.80 = 10.80
-	(53, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 40.80 ≈ 40.00)
-
-	-- Factura 54 (subTotal 55.00, descuento 10.00)
-	(54, 14, 3, 10.00), -- Pescado Fresco: 3 * 10.00 = 30.00
-	(54, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(54, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 55.50 ≈ 55.00)
-
-	-- Factura 55 (subTotal 30.00)
-	(55, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(55, 6, 2, 3.50),   -- Cereal Kelloggs Corn Flakes: 2 * 3.50 = 7.00
-	(55, 7, 3, 2.00),   -- Salsa de Tomate Heinz: 3 * 2.00 = 6.00 (Total: 29.00 ≈ 30.00)
-
-	-- Factura 56 (subTotal 45.00, descuento 5.00)
-	(56, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
-	(56, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
-	(56, 16, 10, 0.90), -- Agua Mineral: 10 * 0.90 = 9.00 (Total: 42.00 ≈ 45.00)
-
-	-- Factura 57 (subTotal 38.00)
-	(57, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(57, 4, 8, 1.20),   -- Leche Entera La Serenísima: 8 * 1.20 = 9.60
-	(57, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 36.00 ≈ 38.00)
-
-	-- Factura 58 (subTotal 60.00, descuento 10.00)
-	(58, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(58, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(58, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
-
-	-- Factura 59 (subTotal 32.00)
-	(59, 10, 6, 2.00),  -- Cerveza Quilmes: 6 * 2.00 = 12.00
-	(59, 23, 5, 1.80),  -- Papas Fritas: 5 * 1.80 = 9.00
-	(59, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 31.00 ≈ 32.00)
-
-	-- Factura 60 (subTotal 65.00, descuento 15.00)
-	(60, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
-	(60, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
-	(60, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
-
-	-- Factura 61 (subTotal 40.00)
-	(61, 3, 5, 4.00),   -- Nescafé Clásico: 5 * 4.00 = 20.00
-	(61, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(61, 7, 5, 2.00),   -- Salsa de Tomate Heinz: 5 * 2.00 = 10.00 (Total: 40.50 ≈ 40.00)
-
-	-- Factura 62 (subTotal 48.00, descuento 5.00)
-	(62, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
-	(62, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
-	(62, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 46.00 ≈ 48.00)
-
-	-- Factura 63 (subTotal 55.00)
-	(63, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(63, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50
-	(63, 23, 4, 1.80),  -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
-
-	-- Factura 64 (subTotal 42.00, descuento 5.00)
-	(64, 14, 2, 10.00), -- Pescado Fresco: 2 * 10.00 = 20.00
-	(64, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(64, 10, 3, 2.00),  -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 41.00 ≈ 42.00)
-
-	-- Factura 65 (subTotal 35.00)
-	(65, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(65, 4, 6, 1.20),   -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
-	(65, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 35.00)
-
-	-- Factura 66 (subTotal 50.00, descuento 10.00)
-	(66, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
-	(66, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
-	(66, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
-
-	-- Factura 67 (subTotal 38.00)
-	(67, 10, 8, 2.00),  -- Cerveza Quilmes: 8 * 2.00 = 16.00
-	(67, 23, 6, 1.80),  -- Papas Fritas: 6 * 1.80 = 10.80
-	(67, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50 (Total: 39.30 ≈ 38.00)
-
-	-- Factura 68 (subTotal 60.00, descuento 5.00)
-	(68, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(68, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(68, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
-
-	-- Factura 69 (subTotal 32.00)
-	(69, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(69, 6, 2, 3.50),   -- Cereal Kelloggs Corn Flakes: 2 * 3.50 = 7.00
-	(69, 7, 4, 2.00),   -- Salsa de Tomate Heinz: 4 * 2.00 = 8.00 (Total: 31.00 ≈ 32.00)
-
-	-- Factura 70 (subTotal 65.00, descuento 10.00)
-	(70, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
-	(70, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
-	(70, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
-
-	-- Factura 71 (subTotal 40.00)
-	(71, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
-	(71, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00
-	(71, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 37.40 ≈ 40.00)
-
-	-- Factura 72 (subTotal 48.00, descuento 5.00)
-	(72, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
-	(72, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
-	(72, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 46.00 ≈ 48.00)
-
-	-- Factura 73 (subTotal 55.00)
-	(73, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(73, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50
-	(73, 23, 4, 1.80),  -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
-
-	-- Factura 74 (subTotal 42.00, descuento 5.00)
-	(74, 14, 2, 10.00), -- Pescado Fresco: 2 * 10.00 = 20.00
-	(74, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(74, 10, 3, 2.00),  -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 41.00 ≈ 42.00)
-
-	-- Factura 75 (subTotal 35.00)
-	(75, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(75, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(75, 7, 4, 2.00),   -- Salsa de Tomate Heinz: 4 * 2.00 = 8.00 (Total: 34.50 ≈ 35.00)
-
-	-- Factura 76 (subTotal 50.00, descuento 10.00)
-	(76, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
-	(76, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
-	(76, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
-
-	-- Factura 77 (subTotal 38.00)
-	(77, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(77, 4, 8, 1.20),   -- Leche Entera La Serenísima: 8 * 1.20 = 9.60
-	(77, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 36.00 ≈ 38.00)
-
-	-- Factura 78 (subTotal 60.00, descuento 5.00)
-	(78, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(78, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(78, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
-
-	-- Factura 79 (subTotal 32.00)
-	(79, 10, 6, 2.00),  -- Cerveza Quilmes: 6 * 2.00 = 12.00
-	(79, 23, 5, 1.80),  -- Papas Fritas: 5 * 1.80 = 9.00
-	(79, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 31.00 ≈ 32.00)
-
-	-- Factura 80 (subTotal 65.00, descuento 10.00)
-	(80, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
-	(80, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
-	(80, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
-
-	-- Factura 81 (subTotal 40.00)
-	(81, 3, 5, 4.00),   -- Nescafé Clásico: 5 * 4.00 = 20.00
-	(81, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(81, 7, 5, 2.00),   -- Salsa de Tomate Heinz: 5 * 2.00 = 10.00 (Total: 40.50 ≈ 40.00)
-
-	-- Factura 82 (subTotal 48.00, descuento 5.00)
-	(82, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
-	(82, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
-	(82, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 46.00 ≈ 48.00)
-
-	-- Factura 83 (subTotal 55.00)
-	(83, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(83, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50
-	(83, 23, 4, 1.80),  -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
-
-	-- Factura 84 (subTotal 42.00, descuento 5.00)
-	(84, 14, 2, 10.00), -- Pescado Fresco: 2 * 10.00 = 20.00
-	(84, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(84, 10, 3, 2.00),  -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 41.00 ≈ 42.00)
-
-	-- Factura 85 (subTotal 35.00)
-	(85, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(85, 4, 6, 1.20),   -- Leche Entera La Serenísima: 6 * 1.20 = 7.20
-	(85, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00 (Total: 27.20 ≈ 35.00)
-
-	-- Factura 86 (subTotal 50.00, descuento 10.00)
-	(86, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
-	(86, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
-	(86, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
-
-	-- Factura 87 (subTotal 38.00)
-	(87, 10, 8, 2.00),  -- Cerveza Quilmes: 8 * 2.00 = 16.00
-	(87, 23, 6, 1.80),  -- Papas Fritas: 6 * 1.80 = 10.80
-	(87, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50 (Total: 39.30 ≈ 38.00)
-
-	-- Factura 88 (subTotal 60.00, descuento 5.00)
-	(88, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(88, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(88, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
-
-	-- Factura 89 (subTotal 32.00)
-	(89, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(89, 6, 2, 3.50),   -- Cereal Kelloggs Corn Flakes: 2 * 3.50 = 7.00
-	(89, 7, 4, 2.00),   -- Salsa de Tomate Heinz: 4 * 2.00 = 8.00 (Total: 31.00 ≈ 32.00)
-
-	-- Factura 90 (subTotal 65.00, descuento 10.00)
-	(90, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
-	(90, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
-	(90, 16, 2, 0.90),  -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
-
-	-- Factura 91 (subTotal 40.00)
-	(91, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
-	(91, 5, 10, 0.80),  -- Yogur Danone Natural: 10 * 0.80 = 8.00
-	(91, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 37.40 ≈ 40.00)
-
-	-- Factura 92 (subTotal 48.00)
-	(92, 20, 3, 7.00),  -- Filete de Pollo: 3 * 7.00 = 21.00
-	(92, 11, 5, 3.00),  -- Manzanas: 5 * 3.00 = 15.00
-	(92, 8, 4, 2.50),   -- Galletas Oreo: 4 * 2.50 = 10.00 (Total: 46.00 ≈ 48.00)
-
-	-- Factura 93 (subTotal 55.00)
-	(93, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(93, 15, 5, 2.50),  -- Arroz Integral: 5 * 2.50 = 12.50
-	(93, 23, 4, 1.80),  -- Papas Fritas: 4 * 1.80 = 7.20 (Total: 53.70 ≈ 55.00)
-
-	-- Factura 94 (subTotal 42.00)
-	(94, 14, 2, 10.00), -- Pescado Fresco: 2 * 10.00 = 20.00
-	(94, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(94, 10, 3, 2.00),  -- Cerveza Quilmes: 3 * 2.00 = 6.00 (Total: 41.00 ≈ 42.00)
-
-	-- Factura 95 (subTotal 35.00)
-	(95, 3, 4, 4.00),   -- Nescafé Clásico: 4 * 4.00 = 16.00
-	(95, 6, 3, 3.50),   -- Cereal Kelloggs Corn Flakes: 3 * 3.50 = 10.50
-	(95, 7, 4, 2.00),   -- Salsa de Tomate Heinz: 4 * 2.00 = 8.00 (Total: 34.50 ≈ 35.00)
-
-	-- Factura 96 (subTotal 50.00)
-	(96, 20, 4, 7.00),  -- Filete de Pollo: 4 * 7.00 = 28.00
-	(96, 13, 1, 12.00), -- Queso Gouda: 1 * 12.00 = 12.00
-	(96, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 50.50 ≈ 50.00)
-
-	-- Factura 97 (subTotal 38.00)
-	(97, 1, 8, 1.50),   -- Coca-Cola Original: 8 * 1.50 = 12.00
-	(97, 4, 8, 1.20),   -- Leche Entera La Serenísima: 8 * 1.20 = 9.60
-	(97, 9, 8, 1.80),   -- Pan Bimbo Integral: 8 * 1.80 = 14.40 (Total: 36.00 ≈ 38.00)
-
-	-- Factura 98 (subTotal 60.00)
-	(98, 12, 4, 8.50),  -- Carne de Res: 4 * 8.50 = 34.00
-	(98, 19, 1, 15.00), -- Queso Cheddar: 1 * 15.00 = 15.00
-	(98, 24, 3, 3.50),  -- Helado de Vainilla: 3 * 3.50 = 10.50 (Total: 59.50 ≈ 60.00)
-
-	-- Factura 99 (subTotal 32.00)
-	(99, 10, 6, 2.00),  -- Cerveza Quilmes: 6 * 2.00 = 12.00
-	(99, 23, 5, 1.80),  -- Papas Fritas: 5 * 1.80 = 9.00
-	(99, 15, 4, 2.50),  -- Arroz Integral: 4 * 2.50 = 10.00 (Total: 31.00 ≈ 32.00)
-
-	-- Factura 100 (subTotal 65.00)
-	(100, 14, 4, 10.00), -- Pescado Fresco: 4 * 10.00 = 40.00
-	(100, 13, 2, 12.00), -- Queso Gouda: 2 * 12.00 = 24.00
-	(100, 16, 2, 0.90), -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00)
-
-    -- Factura 101 (subTotal 90.00)
-    (101, 210, 1, 90.00), -- Freidora de Aire Gama
-
-    -- Factura 102 (subTotal 80.00)
-    (102, 203, 1, 80.00), -- Horno Eléctrico Gama
-
-    -- Factura 103 (subTotal 40.00)
-    (103, 205, 1, 40.00), -- Batidora de Mano Gama
-
-    -- Factura 104 (subTotal 45.00)
-    (104, 207, 1, 45.00), -- Plancha a Vapor Gama
-
-    -- Factura 105: Horno Eléctrico Gama
-    (105, 203, 1, 80.00), 
-
-    -- Factura 106: Batidora de Mano Gama (2 unidades)
-    (106, 205, 2, 40.00), 
-
-    -- Factura 107: Plancha a Vapor Gama
-    (107, 207, 1, 45.00), 
-
-    -- Factura 108: Freidora de Aire Gama
-    (108, 210, 1, 90.00), 
-
-    -- Factura 109: Tostadora Hogar
-    (109, 208, 1, 30.00), 
-
-    -- Factura 110: Horno Eléctrico Gama
-    (110, 203, 1, 80.00), 
-
-    -- Factura 111: Batidora de Mano Gama
-    (111, 205, 1, 40.00), 
-
-    -- Factura 112: Plancha a Vapor Gama (2 unidades)
-    (112, 207, 2, 45.00), 
-
-    (113, 213, 1, 130.00), (113, 201, 1, 50.00), -- Juan
-    (114, 220, 1, 60.00), (114, 204, 1, 60.00), -- Juan
-    (115, 223, 1, 120.00), (115, 205, 2, 40.00), -- Juan
-    (116, 225, 2, 50.00), (116, 201, 1, 50.00), -- Juan
-    (117, 213, 1, 130.00), (117, 204, 1, 60.00), -- Maria
-    (118, 220, 1, 60.00), (118, 205, 2, 40.00), -- Maria
-    (119, 223, 1, 120.00), (119, 201, 1, 50.00), -- Maria
-    (120, 225, 2, 50.00), (120, 204, 1, 60.00), -- Maria
-    (121, 213, 1, 130.00), (121, 205, 2, 40.00), -- Carlos
-    (122, 220, 1, 60.00), (122, 201, 1, 50.00), -- Carlos
-    (123, 223, 1, 120.00), (123, 204, 1, 60.00), -- Carlos
-    (124, 225, 2, 50.00), (124, 205, 2, 40.00), -- Carlos
-    (125, 213, 1, 130.00), (125, 201, 1, 50.00), -- Ana
-    (126, 220, 1, 60.00), (126, 204, 1, 60.00), -- Ana
-    (127, 223, 1, 120.00), (127, 205, 2, 40.00); -- Ana
 
 -- Venta fisica
 INSERT INTO VentaFisica (facturaId, sucursalId, empleadoId) VALUES
