@@ -1,42 +1,30 @@
 -- Trigger A
 -- Inventario
+CREATE TRIGGER ProductoInsertarInventario
+    ON Producto
+    AFTER INSERT -- Al tener datos nuevos
+    AS BEGIN
+        -- Crear registro en 0
+        INSERT INTO Inventario (productoId, cantidad)
+            SELECT 
+                id,
+                0
+            FROM inserted;
+    END;
+    GO
+
 CREATE TRIGGER ProveedorProductoInsertarInventario
     ON ProveedorProducto
     AFTER INSERT -- Al tener datos nuevos
     AS BEGIN
-        -- Si el producto no existe: crea el registro
-        IF NOT EXISTS (SELECT 1 FROM Inventario I JOIN inserted ON inserted.productoId = I.productoId)
-            BEGIN 
-                INSERT INTO Inventario (productoId, cantidad)
-                    SELECT 
-                        productoId, 
-                        cantidad
-                    FROM inserted;
-            END
-        -- else: actualizar cantidad
-        ELSE 
-            BEGIN
-                UPDATE Inventario
-                    SET cantidad = I.cantidad + inserted.cantidad
-                    FROM Inventario I
-                    JOIN inserted ON inserted.productoId = I.productoId;
-            END
+        UPDATE Inventario
+            SET cantidad = I.cantidad + inserted.cantidad
+            FROM Inventario I
+            JOIN inserted ON inserted.productoId = I.productoId;
     END;
     GO
 
 -- Factura 
--- Solo para ordenes online
--- Obviar el pago
--- Venta fisica pasa directo a factura no tiene orden detalle pero si factura detalle 
--- Al crear ordenOnline crear Factura en NULL, luego ir actualizando los montos cada vez que entra un orden detalle 
--- TOFIX: si no hay ordenDetalle no crear facturaDetalle y crear factura con los montos en NULL
--- TOFIX: con los inserts  ya le damos una factura a ordenOnline pero se se activa el trigger y mete otra ?
--- Proceso
--- Factura se inicializa en nulo
--- Busca entradas en factura detalle y opera 
--- Llena factura con el calculo 
--- Funcion recibe id factura 
--- Excepto costo envio porque venta fisica no tiene y no aplica para ellas
 CREATE TRIGGER OrdenOnlineInsertarFactura
     ON OrdenOnline
     AFTER INSERT -- Al tener datos nuevos
@@ -46,29 +34,32 @@ CREATE TRIGGER OrdenOnlineInsertarFactura
         -- Obtener ordenId, clienteId
         SELECT 
             @ordenId = id,
-            @clienteId = clienteId
+            @clienteId = clienteId,
+            @facturaId = facturaId
         FROM inserted;
 
-        -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
-        SET @subTotal = dbo.GetsubTotal(@ordenId);
-        SET @montoDescuentoTotal = dbo.GetmontoDescuentoTotal(@ordenId);
-        SET @porcentajeIVA = 16;
-        SET @montoIVA = dbo.GetmontoIVA(@ordenId);
-        SET @montoTotal = dbo.GetMontoTotal(@ordenId);
+        -- Si ya tiene una factura asociada
+        IF (@facturaId IS NOT NULL)
+            BEGIN
+                RETURN;
+            END;
 
-        -- Crear Factura
-        -- TOFIX: Validacion de que no tenga ninguna factura asociada
+        -- Crear Factura en NULL (exepto fechaEmision, clienteId, porcentajeIVA)
+        SET @subTotal = NULL;
+        SET @montoDescuentoTotal = NULL;
+        SET @porcentajeIVA = 16;
+        SET @montoIVA = NULL;
+        SET @montoTotal = NULL;
+        
         INSERT INTO Factura (fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal) VALUES 
             (GETDATE(), @clienteId, @subTotal, @montoDescuentoTotal, @porcentajeIVA, @montoIVA, @montoTotal)
         
-        -- Obtener facturaId
-        SELECT 
-            @facturaId = MAX(id)
-        FROM Factura;
+        -- Obtener lastId
+        DECLARE @facturaLastId INT = SCOPE_IDENTITY(); -- Ultimo ID generado
 
         -- Asociar OrdenOnline y Factura
         UPDATE OrdenOnline
-            SET facturaId = @facturaId
+            SET facturaId = @facturaLastId
             WHERE id = @ordenId;
     END;
     GO
@@ -78,10 +69,11 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaDetalle
     ON OrdenDetalle
     AFTER INSERT -- Al tener datos nuevos
     AS BEGIN
-        DECLARE @facturaId INT, @productoId INT, @cantidad INT, @precioPor DECIMAL(10,2);
+        DECLARE @ordenId INT, @facturaId INT, @productoId INT, @cantidad INT, @precioPor DECIMAL(10,2), @subTotal DECIMAL(10,2), @montoDescuentoTotal DECIMAL(10,2), @montoIVA DECIMAL(10,2), @montoTotal DECIMAL(10,2);
 
         -- Obtener facturaId, productoId, cantidad, precioPor
         SELECT 
+            @ordenId = OO.id,
             @facturaId = OO.facturaId,
             @productoId = inserted.productoId, 
             @cantidad = inserted.cantidad, 
@@ -90,8 +82,21 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaDetalle
         JOIN inserted ON inserted.ordenId = OO.id;
 
         -- Crear FacturaDetalle y copiar contenido de OrdenDetalle
+        -- TOFIX: validacion de que no tenga ninguna factura detalle asociada
         INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES 
             (@facturaId, @productoId, @cantidad, @precioPor)
+
+        -- Recalcular los valores totales de Factura
+        -- TOFIX: funcion recibe facturaId (excepto costo envio)
+        -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
+        SET @subTotal = dbo.GetsubTotal(@ordenId);
+        SET @montoDescuentoTotal = dbo.GetmontoDescuentoTotal(@ordenId);
+        SET @montoIVA = dbo.GetmontoIVA(@ordenId);
+        SET @montoTotal = dbo.GetMontoTotal(@ordenId);
+
+        UPDATE Factura
+            SET subTotal = @subTotal, montoDescuentoTotal = @montoDescuentoTotal, montoIVA = @montoIVA, montoTotal = @montoTotal
+            WHERE id = @facturaId;
     END;
     GO
 
@@ -139,9 +144,8 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
         FROM inserted
         JOIN Factura F ON F.id = inserted.facturaId;
 
-        -- TOFIX: 3 compras o 3 cantidades?
-        SELECT 
-            @cantidadComprasProducto = COUNT(*)
+        SELECT
+            @cantidadComprasProducto = SUM(cantidad)
         FROM FacturaDetalle FD
         JOIN Factura F ON F.id = FD.facturaId
         WHERE FD.productoId = @productoId
@@ -189,7 +193,6 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
             @productoId = productoId
         FROM inserted;
 
-        -- TOFIX: 3 busquedas o 3 cantidades?
         SELECT 
             @cantidadBusquedasProducto = COUNT(*)
         FROM HistorialClienteProducto 

@@ -1,4 +1,3 @@
-USE M9
 -- Pais
 SET IDENTITY_INSERT Pais ON;
 INSERT INTO Pais (id, nombre) VALUES
@@ -922,7 +921,7 @@ INSERT INTO Carrito (clienteId, productoId, fechaAgregado, cantidad, precioPor) 
 	(25, 43, '2023-10-25', 1, 2.00),
 	(25, 44, '2023-10-25', 1, 3.80);
 
--- ProductoRecomendadoParaProducto  
+-- Producto recomendado para Producto
 -- Las recomendaciones deben ser al menos 40
 INSERT INTO ProductoRecomendadoParaProducto(productoId, productoRecomendadoId, mensaje) VALUES
     (1, 2, 'Si te gusta Coca-Cola, prueba Pepsi Max.'),
@@ -1069,6 +1068,9 @@ INSERT INTO ProveedorProducto (id, proveedorId, productoId, fechaCompra, precioP
     (50, 10, 5, '2023-10-02', 1.20, 240);
 SET IDENTITY_INSERT ProveedorProducto OFF;
 
+-- Factura 
+-- Mínimo 100 facturas/compras con al menos 3 productos en cada una (la diferencia entre compras online y física no debe ser mucha)
+-- Los ID de factura tanto de OrdenOnline como de VentaFisica tienen que ser diferentes, para poder diferenciar de dónde proviene cierta factura, si a una venta física o a una orden online
 SET IDENTITY_INSERT Factura ON;
 INSERT INTO Factura (id, fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal) VALUES
 	-- 50 facturas online (IDs 1 a 50)
@@ -1186,6 +1188,7 @@ INSERT INTO TipoEnvio (id, nombreEnvio, tiempoEstimadoEntrega, costoEnvio) VALUE
     (5, 'Envio estandar', 72, 15.00);
 SET IDENTITY_INSERT TipoEnvio OFF;
 
+-- Orden online
 SET IDENTITY_INSERT OrdenOnline ON;
 INSERT INTO OrdenOnline (id, clienteId, nroOrden, fechaCreacion, tipoEnvioId, facturaId) VALUES
 	(1, 1, 1001, '2024-06-01', 1, 1),   -- Envío inmediato
@@ -1240,6 +1243,7 @@ INSERT INTO OrdenOnline (id, clienteId, nroOrden, fechaCreacion, tipoEnvioId, fa
 	(50, 50, 1050, '2025-03-20', 5, 50);
 SET IDENTITY_INSERT OrdenOnline OFF;
 
+-- Detalle de orden online
 INSERT INTO OrdenDetalle (ordenId, productoId, cantidad, precioPor) VALUES
 	-- Orden 1 (Factura 1: subTotal 30.00)
 	(1, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
@@ -1491,7 +1495,7 @@ INSERT INTO OrdenDetalle (ordenId, productoId, cantidad, precioPor) VALUES
 	(50, 11, 4, 3.00), -- Manzanas: 4 * 3.00 = 12.00
 	(50, 8, 3, 2.50);  -- Galletas Oreo: 3 * 2.50 = 7.50 (Total: 45.00)
 
---Factura detalle
+-- Detalle de factura
 INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES
 		-- Orden 1 (Factura 1: subTotal 30.00)
 	(1, 1, 10, 1.50),  -- Coca-Cola Original: 10 * 1.50 = 15.00
@@ -1988,7 +1992,7 @@ INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES
 	(100, 13, 2, 12.00),-- Queso Gouda: 2 * 12.00 = 24.00
 	(100, 16, 2, 0.90); -- Agua Mineral: 2 * 0.90 = 1.80 (Total: 65.80 ≈ 65.00);
 
-
+-- Venta fisica
 INSERT INTO VentaFisica (facturaId, sucursalId, empleadoId) VALUES
 	(51, 1, 1),    -- Sucursal Centro, Juan Pérez (Gerente)
 	(52, 2, 2),    -- Sucursal Este, María Gómez (Cajera)
@@ -2042,6 +2046,8 @@ INSERT INTO VentaFisica (facturaId, sucursalId, empleadoId) VALUES
 	(100, 6, 6);   -- Sucursal Charallave, Laura Sánchez (Carnicera)
 
 	-- Forma de pago
+
+-- Forma de pago
 SET IDENTITY_INSERT FormaPago ON;
 INSERT INTO FormaPago (id, nombre, descripcion) VALUES
     (1, 'Tarjeta de credito', 'Pago con tarjeta de credito Visa, Mastercard o Amex'),
@@ -2056,6 +2062,7 @@ INSERT INTO FormaPago (id, nombre, descripcion) VALUES
     (10, 'Zelle', 'Pago a traves de aplicaciones moviles de bancos americanos');
 SET IDENTITY_INSERT FormaPago OFF;
 
+-- Pago
 INSERT INTO Pago (facturaId, nroTransaccion, metodoPagoId) VALUES
     -- OrdenOnline (facturas 1-50): 50 facturas
     (1, 'TX-20250101-0001', 1),   -- Tarjeta de crédito
@@ -2160,6 +2167,8 @@ INSERT INTO Pago (facturaId, nroTransaccion, metodoPagoId) VALUES
     (99, 'TX-20250218-0099', 4),  -- Transferencia bancaria
     (100, 'TX-20250219-0100', 10); -- Zelle
 
+-- Promo
+-- Mínimo 40 promociones (variadas en tipo de descuento y promoción)
 SET IDENTITY_INSERT Promo ON;
 INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fechaInicio, fechaFin, tipoPromocion) VALUES
     -- Promociones estándar (33)
@@ -2213,6 +2222,8 @@ INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fe
     (47, 'Verano en Gama', 'Disfruta el verano con Gama', 'VERANO2025', 'Porcentaje', 10.0, '2025-06-01', '2025-08-31', 'Ambos');
 SET IDENTITY_INSERT Promo OFF;
 
+-- Promo especializada
+-- El 30% de las promociones deberían tener un objetivo especializado en PromoEspecializada
 SET IDENTITY_INSERT PromoEspecializada ON;
 INSERT INTO PromoEspecializada (id, promoId, productoId, categoriaId, marcaId) VALUES
     (1, 34, 1, NULL, 1),        -- Coca-Cola Lovers: Producto Coca-Cola Original (ID 1), Marca Coca-Cola (ID 1)
@@ -2232,6 +2243,8 @@ INSERT INTO PromoEspecializada (id, promoId, productoId, categoriaId, marcaId) V
 SET IDENTITY_INSERT PromoEspecializada OFF;
 DELETE FROM FacturaPromo; -- Limpiamos para evitar duplicados
 
+-- Factura tiene Promo 
+-- El 40% de esas facturas deben tener promociones
 INSERT INTO FacturaPromo (facturaId, promoId) VALUES
     -- OrdenOnline (1-50): 20 facturas ajustadas a fechas de Factura y promociones válidas
     (2, 9),    -- '2024-06-05', FAST10 (Ambos, '2024-06-01' a '2025-03-31')

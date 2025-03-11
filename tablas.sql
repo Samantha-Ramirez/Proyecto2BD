@@ -234,7 +234,7 @@ CREATE TABLE OrdenOnline (
     FOREIGN KEY (facturaId) REFERENCES Factura(id)
 );
 
--- Detalle de orden 
+-- Detalle de orden online
 CREATE TABLE OrdenDetalle (
     id INT IDENTITY(1,1) PRIMARY KEY,
     ordenId INT,
