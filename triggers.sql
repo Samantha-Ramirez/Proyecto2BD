@@ -136,7 +136,6 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
     ON FacturaDetalle
     AFTER INSERT -- Al comprar un producto 
     AS BEGIN
-        -- Verificar más de 3 veces
         DECLARE @productoId INT, @clienteId INT, @cantidadComprasProducto INT;
         SELECT 
             @clienteId = F.clienteId,
@@ -144,6 +143,7 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
         FROM inserted
         JOIN Factura F ON F.id = inserted.facturaId;
 
+        -- Obtener cantidad de compras del producto por el cliente
         SELECT
             @cantidadComprasProducto = SUM(cantidad)
         FROM FacturaDetalle FD
@@ -151,19 +151,20 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
         WHERE FD.productoId = @productoId
         AND F.clienteId = @clienteId;
 
+        -- Verificar más de 3 veces
         IF (@cantidadComprasProducto <= 3)
             BEGIN
                 RETURN;
             END;
         
+         -- Buscar productos recomendados para ese producto 
         DECLARE @productoRecomendadoId INT, @mensaje VARCHAR(50);
         DECLARE cur CURSOR FOR
-        -- Buscar productos recomendados para ese producto 
-        SELECT 
-            productoRecomendadoId, 
-            mensaje
-        FROM ProductoRecomendadoParaProducto
-        WHERE productoId = @productoId;
+            SELECT 
+                productoRecomendadoId, 
+                mensaje
+            FROM ProductoRecomendadoParaProducto
+            WHERE productoId = @productoId;
 
         OPEN cur;
         FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
@@ -186,13 +187,13 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
     ON HistorialClienteProducto
     AFTER INSERT -- Al buscar un producto 
     AS BEGIN
-        -- Verificar más de 3 veces
         DECLARE @productoId INT, @clienteId INT, @cantidadBusquedasProducto INT;
         SELECT 
             @clienteId = clienteId,
             @productoId = productoId
         FROM inserted;
 
+        -- Obtener cantidad de busquedas del producto por el cliente
         SELECT 
             @cantidadBusquedasProducto = COUNT(*)
         FROM HistorialClienteProducto 
@@ -200,19 +201,20 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
         AND clienteId = @clienteId
         AND tipoAccion = 'Búsqueda';
 
+        -- Verificar más de 3 veces
         IF (@cantidadBusquedasProducto <= 3)
             BEGIN
                 RETURN;
             END;
         
+         -- Buscar productos recomendados para ese producto 
         DECLARE @productoRecomendadoId INT, @mensaje VARCHAR(50);
         DECLARE cur CURSOR FOR
-        -- Buscar productos recomendados para ese producto 
-        SELECT 
-            productoRecomendadoId, 
-            mensaje
-        FROM ProductoRecomendadoParaProducto
-        WHERE productoId = @productoId;
+            SELECT 
+                productoRecomendadoId, 
+                mensaje
+            FROM ProductoRecomendadoParaProducto
+            WHERE productoId = @productoId;
 
         OPEN cur;
         FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
