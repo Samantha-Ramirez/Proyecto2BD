@@ -1,3 +1,73 @@
+-- Consulta D no muestra
+SELECT e.CI, e.nombre + ' ' + e.apellido AS nombre_completo, e.sexo, c.nombre , c.salarioBasePorHora, e.bonoFijoMensual, (horaFin - horaInicio)*c.salarioBasePorHora*e.cantidadDiasTrabajoPorSemana*4 + e.bonoFijoMensual  as totalMes, 
+(DATEDIFF(day,e.fechaContrato, GETDATE())/7)*(horaFin - horaInicio)*c.salarioBasePorHora*e.cantidadDiasTrabajoPorSemana + DATEDIFF(month,e.fechaContrato, GETDATE())*e.bonoFijoMensual AS Dias, e.fechaContrato, DATEDIFF(month,e.fechaContrato, GETDATE())
+FROM Empleado e
+INNER JOIN
+Cargo c ON e.cargoId = c.id
+WHERE 
+	e.id in (SELECT e.id
+			FROM Empleado e
+			INNER JOIN
+			Empleado em ON e.empleadosupervisorId = em.id
+			WHERE e.sucursalId = em.sucursalId) 
+
+	AND
+
+	e.id in (SELECT v.empleadoId
+			FROM VentaFisica v
+			group by empleadoId
+			HAVING count(DISTINCT sucursalId) > 1)
+
+	AND
+	
+	c.id in (SELECT TOP 5 Id
+			FROM Cargo
+			ORDER BY salarioBasePorHora DESC)
+
+-- Consulta B no muestra
+SELECT 
+    c.nombre,
+    c.apellido,
+    SUM(CASE WHEN o.tipoEnvioId = 'Online' THEN od.cantidad * od.precioPor ELSE 0 END) AS totalGastadoOnline,
+    SUM(CASE WHEN o.tipoEnvioId = 'Fisico' THEN od.cantidad * od.precioPor ELSE 0 END) AS totalGastadoFisico,
+    fp.nombre AS metodoPagoPredilecto
+FROM 
+    Cliente c
+JOIN 
+    OrdenOnline o ON c.id = o.clienteId
+JOIN 
+    OrdenDetalle od ON o.id = od.ordenId
+JOIN 
+    Pago p ON o.facturaId = p.facturaId
+JOIN 
+    FormaPago fp ON p.metodoPagoId = fp.id
+WHERE 
+    o.fechaCreacion >= DATEADD(YEAR, -1, GETDATE())
+GROUP BY 
+    c.id, c.nombre, c.apellido, fp.nombre
+HAVING 
+    SUM(od.cantidad * od.precioPor) > 0;
+
+
+-- Consulta A
+SELECT 
+    te.id AS TipoEnvio,
+	te.nombreEnvio,
+    te.tiempoEstimadoEntrega,
+    te.costoEnvio,
+    COUNT(o.id) AS CantidadVecesUsado,
+    ROUND(COUNT(o.id) * 100.0 / SUM(COUNT(o.id)) OVER (), 2) AS ProporcionUso,
+    SUM(f.montoTotal) AS IngresosTotales,
+    ROUND(SUM(f.montoTotal) * 100.0 / SUM(SUM(f.montoTotal)) OVER (), 2) AS ProporcionIngresos
+FROM 
+    TipoEnvio te
+LEFT JOIN 
+    OrdenOnline o ON te.id = o.tipoEnvioId
+LEFT JOIN 
+    Factura f ON o.facturaId = f.id
+GROUP BY 
+    te.id,te.nombreEnvio, te.tiempoEstimadoEntrega, te.costoEnvio;
+
 -- Consulta C
 SELECT DISTINCT 
     P.nombre AS nombreProducto,
