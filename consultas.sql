@@ -33,12 +33,11 @@ FROM Producto P
 JOIN Marca M ON M.id = P.marcaId -- Marca del producto
 JOIN FacturaDetalle FD ON FD.productoId = P.id -- Factura detalle del producto
 JOIN Factura F ON F.id = FD.facturaId -- Factura de la factura detalle
-LEFT JOIN FacturaPromo FP ON FP.facturaId = F.id
-LEFT JOIN Promo Pr ON Pr.id = FP.promoId -- Promo de la promo especializada
-LEFT JOIN PromoEspecializada PE ON (PE.productoId = P.id OR PE.marcaId = M.id) -- Promo especializada del producto o de su marca
+LEFT JOIN FacturaPromo FP ON FP.facturaId = F.id -- Promo de la factura
+LEFT JOIN Promo Pr ON Pr.id = FP.promoId AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa (id=47)
+LEFT JOIN PromoEspecializada PE ON PE.promoId = Pr.id AND (PE.productoId = P.id OR PE.marcaId = M.id) -- Promo especializada del producto o de su marca
 WHERE M.nombre = 'Gama' -- Marca Gama (id=21)
 AND MONTH(F.fechaEmision) IN (6, 8) -- Compra en junio y agosto
-AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa (id=2)
 
 -- Consulta G
 -- Ordenes válidas (condición b)

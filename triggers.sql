@@ -296,14 +296,14 @@ CREATE TRIGGER OrdenDetalleVerificarInventario
 
         -- Si no hay ni 1 unidad: La operación se cancelará diciendo que “El producto no está disponible por los momentos” 
         IF (@cantidadStock = 0)
-            BEGIN
-                RAISERROR('El producto no está disponible por los momentos', 16, 1);
+            BEGIN 
+                RAISERROR('El producto %d no está disponible por los momentos', 16, 1, @productoId);
                 RETURN;
             END;
         -- Si no hay stock suficiente: La operación se cancelará diciendo que “No hay unidades suficientes del producto para esta compra”
         ELSE IF (@cantidadStock < @cantidadSolicitada)
             BEGIN
-                RAISERROR('No hay unidades suficientes del producto para esta compra', 16, 1);
+                RAISERROR('No hay unidades suficientes del producto %d para esta compra', 16, 1, @productoId);
                 RETURN;
             END;
 
@@ -341,13 +341,13 @@ CREATE TRIGGER FacturaDetalleVerificarInventario
         -- Si no hay ni 1 unidad: La operación se cancelará diciendo que “El producto no está disponible por los momentos” 
         IF (@cantidadStock = 0)
         BEGIN
-            RAISERROR('El producto no está disponible por los momentos', 16, 1);
+            RAISERROR('El producto %d no está disponible por los momentos', 16, 1, @productoId);
             RETURN;
         END;
         -- else: La operación se cancelará diciendo que “No hay unidades suficientes del producto para esta compra”
         ELSE IF (@cantidadStock < @cantidadSolicitada)
         BEGIN
-            RAISERROR('No hay unidades suficientes del producto para esta compra', 16, 1);
+            RAISERROR('No hay unidades suficientes del producto %d para esta compra', 16, 1, @productoId);
             RETURN;
         END;
 
