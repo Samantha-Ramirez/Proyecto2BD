@@ -1,26 +1,26 @@
 -- Trigger A
 -- Inventario
+CREATE TRIGGER ProductoInsertarInventario
+    ON Producto
+    AFTER INSERT -- Al tener datos nuevos
+    AS BEGIN
+        -- Crear registro en 0
+        INSERT INTO Inventario (productoId, cantidad)
+            SELECT 
+                id,
+                0
+            FROM inserted;
+    END;
+    GO
+
 CREATE TRIGGER ProveedorProductoInsertarInventario
     ON ProveedorProducto
     AFTER INSERT -- Al tener datos nuevos
     AS BEGIN
-        -- Si el producto no existe: crea el registro
-        IF NOT EXISTS (SELECT 1 FROM Inventario I JOIN inserted ON inserted.productoId = I.productoId)
-            BEGIN 
-                INSERT INTO Inventario (productoId, cantidad)
-                    SELECT 
-                        productoId, 
-                        cantidad
-                    FROM inserted;
-            END
-        -- else: actualizar cantidad
-        ELSE 
-            BEGIN
-                UPDATE Inventario
-                    SET cantidad = I.cantidad + inserted.cantidad
-                    FROM Inventario I
-                    JOIN inserted ON inserted.productoId = I.productoId;
-            END
+        UPDATE Inventario
+            SET cantidad = I.cantidad + inserted.cantidad
+            FROM Inventario I
+            JOIN inserted ON inserted.productoId = I.productoId;
     END;
     GO
 
@@ -35,27 +35,31 @@ CREATE TRIGGER OrdenOnlineInsertarFactura
         SELECT 
             @ordenId = id,
             @clienteId = clienteId,
+            @facturaId = facturaId
         FROM inserted;
 
-        -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
-        SET @subTotal = dbo.subTotal(@ordenId);
-        SET @montoDescuentoTotal = dbo.montoDescuentoTotal(@ordenId);
-        SET @porcentajeIVA = 16;
-        SET @montoIVA = dbo.montoIVA(@ordenId);
-        SET @montoTotal = dbo.esPmontoTotal(@ordenId);
+        -- Si ya tiene una factura asociada
+        IF (@facturaId IS NOT NULL)
+            BEGIN
+                RETURN;
+            END;
 
-        -- Crear Factura
+        -- Crear Factura en NULL (exepto fechaEmision, clienteId, porcentajeIVA)
+        SET @subTotal = NULL;
+        SET @montoDescuentoTotal = NULL;
+        SET @porcentajeIVA = 16;
+        SET @montoIVA = NULL;
+        SET @montoTotal = NULL;
+        
         INSERT INTO Factura (fechaEmision, clienteId, subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal) VALUES 
             (GETDATE(), @clienteId, @subTotal, @montoDescuentoTotal, @porcentajeIVA, @montoIVA, @montoTotal)
         
-        -- Obtener facturaId
-        SELECT 
-            @facturaId = MAX(id),
-        FROM Factura;
+        -- Obtener lastId
+        DECLARE @facturaLastId INT = SCOPE_IDENTITY(); -- Ultimo ID generado
 
         -- Asociar OrdenOnline y Factura
         UPDATE OrdenOnline
-            SET facturaId = @facturaId
+            SET facturaId = @facturaLastId
             WHERE id = @ordenId;
     END;
     GO
@@ -65,10 +69,11 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaDetalle
     ON OrdenDetalle
     AFTER INSERT -- Al tener datos nuevos
     AS BEGIN
-        DECLARE @facturaId INT, @productoId INT, @cantidad INT, @precioPor DECIMAL(10,2);
+        DECLARE @ordenId INT, @facturaId INT, @productoId INT, @cantidad INT, @precioPor DECIMAL(10,2), @subTotal DECIMAL(10,2), @montoDescuentoTotal DECIMAL(10,2), @montoIVA DECIMAL(10,2), @montoTotal DECIMAL(10,2);
 
         -- Obtener facturaId, productoId, cantidad, precioPor
         SELECT 
+            @ordenId = OO.id,
             @facturaId = OO.facturaId,
             @productoId = inserted.productoId, 
             @cantidad = inserted.cantidad, 
@@ -76,9 +81,26 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaDetalle
         FROM OrdenOnline OO
         JOIN inserted ON inserted.ordenId = OO.id;
 
+        -- Si ya tiene una factura detalle asociada
+        IF EXISTS (SELECT 1 FROM FacturaDetalle FD WHERE FD.facturaId = @facturaId AND FD.productoId = @productoId)
+            BEGIN
+                RETURN;
+            END;
+
         -- Crear FacturaDetalle y copiar contenido de OrdenDetalle
         INSERT INTO FacturaDetalle (facturaId, productoId, cantidad, precioPor) VALUES 
             (@facturaId, @productoId, @cantidad, @precioPor)
+
+        -- Recalcular los valores totales de Factura
+        -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
+        SET @subTotal = dbo.GetsubTotal(@ordenId);
+        SET @montoDescuentoTotal = dbo.GetmontoDescuentoTotal(@ordenId);
+        SET @montoIVA = dbo.GetmontoIVA(@ordenId);
+        SET @montoTotal = dbo.GetMontoTotal(@ordenId);
+
+        UPDATE Factura
+            SET subTotal = @subTotal, montoDescuentoTotal = @montoDescuentoTotal, montoIVA = @montoIVA, montoTotal = @montoTotal
+            WHERE id = @facturaId;
     END;
     GO
 
@@ -118,97 +140,88 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
     ON FacturaDetalle
     AFTER INSERT -- Al comprar un producto 
     AS BEGIN
-        -- Verificar más de 3 veces
-        DECLARE @productoId INT, @clienteId INT, @cantidadComprasProducto INT;
-        SELECT 
-            @clienteId = F.clienteId,
-            @productoId = inserted.productoId
-        FROM inserted
-        JOIN Factura F ON F.id = inserted.facturaId;
+        -- Usar tabla temporal
+        CREATE TABLE #InsertedData (
+            clienteId INT,
+            productoId INT,
+            cantidad INT
+        );
 
-        SELECT 
-            @cantidadComprasProducto = COUNT(*)
-        FROM FacturaDetalle FD
-        JOIN Factura F ON F.id = FD.facturaId
-        WHERE FD.productoId = @productoId
-        AND F.clienteId = @clienteId;
+        INSERT INTO #InsertedData (clienteId, productoId, cantidad)
+            SELECT
+                F.clienteId,
+                inserted.productoId,
+                inserted.cantidad
+            FROM inserted
+            JOIN Factura F ON F.id = inserted.facturaId;
 
-        IF (@cantidadComprasProducto <= 3)
-            BEGIN
-                RETURN;
-            END;
-        
-        DECLARE @productoRecomendadoId INT, @mensaje VARCHAR(50);
-        DECLARE cur CURSOR FOR
-        -- Buscar productos recomendados para ese producto 
-        SELECT 
-            productoRecomendadoId, 
-            mensaje
-        FROM ProductoRecomendadoParaProducto
-        WHERE productoId = @productoId;
+        -- Procesar cada combinación de clienteId y productoId
+        INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) -- Recomendarlos al cliente
+            SELECT
+                id.clienteId,
+                PRP.productoRecomendadoId,
+                GETDATE(),
+                PRP.mensaje
+            FROM (
+                SELECT
+                    clienteId,
+                    productoId,
+                    SUM(cantidad) AS cantidadComprasProducto
+                FROM #InsertedData
+                GROUP BY clienteId, productoId
+            ) AS id
+            JOIN ProductoRecomendadoParaProducto PRP ON PRP.productoId = id.productoId -- Buscar productos recomendados para ese producto 
+            WHERE id.cantidadComprasProducto > 3; -- Verificar más de 3 veces
 
-        OPEN cur;
-        FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
-        WHILE @@FETCH_STATUS = 0
-        BEGIN
-            -- Recomendarlos al cliente
-            INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES 
-                (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
-
-            FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
-        END;
-
-        CLOSE cur;
-        DEALLOCATE cur; 
+        -- Eliminar tabla temporal
+        DROP TABLE #InsertedData;
     END;
     GO
 
 -- ProductoRecomendadoParaCliente 
 CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
-    ON HistorialClienteProducto
-    AFTER INSERT -- Al buscar un producto 
+    ON HistorialClienteProducto -- Al buscar un producto 
+    AFTER INSERT
     AS BEGIN
-        -- Verificar más de 3 veces
-        DECLARE @productoId INT, @clienteId INT, @cantidadBusquedasProducto INT;
-        SELECT 
-            @clienteId = clienteId,
-            @productoId = productoId
-        FROM inserted;
+        -- Usar tabla temporal
+        CREATE TABLE #InsertedData (
+            clienteId INT,
+            productoId INT
+        );
 
-        SELECT 
-            @cantidadBusquedasProducto = COUNT(*)
-        FROM HistorialClienteProducto 
-        WHERE productoId = @
-        AND clienteId = @clienteId
-        AND tipoAccion = 'Búsqueda';
+        INSERT INTO #InsertedData (clienteId, productoId)
+            SELECT 
+                clienteId, 
+                productoId
+            FROM inserted;
 
-        IF (@cantidadBusquedasProducto <= 3)
-            BEGIN
-                RETURN;
-            END;
-        
-        DECLARE @productoRecomendadoId INT, @mensaje VARCHAR(50);
-        DECLARE cur CURSOR FOR
-        -- Buscar productos recomendados para ese producto 
-        SELECT 
-            productoRecomendadoId, 
-            mensaje
-        FROM ProductoRecomendadoParaProducto
-        WHERE productoId = @productoId;
+        -- Procesar cada combinación de clienteId y productoId
+        INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) -- Recomendarlos al cliente
+            SELECT
+                id.clienteId,
+                PRP.productoRecomendadoId,
+                GETDATE(),
+                PRP.mensaje
+            FROM (
+                SELECT
+                    clienteId,
+                    productoId,
+                    COUNT(*) AS cantidadBusquedasProducto -- Obtener cantidad de busquedas del producto por el cliente
+                FROM HistorialClienteProducto
+                WHERE tipoAccion = 'Búsqueda'
+                AND EXISTS (
+                    SELECT 1
+                    FROM #InsertedData i
+                    WHERE i.clienteId = HistorialClienteProducto.clienteId
+                    AND i.productoId = HistorialClienteProducto.productoId
+                )
+                GROUP BY clienteId, productoId
+            ) AS id
+            JOIN ProductoRecomendadoParaProducto PRP ON PRP.productoId = id.productoId -- Buscar productos recomendados para ese producto 
+            WHERE id.cantidadBusquedasProducto > 3; -- Verificar más de 3 veces
 
-        OPEN cur;
-        FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
-        WHILE @@FETCH_STATUS = 0
-        BEGIN
-            -- Recomendarlos al cliente
-            INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) VALUES 
-                (@clienteId, @productoRecomendadoId, GETDATE(), @mensaje)
-
-            FETCH NEXT FROM cur INTO @productoRecomendadoId, @mensaje;
-        END;
-
-        CLOSE cur;
-        DEALLOCATE cur; 
+        -- Eliminar tabla temporal
+        DROP TABLE #InsertedData;
     END;
     GO
 
@@ -237,7 +250,7 @@ CREATE TRIGGER FacturaPromoVerificarValida
         FROM inserted;
 
         -- Llamar al verificador de promo válida 
-        SET @esPromoValida = dbo.esPromoValida(@facturaId);
+        SET @esPromoValida = dbo.esPromoValida(@facturaId, @promoId);
 
         -- No aceptar el registro
         IF (@esPromoValida = 0)
@@ -276,14 +289,14 @@ CREATE TRIGGER OrdenDetalleVerificarInventario
 
         -- Si no hay ni 1 unidad: La operación se cancelará diciendo que “El producto no está disponible por los momentos” 
         IF (@cantidadStock = 0)
-            BEGIN
-                RAISERROR('El producto no está disponible por los momentos', 16, 1);
+            BEGIN 
+                RAISERROR('El producto %d no está disponible por los momentos', 16, 1, @productoId);
                 RETURN;
             END;
         -- Si no hay stock suficiente: La operación se cancelará diciendo que “No hay unidades suficientes del producto para esta compra”
         ELSE IF (@cantidadStock < @cantidadSolicitada)
             BEGIN
-                RAISERROR('No hay unidades suficientes del producto para esta compra', 16, 1);
+                RAISERROR('No hay unidades suficientes del producto %d para esta compra', 16, 1, @productoId);
                 RETURN;
             END;
 
@@ -321,13 +334,13 @@ CREATE TRIGGER FacturaDetalleVerificarInventario
         -- Si no hay ni 1 unidad: La operación se cancelará diciendo que “El producto no está disponible por los momentos” 
         IF (@cantidadStock = 0)
         BEGIN
-            RAISERROR('El producto no está disponible por los momentos', 16, 1);
+            RAISERROR('El producto %d no está disponible por los momentos', 16, 1, @productoId);
             RETURN;
         END;
         -- else: La operación se cancelará diciendo que “No hay unidades suficientes del producto para esta compra”
         ELSE IF (@cantidadStock < @cantidadSolicitada)
         BEGIN
-            RAISERROR('No hay unidades suficientes del producto para esta compra', 16, 1);
+            RAISERROR('No hay unidades suficientes del producto %d para esta compra', 16, 1, @productoId);
             RETURN;
         END;
 

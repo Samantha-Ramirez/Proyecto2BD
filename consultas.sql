@@ -103,12 +103,11 @@ FROM Producto P
 JOIN Marca M ON M.id = P.marcaId -- Marca del producto
 JOIN FacturaDetalle FD ON FD.productoId = P.id -- Factura detalle del producto
 JOIN Factura F ON F.id = FD.facturaId -- Factura de la factura detalle
-LEFT JOIN FacturaPromo FP ON FP.facturaId = F.id
-LEFT JOIN Promo Pr ON Pr.id = FP.promoId -- Promo de la promo especializada
-LEFT JOIN PromoEspecializada PE ON (PE.productoId = P.id OR PE.categoriaId = P.categoriaId OR PE.marcaId = M.id) -- Promo especializada del producto, de su categoria o de su marca
+LEFT JOIN FacturaPromo FP ON FP.facturaId = F.id -- Promo de la factura
+LEFT JOIN Promo Pr ON Pr.id = FP.promoId AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa (id=47)
+LEFT JOIN PromoEspecializada PE ON PE.promoId = Pr.id AND (PE.productoId = P.id OR PE.marcaId = M.id) -- Promo especializada del producto o de su marca
 WHERE M.nombre = 'Gama' -- Marca Gama (id=21)
 AND MONTH(F.fechaEmision) IN (6, 8) -- Compra en junio y agosto
-AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa (id=2)
 
 -- Consulta G
 -- Ordenes válidas (condición b)
@@ -150,7 +149,7 @@ ClientesConCondiciones AS (
         c.id, c.CI, c.nombre, c.apellido, c.correo, c.sexo, c.fechaNacimiento, c.fechaRegistro
     HAVING 
         COUNT(ov.facturaId) >= 3 -- Condición a: al menos 3 órdenes
-        AND SUM(CASE WHEN ov.metodoPago = 'Tarjeta de Crédito' THEN 1 ELSE 0 END) >= 1 -- Condición c
+        AND SUM(CASE WHEN ov.metodoPago = 'Tarjeta de credito' THEN 1 ELSE 0 END) >= 1 -- Condición c
 ),
 -- Calcular el promedio de gasto de todos los clientes
 PromedioGasto AS (
