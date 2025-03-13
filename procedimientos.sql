@@ -1,4 +1,64 @@
 
+
+
+-- A probar 
+CREATE PROCEDURE RealizarCompraOnline
+    @ClienteId INT
+AS
+BEGIN
+    -- Declaración de variables
+
+
+    DECLARE @NroOrden INT;
+    DECLARE @FacturaId INT;
+	DECLARE @ordenId INT;
+    DECLARE @SubTotal DECIMAL(10, 2);
+    DECLARE @MontoIVA DECIMAL(10, 2);
+    DECLARE @MontoTotal DECIMAL(10, 2);
+    DECLARE @ProductoId INT;
+    DECLARE @Cantidad INT;
+    DECLARE @PrecioPor DECIMAL(10, 2);
+    DECLARE @PorcentajeIVA DECIMAL(5, 2);
+    DECLARE @InventarioCantidad INT;
+    DECLARE cursorCarrito CURSOR FOR
+        SELECT ProductoId, Cantidad, PrecioPor FROM Carrito WHERE ClienteId = @ClienteId;
+    -- Iniciar transacción
+    BEGIN TRANSACTION;
+    -- Crear orden
+	Select @NroOrden = max(nroOrden)+1 from OrdenOnline;
+
+    INSERT INTO OrdenOnline (ClienteId, FechaCreacion, TipoEnvioId, nroOrden)
+    VALUES (@ClienteId, GETDATE(), 1,@NroOrden);
+
+	SET @ordenId = SCOPE_IDENTITY();
+
+
+    -- Recorrer carrito
+    OPEN cursorCarrito;
+    FETCH NEXT FROM cursorCarrito INTO @ProductoId, @Cantidad, @PrecioPor;
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+
+		-- Insertar OrdenDetalle
+        INSERT INTO OrdenDetalle (OrdenId, ProductoId, Cantidad, PrecioPor)
+        VALUES (@ordenId, @ProductoId, @Cantidad, @PrecioPor);
+
+    END
+    CLOSE cursorCarrito;
+    DEALLOCATE cursorCarrito;
+    -- Calcular IVA y total
+
+    -- Insertar pago
+    INSERT INTO Pago (FacturaId, MetodoPagoId)
+    VALUES (@FacturaId, 1);
+    -- Eliminar carrito
+    DELETE FROM Carrito WHERE ClienteId = @ClienteId;
+    -- Confirmar transacción
+    COMMIT TRANSACTION;
+END;
+GO
+
+
 --C 
 Create PROCEDURE CrearFacturaFisica(
     @idCliente INT,
