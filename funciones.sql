@@ -1,6 +1,6 @@
 GO
 -- Funcion Costo envio 
-CREATE FUNCTION dbo.GetCostoEnvio (@ordenId INT)
+CREATE FUNCTION dbo.GetCostoEnvio (@ordenId INT) --Se recibe ordenId ya que la venta fisica no tiene envio
 RETURNS DECIMAL(10,2)
 AS
 BEGIN
@@ -14,13 +14,13 @@ END;
 GO
 
 -- Funcion Subtotal
-CREATE FUNCTION dbo.GetSubTotal (@facturaId INT)
+CREATE FUNCTION dbo.GetSubTotal (@facturaId INT) --Se recibe la factura a la que le queremos calcular el subtotal
 RETURNS DECIMAL(10,2)
 AS
 BEGIN
     DECLARE @subTotal DECIMAL(10,2);
     DECLARE @esOrdenOnline BIT = CASE WHEN EXISTS (SELECT 1 FROM OrdenOnline WHERE facturaId = @facturaId) THEN 1 ELSE 0 END;
-
+    --Verificamos y este registro es orden online, sino entonces fue una venta fisica
     IF @esOrdenOnline = 1
         SELECT @subTotal = SUM(od.cantidad * od.precioPor)
         FROM OrdenOnline oo
@@ -45,7 +45,7 @@ BEGIN
     DECLARE @esVentaFisica BIT = CASE WHEN EXISTS (SELECT 1 FROM VentaFisica WHERE facturaId = @facturaId) THEN 1 ELSE 0 END;
     DECLARE @fechaEmision DATETIME;
 
-    -- Obtener la fecha de emisión de la factura
+    -- Se obtiene la fecha de emisión de la factura
     SELECT @fechaEmision = fechaEmision
     FROM Factura
     WHERE id = @facturaId;
@@ -92,7 +92,7 @@ BEGIN
         JOIN Producto pr ON fd.productoId = pr.id
         LEFT JOIN PromoEspecializada pe ON p.id = pe.promoId
         WHERE f.id = @facturaId
-        AND p.fechaFin >= @fechaEmision -- Usar fechaEmision
+        AND p.fechaFin >= @fechaEmision -- Usamos fechaEmision
         AND p.tipoPromocion IN ('Física', 'Ambos');
 
     RETURN ISNULL(@montoDescuentoTotal, 0);
@@ -113,10 +113,10 @@ BEGIN
     FROM Factura
     WHERE id = @facturaId;
 
-    -- Obtener el descuento total usando la función existente
+    -- Obtenemos el descuento total usando la función existente
     SET @descuentoTotal = dbo.GetMontoDescuentoTotal(@facturaId);
 
-    -- Calcular el subtotal de productos no exentos desde FacturaDetalle
+    -- Calculamos el subtotal de productos no exentos desde FacturaDetalle
     SELECT @subtotalProductosNoExentos = ISNULL(SUM(fd.cantidad * fd.precioPor), 0)
     FROM FacturaDetalle fd
     JOIN Producto p ON fd.productoId = p.id
@@ -156,7 +156,7 @@ BEGIN
     DECLARE @esValida BIT = 0;
     DECLARE @fechaEmision DATETIME;
     DECLARE @tipoPromocion VARCHAR(50);
-    DECLARE @fechaInicio DATETIME; -- Nueva variable
+    DECLARE @fechaInicio DATETIME; 
     DECLARE @fechaFin DATETIME;
     DECLARE @esOrdenOnline BIT;
     DECLARE @esVentaFisica BIT;
