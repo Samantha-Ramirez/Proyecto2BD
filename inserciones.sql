@@ -1,3 +1,5 @@
+USE M24
+
 -- Pais
 SET IDENTITY_INSERT Pais ON;
 INSERT INTO Pais (id, nombre) VALUES
@@ -2155,7 +2157,11 @@ INSERT INTO VentaFisica (facturaId, sucursalId, empleadoId) VALUES
 	(97, 3, 3),    -- Sucursal Oeste, Pedro Rodríguez (Reponedor)
 	(98, 4, 4),    -- Sucursal Norte, Ana López (Auxiliar de Limpieza)
 	(99, 5, 5),    -- Sucursal Junquito, Luis Martínez (Encargado de Almacén)
-	(100, 6, 6);   -- Sucursal Charallave, Laura Sánchez (Carnicera)
+	(100, 6, 6),   -- Sucursal Charallave, Laura Sánchez (Carnicera)
+	(101, 1, 1),  -- Sucursal Centro, Juan Pérez
+	(102, 2, 2),  -- Sucursal Este, María Gómez
+	(103, 3, 3),  -- Sucursal Oeste, Pedro Rodríguez
+	(104, 4, 4);  -- Sucursal Norte, Ana López
 
 	-- Forma de pago
 
@@ -2357,51 +2363,44 @@ INSERT INTO PromoEspecializada (id, promoId, productoId, categoriaId, marcaId) V
     (13, 46, 23, 6, 10),        -- Chucherías Lays: Producto Papas Fritas (ID 23), Categoría Chucherías (ID 6), Marca Lays (ID 10)
     (14, 47, 210, NULL, 21);    -- Verano en Gama: Producto Freidora de Aire Gama (ID 210), Marca Gama (ID 21)
 SET IDENTITY_INSERT PromoEspecializada OFF;
-DELETE FROM FacturaPromo; -- Limpiamos para evitar duplicados
 
--- Factura tiene Promo 
 -- El 40% de esas facturas deben tener promociones
 INSERT INTO FacturaPromo (facturaId, promoId) VALUES
-    -- OrdenOnline (1-50): 20 facturas ajustadas a fechas de Factura y promociones válidas
-    (2, 9),    -- '2024-06-05', FAST10 (Ambos, '2024-06-01' a '2025-03-31')
-    (5, 15),   -- '2024-06-20', BIG10 (Ambos, '2024-06-01' a '2025-03-31')
-    (7, 3),    -- '2024-07-05', DOUBLE15 (Ambos, '2024-06-01' a '2025-03-15')
-    (11, 34),  -- '2024-08-01', COKE10 (Ambos, '2024-06-01' a '2025-03-31')
-    (13, 18),  -- '2024-08-10', LOYAL15 (Online, '2024-06-01' a '2025-03-31')
-    (15, 19),  -- '2024-08-20', EARLY10 (Online, '2024-06-01' a '2025-03-15')
-    (17, 26),  -- '2024-09-05', EXT10 (Online, '2024-06-01' a '2025-03-15')
-    (19, 32),  -- '2024-09-15', ENE2025O2 (Online, '2024-06-01' a '2025-03-31')
-    (21, 4),   -- '2024-10-01', WEEKEND5 (Online, '2024-06-01' a '2025-03-31')
-    (25, 7),   -- '2024-10-20', CYBER20 (Online, '2024-06-01' a '2025-03-15')
-    (27, 1),  -- '2024-11-05', MONTH25 (Ambos, '2024-06-01' a '2025-03-31')
-    (31, 16),  -- '2024-12-01', NIGHT10 (Online, '2024-06-01' a '2025-03-15')
-    (35, 21),  -- '2024-12-20', SAFE10 (Online, '2024-06-01' a '2025-03-31')
-    (37, 33),  -- '2025-01-05', FEB2025O2 (Online, '2024-06-01' a '2025-03-15')
-    (41, 36),  -- '2025-02-01', SNACK15 (Online, '2024-06-01' a '2025-03-31')
-    (43, 42),  -- '2025-02-10', DRINK10 (Online, '2024-06-01' a '2025-03-31')
-    (46, 10),  -- '2025-03-01', FLASH10 (Online, '2024-06-01' a '2025-03-15')
-    (48, 22),  -- '2025-03-10', FLASH15 (Online, '2024-06-01' a '2025-03-15')
-    -- VentaFisica (51-100): 20 facturas ajustadas a fechas de Factura
-    (53, 5),   -- '2024-06-11', MONDAY10 (Fisica, '2025-01-01' a '2025-03-08')
-    (55, 8),   -- '2024-06-21', STORE10 (Fisica, '2025-01-10' a '2025-02-10')
-    (57, 17),  -- '2024-07-06', SUN10 (Fisica, '2025-01-01' a '2025-03-08')
-    (59, 20),  -- '2024-07-16', SAT20 (Fisica, '2025-01-01' a '2025-02-01')
-    (61, 3),   -- '2024-08-02', DOUBLE15 (Ambos, '2024-06-01' a '2025-03-15')
-    (63, 23),  -- '2024-08-11', RAIN10 (Fisica, '2025-01-01' a '2025-03-08')
-    (65, 28),  -- '2024-08-21', JAN10 (Fisica, '2025-01-01' a '2025-01-31')
-    (67, 15),  -- '2024-09-06', BIG10 (Ambos, '2024-06-01' a '2025-03-31')
-    (69, 29),  -- '2024-09-16', ENE2025F2 (Fisica, '2025-01-01' a '2025-01-31')
-    (71, 35),  -- '2024-10-02', MILK15 (Fisica, '2025-01-01' a '2025-03-08')
-    (73, 9),   -- '2024-10-11', FAST10 (Ambos, '2024-06-01' a '2025-03-31')
-    (75, 37),  -- '2024-10-21', BEER10 (Fisica, '2025-01-01' a '2025-03-08')
-    (77, 11),  -- '2024-11-06', WED10 (Fisica, '2025-02-01' a '2025-03-08')
-    (80, 24),  -- '2024-11-16', ANNIV15 (Ambos, '2025-01-01' a '2025-03-31')
-    (81, 25),  -- '2024-12-02', CLIENT10 (Fisica, '2025-01-01' a '2025-02-28')
-    (83, 30),  -- '2024-12-11', FEB2025F2 (Fisica, '2025-02-01' a '2025-02-28')
-    (85, 38),  -- '2024-12-21', STAR10 (Fisica, '2025-01-01' a '2025-03-08')
-    (87, 41),  -- '2025-01-06', COLGATE15 (Fisica, '2025-01-01' a '2025-03-08')
-    (89, 44),  -- '2025-01-16', CEREAL10 (Fisica, '2025-01-01' a '2025-03-08')
-    (101, 47),
-    (102, 47),
-    (103, 47),
-    (104, 47);
+    -- OrdenOnline
+    (7, 3),      
+	(2, 9), 
+	(5, 15), 
+	(11, 34), 
+	(13, 18), 
+	(15, 19), 
+	(17, 26), 
+	(19, 32),
+	(21, 4), 
+	(25, 7), 
+	(27, 1), 
+	(31, 16), 
+	(35, 21), 
+	(37, 33), 
+	(41, 36), 
+	(43, 42),
+	(46, 10), 
+	(48, 22),  
+    -- VentaFisica 
+    (87, 5),   
+    (89, 8),   
+    (87, 41),  
+    (89, 44),    
+	(73, 9),
+    (51, 3),   
+    (52, 9),   
+    (54, 15),  
+    (56, 34),
+    (60, 3),   
+    (86, 5),   
+    (88, 17),
+    (90, 23), 
+    (92, 35), 
+    (94, 37), 
+    (96, 24), 
+    (100, 40), 
+    (104, 9);  
