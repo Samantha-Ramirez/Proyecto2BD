@@ -154,26 +154,25 @@ RETURNS BIT
 AS
 BEGIN
     DECLARE @esValida BIT = 0;
-    DECLARE @fechaEmision DATETIME; -- Fecha de la factura
+    DECLARE @fechaEmision DATETIME;
     DECLARE @tipoPromocion VARCHAR(50);
+    DECLARE @fechaInicio DATETIME; -- Nueva variable
     DECLARE @fechaFin DATETIME;
     DECLARE @esOrdenOnline BIT;
     DECLARE @esVentaFisica BIT;
 
-    -- Obtener la fecha de emisión de la factura
     SELECT @fechaEmision = fechaEmision
     FROM Factura
     WHERE id = @facturaId;
 
-    -- Obtener datos de la promoción
-    SELECT @tipoPromocion = tipoPromocion, @fechaFin = fechaFin
+    SELECT @tipoPromocion = tipoPromocion, @fechaInicio = fechaInicio, @fechaFin = fechaFin
     FROM Promo
     WHERE id = @promoId;
 
     SET @esOrdenOnline = (SELECT COUNT(*) FROM OrdenOnline WHERE facturaId = @facturaId);
     SET @esVentaFisica = (SELECT COUNT(*) FROM VentaFisica WHERE facturaId = @facturaId);
 
-    IF @fechaFin >= @fechaEmision
+    IF @fechaEmision BETWEEN @fechaInicio AND @fechaFin 
     BEGIN
         IF (@esOrdenOnline = 1 AND @tipoPromocion IN ('Online', 'Ambos'))
             OR (@esVentaFisica = 1 AND @tipoPromocion IN ('Fisica', 'Ambos'))
@@ -184,4 +183,5 @@ BEGIN
 
     RETURN @esValida;
 END;
+
 GO

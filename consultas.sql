@@ -1,52 +1,129 @@
--- Consulta D no muestra
-SELECT e.CI, e.nombre + ' ' + e.apellido AS nombre_completo, e.sexo, c.nombre , c.salarioBasePorHora, e.bonoFijoMensual, (horaFin - horaInicio)*c.salarioBasePorHora*e.cantidadDiasTrabajoPorSemana*4 + e.bonoFijoMensual  as totalMes, 
-(DATEDIFF(day,e.fechaContrato, GETDATE())/7)*(horaFin - horaInicio)*c.salarioBasePorHora*e.cantidadDiasTrabajoPorSemana + DATEDIFF(month,e.fechaContrato, GETDATE())*e.bonoFijoMensual AS Dias, e.fechaContrato, DATEDIFF(month,e.fechaContrato, GETDATE())
-FROM Empleado e
-INNER JOIN
-Cargo c ON e.cargoId = c.id
-WHERE 
-	e.id in (SELECT e.id
-			FROM Empleado e
-			INNER JOIN
-			Empleado em ON e.empleadosupervisorId = em.id
-			WHERE e.sucursalId = em.sucursalId) 
-
-	AND
-
-	e.id in (SELECT v.empleadoId
-			FROM VentaFisica v
-			group by empleadoId
-			HAVING count(DISTINCT sucursalId) > 1)
-
-	AND
-	
-	c.id in (SELECT TOP 5 Id
-			FROM Cargo
-			ORDER BY salarioBasePorHora DESC)
-
--- Consulta B no muestra
+-- Consulta D 
+WITH SucursalesPorEmpleado AS (
+    SELECT 
+        e.id AS empleadoId,
+        COUNT(DISTINCT vf.sucursalId) AS numSucursales
+    FROM Empleado e
+    JOIN VentaFisica vf ON vf.empleadoId = e.id
+    GROUP BY e.id
+    HAVING COUNT(DISTINCT vf.sucursalId) > 1
+),
+MismaSucursalSupervisor AS (
+    SELECT 
+        e.id AS empleadoId
+    FROM Empleado e
+    JOIN Empleado sup ON sup.id = e.empleadoSupervisorId
+    WHERE e.sucursalId = sup.sucursalId
+),
+Top5Cargos AS (
+    SELECT TOP 5 
+        id AS cargoId
+    FROM Cargo
+    ORDER BY salarioBasePorHora DESC
+),
+EmpleadosCumplenCriterios AS (
+    SELECT DISTINCT e.id AS empleadoId
+    FROM Empleado e
+    WHERE EXISTS (SELECT 1 FROM SucursalesPorEmpleado spe WHERE spe.empleadoId = e.id)
+       OR EXISTS (SELECT 1 FROM MismaSucursalSupervisor mss WHERE mss.empleadoId = e.id)
+       OR EXISTS (SELECT 1 FROM Top5Cargos t5c WHERE t5c.cargoId = e.cargoId)
+),
+SueldoDetallado AS (
+    SELECT 
+        e.id AS empleadoId,
+        e.CI,
+        e.nombre + ' ' + e.apellido AS nombreCompleto,
+        e.sexo,
+        c.nombre AS cargoNombre,
+        c.salarioBasePorHora,
+        e.bonoFijoMensual,
+        -- Horas por día
+        (e.horaFin - e.horaInicio) AS horasPorDia,
+        -- Horas por mes (4.33 semanas promedio por mes)
+        (e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33 AS horasPorMes,
+        -- Sueldo mensual
+        (c.salarioBasePorHora * ((e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33)) + e.bonoFijoMensual AS sueldoMensual,
+        -- Meses desde contrato hasta hoy
+        DATEDIFF(MONTH, e.fechaContrato, GETDATE()) AS mesesDesdeContrato,
+        -- Total recibido desde contrato
+        (c.salarioBasePorHora * ((e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33) + e.bonoFijoMensual) * 
+        DATEDIFF(MONTH, e.fechaContrato,  GETDATE()) AS totalDesdeContrato
+    FROM Empleado e
+    JOIN Cargo c ON c.id = e.cargoId
+    WHERE EXISTS (SELECT 1 FROM EmpleadosCumplenCriterios ecc WHERE ecc.empleadoId = e.id)
+      AND e.fechaContrato <=  GETDATE()
+)
 SELECT 
-    c.nombre,
-    c.apellido,
-    SUM(CASE WHEN o.tipoEnvioId = 'Online' THEN od.cantidad * od.precioPor ELSE 0 END) AS totalGastadoOnline,
-    SUM(CASE WHEN o.tipoEnvioId = 'Fisico' THEN od.cantidad * od.precioPor ELSE 0 END) AS totalGastadoFisico,
-    fp.nombre AS metodoPagoPredilecto
-FROM 
-    Cliente c
-JOIN 
-    OrdenOnline o ON c.id = o.clienteId
-JOIN 
-    OrdenDetalle od ON o.id = od.ordenId
-JOIN 
-    Pago p ON o.facturaId = p.facturaId
-JOIN 
-    FormaPago fp ON p.metodoPagoId = fp.id
-WHERE 
-    o.fechaCreacion >= DATEADD(YEAR, -1, GETDATE())
-GROUP BY 
-    c.id, c.nombre, c.apellido, fp.nombre
-HAVING 
-    SUM(od.cantidad * od.precioPor) > 0;
+    sd.CI,
+    sd.nombreCompleto,
+    sd.sexo,
+    sd.cargoNombre,
+    sd.salarioBasePorHora AS SalarioBasePorHora,
+    sd.bonoFijoMensual AS BonoFijoMensual,
+    ROUND(sd.sueldoMensual, 2) AS SueldoMensual,
+    ROUND(sd.totalDesdeContrato, 2) AS TotalDesdeContrato
+FROM SueldoDetallado sd
+WHERE sd.sueldoMensual > 0 
+  AND sd.totalDesdeContrato >= 0 
+ORDER BY sd.nombreCompleto;
+
+-- Consulta B
+WITH ComprasUltimoAnio AS (
+    SELECT 
+        c.id AS clienteId,
+        c.nombre,
+        c.apellido,
+        SUM(CASE WHEN oo.facturaId IS NOT NULL THEN f.montoTotal ELSE 0 END) AS totalOnline,
+        SUM(CASE WHEN vf.facturaId IS NOT NULL THEN f.montoTotal ELSE 0 END) AS totalFisica,
+        f.id AS facturaId
+    FROM Cliente c
+    JOIN Factura f ON f.clienteId = c.id
+    LEFT JOIN OrdenOnline oo ON oo.facturaId = f.id
+    LEFT JOIN VentaFisica vf ON vf.facturaId = f.id
+    WHERE f.fechaEmision >= DATEADD(YEAR, -1, GETDATE())
+      AND f.fechaEmision <= GETDATE()
+    GROUP BY c.id, c.nombre, c.apellido, f.id
+),
+MetodoPredilecto AS (
+    SELECT 
+        cua.clienteId,
+        fp.nombre AS metodoPagoPredilecto,
+        COUNT(*) AS usoMetodoPago
+    FROM ComprasUltimoAnio cua
+    JOIN Pago p ON p.facturaId = cua.facturaId
+    JOIN FormaPago fp ON fp.id = p.metodoPagoId
+    GROUP BY cua.clienteId, fp.nombre
+),
+MetodoPredilectoMax AS (
+    SELECT 
+        mp1.clienteId,
+        mp1.metodoPagoPredilecto
+    FROM MetodoPredilecto mp1
+    WHERE mp1.usoMetodoPago = (
+        SELECT MAX(mp2.usoMetodoPago)
+        FROM MetodoPredilecto mp2
+        WHERE mp2.clienteId = mp1.clienteId
+    )
+),
+Totales AS (
+    SELECT 
+        cua.clienteId,
+        cua.nombre,
+        cua.apellido,
+        SUM(cua.totalOnline) AS totalGastadoOnline,
+        SUM(cua.totalFisica) AS totalGastadoFisica
+    FROM ComprasUltimoAnio cua
+    GROUP BY cua.clienteId, cua.nombre, cua.apellido
+    HAVING SUM(cua.totalOnline) > 0 OR SUM(cua.totalFisica) > 0
+)
+SELECT 
+    t.nombre + ' ' + t.apellido AS NombreCliente,
+    t.totalGastadoOnline,
+    t.totalGastadoFisica,
+    mp.metodoPagoPredilecto
+FROM Totales t
+JOIN MetodoPredilectoMax mp ON mp.clienteId = t.clienteId
+ORDER BY t.nombre, t.apellido;
 
 
 -- Consulta A
@@ -133,14 +210,7 @@ WITH OrdenesValidas AS (
 -- Clientes que cumplen con las condiciones a y c
 ClientesConCondiciones AS (
     SELECT 
-        c.id AS clienteId,
-        c.CI,
-        c.nombre,
-        c.apellido,
-        c.correo,
-        c.sexo,
-        c.fechaNacimiento,
-        c.fechaRegistro,
+        c.*,
         COUNT(ov.facturaId) AS totalOrdenes,
         SUM(ov.montoTotal) AS totalGastado
     FROM Cliente c
@@ -238,3 +308,44 @@ FROM Producto P
 JOIN Categoria C ON C.id = P.categoriaId -- Categoria del producto
 JOIN Inventario I ON I.productoId = P.id -- Inventario del producto
 WHERE C.nombre = 'Chucherías' -- Categoria Chucherías (id=6)
+
+
+
+--Consulta E 
+SELECT 
+    c.id AS ClienteID,
+    c.CI,
+    c.nombre,
+    c.apellido,
+    c.sexo,
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) AS Compras_Recomendadas,
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) AS Compras_No_Recomendadas,
+    CAST(COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_Recomendadas,
+    CAST(COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_No_Recomendadas
+FROM 
+    Cliente c
+LEFT JOIN 
+    HistorialClienteProducto hc ON c.id = hc.clienteId
+LEFT JOIN 
+    Producto p ON hc.productoId = p.id
+LEFT JOIN 
+    ProductoRecomendadoParaCliente pr ON c.id = pr.clienteId AND p.id = pr.productoRecomendadoId
+GROUP BY 
+    c.id, c.CI, c.nombre, c.apellido, c.sexo
+HAVING 
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) > 0 OR 
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) > 0
+ORDER BY 
+    c.id;
