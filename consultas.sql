@@ -1,3 +1,106 @@
+-- Consulta A
+SELECT 
+    te.id AS TipoEnvio,
+	te.nombreEnvio,
+    te.tiempoEstimadoEntrega,
+    te.costoEnvio,
+    COUNT(o.id) AS CantidadVecesUsado,
+    ROUND(COUNT(o.id) * 100.0 / SUM(COUNT(o.id)) OVER (), 2) AS ProporcionUso,
+    SUM(f.montoTotal) AS IngresosTotales,
+    ROUND(SUM(f.montoTotal) * 100.0 / SUM(SUM(f.montoTotal)) OVER (), 2) AS ProporcionIngresos
+FROM 
+    TipoEnvio te
+LEFT JOIN 
+    OrdenOnline o ON te.id = o.tipoEnvioId
+LEFT JOIN 
+    Factura f ON o.facturaId = f.id
+GROUP BY 
+    te.id,te.nombreEnvio, te.tiempoEstimadoEntrega, te.costoEnvio;
+
+-- Consulta B
+WITH ComprasUltimoAnio AS (
+    SELECT 
+        c.id AS clienteId,
+        c.nombre,
+        c.apellido,
+        SUM(CASE WHEN oo.facturaId IS NOT NULL THEN f.montoTotal ELSE 0 END) AS totalOnline,
+        SUM(CASE WHEN vf.facturaId IS NOT NULL THEN f.montoTotal ELSE 0 END) AS totalFisica,
+        f.id AS facturaId
+    FROM Cliente c
+    JOIN Factura f ON f.clienteId = c.id
+    LEFT JOIN OrdenOnline oo ON oo.facturaId = f.id
+    LEFT JOIN VentaFisica vf ON vf.facturaId = f.id
+    WHERE f.fechaEmision >= DATEADD(YEAR, -1, GETDATE())
+      AND f.fechaEmision <= GETDATE()
+    GROUP BY c.id, c.nombre, c.apellido, f.id
+),
+MetodoPredilecto AS (
+    SELECT 
+        cua.clienteId,
+        fp.nombre AS metodoPagoPredilecto,
+        COUNT(*) AS usoMetodoPago
+    FROM ComprasUltimoAnio cua
+    JOIN Pago p ON p.facturaId = cua.facturaId
+    JOIN FormaPago fp ON fp.id = p.metodoPagoId
+    GROUP BY cua.clienteId, fp.nombre
+),
+MetodoPredilectoMax AS (
+    SELECT 
+        mp1.clienteId,
+        mp1.metodoPagoPredilecto
+    FROM MetodoPredilecto mp1
+    WHERE mp1.usoMetodoPago = (
+        SELECT MAX(mp2.usoMetodoPago)
+        FROM MetodoPredilecto mp2
+        WHERE mp2.clienteId = mp1.clienteId
+    )
+),
+Totales AS (
+    SELECT 
+        cua.clienteId,
+        cua.nombre,
+        cua.apellido,
+        SUM(cua.totalOnline) AS totalGastadoOnline,
+        SUM(cua.totalFisica) AS totalGastadoFisica
+    FROM ComprasUltimoAnio cua
+    GROUP BY cua.clienteId, cua.nombre, cua.apellido
+    HAVING SUM(cua.totalOnline) > 0 OR SUM(cua.totalFisica) > 0
+)
+SELECT 
+    t.nombre + ' ' + t.apellido AS NombreCliente,
+    t.totalGastadoOnline,
+    t.totalGastadoFisica,
+    mp.metodoPagoPredilecto
+FROM Totales t
+JOIN MetodoPredilectoMax mp ON mp.clienteId = t.clienteId
+ORDER BY t.nombre, t.apellido;
+
+-- Consulta C
+SELECT DISTINCT 
+    P.nombre AS nombreProducto,
+    C.nombre AS categoriaProducto,
+    M.nombre AS marcaProducto
+FROM 
+    Producto P
+JOIN 
+    Categoria C ON P.categoriaId = C.id
+JOIN 
+    Marca M ON P.marcaId = M.id
+JOIN 
+    ProductoRecomendadoParaCliente PRC ON PRC.productoRecomendadoId = P.id
+JOIN 
+    HistorialClienteProducto HCP ON PRC.clienteId = HCP.clienteId AND HCP.productoId = P.id
+JOIN 
+    Carrito Ca ON Ca.productoId = P.id
+WHERE 
+    HCP.tipoAccion = 'Compra'
+    AND HCP.fecha >= DATEADD(MONTH, -1, GETDATE())
+    AND Ca.clienteId NOT IN (
+        SELECT PRC2.clienteId 
+        FROM ProductoRecomendadoParaCliente PRC2 
+        WHERE PRC2.productoRecomendadoId = P.id
+    );
+
 -- Consulta D 
 WITH SucursalesPorEmpleado AS (
     SELECT 
@@ -67,110 +170,45 @@ WHERE sd.sueldoMensual > 0
   AND sd.totalDesdeContrato >= 0 
 ORDER BY sd.nombreCompleto;
 
--- Consulta B
-WITH ComprasUltimoAnio AS (
-    SELECT 
-        c.id AS clienteId,
-        c.nombre,
-        c.apellido,
-        SUM(CASE WHEN oo.facturaId IS NOT NULL THEN f.montoTotal ELSE 0 END) AS totalOnline,
-        SUM(CASE WHEN vf.facturaId IS NOT NULL THEN f.montoTotal ELSE 0 END) AS totalFisica,
-        f.id AS facturaId
-    FROM Cliente c
-    JOIN Factura f ON f.clienteId = c.id
-    LEFT JOIN OrdenOnline oo ON oo.facturaId = f.id
-    LEFT JOIN VentaFisica vf ON vf.facturaId = f.id
-    WHERE f.fechaEmision >= DATEADD(YEAR, -1, GETDATE())
-      AND f.fechaEmision <= GETDATE()
-    GROUP BY c.id, c.nombre, c.apellido, f.id
-),
-MetodoPredilecto AS (
-    SELECT 
-        cua.clienteId,
-        fp.nombre AS metodoPagoPredilecto,
-        COUNT(*) AS usoMetodoPago
-    FROM ComprasUltimoAnio cua
-    JOIN Pago p ON p.facturaId = cua.facturaId
-    JOIN FormaPago fp ON fp.id = p.metodoPagoId
-    GROUP BY cua.clienteId, fp.nombre
-),
-MetodoPredilectoMax AS (
-    SELECT 
-        mp1.clienteId,
-        mp1.metodoPagoPredilecto
-    FROM MetodoPredilecto mp1
-    WHERE mp1.usoMetodoPago = (
-        SELECT MAX(mp2.usoMetodoPago)
-        FROM MetodoPredilecto mp2
-        WHERE mp2.clienteId = mp1.clienteId
-    )
-),
-Totales AS (
-    SELECT 
-        cua.clienteId,
-        cua.nombre,
-        cua.apellido,
-        SUM(cua.totalOnline) AS totalGastadoOnline,
-        SUM(cua.totalFisica) AS totalGastadoFisica
-    FROM ComprasUltimoAnio cua
-    GROUP BY cua.clienteId, cua.nombre, cua.apellido
-    HAVING SUM(cua.totalOnline) > 0 OR SUM(cua.totalFisica) > 0
-)
+--Consulta E 
 SELECT 
-    t.nombre + ' ' + t.apellido AS NombreCliente,
-    t.totalGastadoOnline,
-    t.totalGastadoFisica,
-    mp.metodoPagoPredilecto
-FROM Totales t
-JOIN MetodoPredilectoMax mp ON mp.clienteId = t.clienteId
-ORDER BY t.nombre, t.apellido;
-
-
--- Consulta A
-SELECT 
-    te.id AS TipoEnvio,
-	te.nombreEnvio,
-    te.tiempoEstimadoEntrega,
-    te.costoEnvio,
-    COUNT(o.id) AS CantidadVecesUsado,
-    ROUND(COUNT(o.id) * 100.0 / SUM(COUNT(o.id)) OVER (), 2) AS ProporcionUso,
-    SUM(f.montoTotal) AS IngresosTotales,
-    ROUND(SUM(f.montoTotal) * 100.0 / SUM(SUM(f.montoTotal)) OVER (), 2) AS ProporcionIngresos
+    c.id AS ClienteID,
+    c.CI,
+    c.nombre,
+    c.apellido,
+    c.sexo,
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) AS Compras_Recomendadas,
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) AS Compras_No_Recomendadas,
+    CAST(COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_Recomendadas,
+    CAST(COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_No_Recomendadas
 FROM 
-    TipoEnvio te
+    Cliente c
 LEFT JOIN 
-    OrdenOnline o ON te.id = o.tipoEnvioId
+    HistorialClienteProducto hc ON c.id = hc.clienteId
 LEFT JOIN 
-    Factura f ON o.facturaId = f.id
+    Producto p ON hc.productoId = p.id
+LEFT JOIN 
+    ProductoRecomendadoParaCliente pr ON c.id = pr.clienteId AND p.id = pr.productoRecomendadoId
 GROUP BY 
-    te.id,te.nombreEnvio, te.tiempoEstimadoEntrega, te.costoEnvio;
-
--- Consulta C
-SELECT DISTINCT 
-    P.nombre AS nombreProducto,
-    C.nombre AS categoriaProducto,
-    M.nombre AS marcaProducto
-FROM 
-    Producto P
-JOIN 
-    Categoria C ON P.categoriaId = C.id
-JOIN 
-    Marca M ON P.marcaId = M.id
-JOIN 
-    ProductoRecomendadoParaCliente PRC ON PRC.productoRecomendadoId = P.id
-JOIN 
-    HistorialClienteProducto HCP ON PRC.clienteId = HCP.clienteId AND HCP.productoId = P.id
-JOIN 
-    Carrito Ca ON Ca.productoId = P.id
-WHERE 
-    HCP.tipoAccion = 'Compra'
-    AND HCP.fecha >= DATEADD(MONTH, -1, GETDATE())
-    AND Ca.clienteId NOT IN (
-        SELECT PRC2.clienteId 
-        FROM ProductoRecomendadoParaCliente PRC2 
-        WHERE PRC2.productoRecomendadoId = P.id
-    );
-
+    c.id, c.CI, c.nombre, c.apellido, c.sexo
+HAVING 
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) > 0 OR 
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) > 0
+ORDER BY 
+    c.id;
+    
 -- Consulta F
 SELECT 
     P.*, -- Informacion de los productos
@@ -308,44 +346,3 @@ FROM Producto P
 JOIN Categoria C ON C.id = P.categoriaId -- Categoria del producto
 JOIN Inventario I ON I.productoId = P.id -- Inventario del producto
 WHERE C.nombre = 'Chucherías' -- Categoria Chucherías (id=6)
-
-
-
---Consulta E 
-SELECT 
-    c.id AS ClienteID,
-    c.CI,
-    c.nombre,
-    c.apellido,
-    c.sexo,
-    COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
-        END) AS Compras_Recomendadas,
-    COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
-        END) AS Compras_No_Recomendadas,
-    CAST(COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
-        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_Recomendadas,
-    CAST(COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
-        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_No_Recomendadas
-FROM 
-    Cliente c
-LEFT JOIN 
-    HistorialClienteProducto hc ON c.id = hc.clienteId
-LEFT JOIN 
-    Producto p ON hc.productoId = p.id
-LEFT JOIN 
-    ProductoRecomendadoParaCliente pr ON c.id = pr.clienteId AND p.id = pr.productoRecomendadoId
-GROUP BY 
-    c.id, c.CI, c.nombre, c.apellido, c.sexo
-HAVING 
-    COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
-        END) > 0 OR 
-    COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
-        END) > 0
-ORDER BY 
-    c.id;
