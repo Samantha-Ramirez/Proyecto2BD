@@ -93,7 +93,7 @@ BEGIN
         LEFT JOIN PromoEspecializada pe ON p.id = pe.promoId
         WHERE f.id = @facturaId
         AND p.fechaFin >= @fechaEmision -- Usar fechaEmision
-        AND p.tipoPromocion IN ('Fisica', 'Ambos');
+        AND p.tipoPromocion IN ('Física', 'Ambos');
 
     RETURN ISNULL(@montoDescuentoTotal, 0);
 END;
@@ -175,7 +175,7 @@ BEGIN
     IF @fechaEmision BETWEEN @fechaInicio AND @fechaFin 
     BEGIN
         IF (@esOrdenOnline = 1 AND @tipoPromocion IN ('Online', 'Ambos'))
-            OR (@esVentaFisica = 1 AND @tipoPromocion IN ('Fisica', 'Ambos'))
+            OR (@esVentaFisica = 1 AND @tipoPromocion IN ('Física', 'Ambos'))
         BEGIN
             SET @esValida = 1;
         END

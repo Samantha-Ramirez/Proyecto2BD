@@ -282,7 +282,7 @@ CREATE TABLE Promo (
     valorDescuento DECIMAL(10,2) CHECK (valorDescuento >= 0),
     fechaInicio DATETIME,
     fechaFin DATETIME,
-    tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Fisica', 'Ambos'))
+    tipoPromocion VARCHAR(50) CHECK (tipoPromocion IN ('Online', 'Física', 'Ambos'))
 );
 
 -- Promo especializada

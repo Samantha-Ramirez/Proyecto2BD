@@ -2295,50 +2295,50 @@ SET IDENTITY_INSERT Promo ON;
 INSERT INTO Promo (id, nombre, slogan, codigo, tipoDescuento, valorDescuento, fechaInicio, fechaFin, tipoPromocion) VALUES
     -- Promociones estándar (33)
     (1, 'Descuento de Inicio', '¡Comienza con ahorros!', 'START10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-31', 'Online'), -- Ajustado: desde factura 1
-    (2, 'Verano en Sucursal', '¡Ahorra en verano!', 'SUMMER20', 'Fijo', 20.0, '2025-01-01', '2025-03-08', 'Fisica'),
+    (2, 'Verano en Sucursal', '¡Ahorra en verano!', 'SUMMER20', 'Fijo', 20.0, '2025-01-01', '2025-03-08', 'Física'),
     (3, 'Compra Doble', '¡Más compras, más descuentos!', 'DOUBLE15', 'Porcentaje', 15.0, '2024-06-01', '2025-03-15', 'Ambos'), -- Ajustado: desde factura 1
     (4, 'Fin de Semana Online', '¡Solo este fin de semana!', 'WEEKEND5', 'Fijo', 5.0, '2024-06-01', '2025-03-31', 'Online'), -- Ajustado: desde factura 1
-    (5, 'Lunes en Tienda', '¡Lunes de locura!', 'MONDAY10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Fisica'),
+    (5, 'Lunes en Tienda', '¡Lunes de locura!', 'MONDAY10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Física'),
     (6, 'Enero Total', '¡Frescos descuentos!', 'JAN15', 'Fijo', 15.0, '2024-06-01', '2025-03-31', 'Ambos'), -- Ajustado: desde factura 1
     (7, 'Cyber Week', '¡Ofertas digitales!', 'CYBER20', 'Porcentaje', 20.0, '2024-06-01', '2025-03-15', 'Online'), -- Ajustado: desde factura 1
-    (8, 'Día de la Sucursal', '¡Visítanos hoy!', 'STORE10', 'Fijo', 10.0, '2025-01-10', '2025-02-10', 'Fisica'),
+    (8, 'Día de la Sucursal', '¡Visítanos hoy!', 'STORE10', 'Fijo', 10.0, '2025-01-10', '2025-02-10', 'Física'),
     (9, 'Compra Rápida', '¡Rápido y barato!', 'FAST10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-31', 'Ambos'), -- Ajustado: desde factura 1
     (10, 'Oferta Flash', '¡Solo 24 horas!', 'FLASH10', 'Fijo', 10.0, '2024-06-01', '2025-03-15', 'Online'), -- Ajustado: desde factura 1
-    (11, 'Miércoles Especial', '¡Mitad de semana, gran oferta!', 'WED10', 'Porcentaje', 10.0, '2025-02-01', '2025-03-08', 'Fisica'),
+    (11, 'Miércoles Especial', '¡Mitad de semana, gran oferta!', 'WED10', 'Porcentaje', 10.0, '2025-02-01', '2025-03-08', 'Física'),
     (12, 'Todo el Mes', '¡Ahorra todo el mes!', 'MONTH25', 'Fijo', 25.0, '2024-06-01', '2025-03-31', 'Ambos'), -- Ajustado: desde factura 1
     (13, 'Regreso a Clases', '¡Prepara el regreso!', 'BACK10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-15', 'Online'), -- Ajustado: desde factura 1
-    (14, 'Fin de Mes', '¡Cierra con ahorros!', 'END15', 'Fijo', 15.0, '2025-02-15', '2025-02-28', 'Fisica'),
+    (14, 'Fin de Mes', '¡Cierra con ahorros!', 'END15', 'Fijo', 15.0, '2025-02-15', '2025-02-28', 'Física'),
     (15, 'Compra Grande', '¡Más compras, más ahorros!', 'BIG10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-31', 'Ambos'), -- Ajustado: desde factura 1
     (16, 'Oferta Nocturna', '¡Compra de noche!', 'NIGHT10', 'Fijo', 10.0, '2024-06-01', '2025-03-15', 'Online'), -- Ajustado: desde factura 1
-    (17, 'Día Soleado', '¡Ahorra bajo el sol!', 'SUN10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Fisica'),
+    (17, 'Día Soleado', '¡Ahorra bajo el sol!', 'SUN10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Física'),
     (18, 'Semana de Lealtad', '¡Gracias por tu fidelidad!', 'LOYAL15', 'Fijo', 15.0, '2024-06-01', '2025-03-31', 'Online'), -- Ajustado: desde factura 1
     (19, 'Compra Temprana', '¡Anticípate y ahorra!', 'EARLY10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-15', 'Online'), -- Ajustado: desde factura 1
-    (20, 'Sábado en Tienda', '¡Sábado de descuentos!', 'SAT20', 'Fijo', 20.0, '2025-01-01', '2025-02-01', 'Fisica'),
+    (20, 'Sábado en Tienda', '¡Sábado de descuentos!', 'SAT20', 'Fijo', 20.0, '2025-01-01', '2025-02-01', 'Física'),
     (21, 'Compra Segura', '¡Ahorra con confianza!', 'SAFE10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-31', 'Online'), -- Ajustado: desde factura 1
     (22, 'Oferta Relámpago', '¡No te la pierdas!', 'FLASH15', 'Fijo', 15.0, '2024-06-01', '2025-03-15', 'Online'), -- Ajustado: desde factura 1
-    (23, 'Día de Lluvia', '¡Ahorra en casa!', 'RAIN10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Fisica'),
+    (23, 'Día de Lluvia', '¡Ahorra en casa!', 'RAIN10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Física'),
     (24, 'Aniversario', '¡Celebra con nosotros!', 'ANNIV15', 'Fijo', 15.0, '2025-01-01', '2025-03-31', 'Ambos'),
-    (25, 'Día del Cliente', '¡Tú eres lo primero!', 'CLIENT10', 'Fijo', 10.0, '2025-01-01', '2025-02-28', 'Fisica'),
+    (25, 'Día del Cliente', '¡Tú eres lo primero!', 'CLIENT10', 'Fijo', 10.0, '2025-01-01', '2025-02-28', 'Física'),
     (26, 'Oferta Extendida', '¡Más tiempo para ahorrar!', 'EXT10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-15', 'Online'), -- Ajustado: desde factura 1
     (27, 'Promo de Medianoche', '¡Ahorra hasta tarde!', 'MIDNIGHT5', 'Fijo', 5.0, '2025-02-01', '2025-03-31', 'Online'),
-    (28, 'Enero en Tienda', '¡Ahorra en enero!', 'JAN10', 'Porcentaje', 10.0, '2025-01-01', '2025-01-31', 'Fisica'),
-    (29, 'Promo Enero Física 2', '¡Ahorra más!', 'ENE2025F2', 'Porcentaje', 10.0, '2025-01-01', '2025-01-31', 'Fisica'),
-    (30, 'Promo Febrero Física 2', '¡Febrero de ofertas!', 'FEB2025F2', 'Fijo', 15.0, '2025-02-01', '2025-02-28', 'Fisica'),
-    (31, 'Promo Marzo Física 2', '¡Marzo de descuentos!', 'MAR2025F2', 'Porcentaje', 10.0, '2025-03-01', '2025-03-08', 'Fisica'),
+    (28, 'Enero en Tienda', '¡Ahorra en enero!', 'JAN10', 'Porcentaje', 10.0, '2025-01-01', '2025-01-31', 'Física'),
+    (29, 'Promo Enero Física 2', '¡Ahorra más!', 'ENE2025F2', 'Porcentaje', 10.0, '2025-01-01', '2025-01-31', 'Física'),
+    (30, 'Promo Febrero Física 2', '¡Febrero de ofertas!', 'FEB2025F2', 'Fijo', 15.0, '2025-02-01', '2025-02-28', 'Física'),
+    (31, 'Promo Marzo Física 2', '¡Marzo de descuentos!', 'MAR2025F2', 'Porcentaje', 10.0, '2025-03-01', '2025-03-08', 'Física'),
     (32, 'Promo Enero Online 2', '¡Más ahorros!', 'ENE2025O2', 'Fijo', 10.0, '2024-06-01', '2025-03-31', 'Online'), -- Ajustado: desde factura 1
     (33, 'Promo Febrero Online 2', '¡Febrero de ahorros!', 'FEB2025O2', 'Porcentaje', 10.0, '2024-06-01', '2025-03-15', 'Online'), -- Ajustado: desde factura 1
     -- Promociones especializadas (14, 30% de 47)
     (34, 'Coca-Cola Lovers', '¡Para fans de Coca!', 'COKE10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-31', 'Ambos'), -- Ajustado: desde factura 1
-    (35, 'Lácteos Saludables', '¡Lácteos al mejor precio!', 'MILK15', 'Fijo', 15.0, '2025-01-01', '2025-03-08', 'Fisica'),
+    (35, 'Lácteos Saludables', '¡Lácteos al mejor precio!', 'MILK15', 'Fijo', 15.0, '2025-01-01', '2025-03-08', 'Física'),
     (36, 'Snacks Nocturnos', '¡Snacks para la noche!', 'SNACK15', 'Porcentaje', 15.0, '2024-06-01', '2025-03-31', 'Online'), -- Ajustado: desde factura 1
-    (37, 'Cerveza en Casa', '¡Celebra con Quilmes!', 'BEER10', 'Fijo', 10.0, '2025-01-01', '2025-03-08', 'Fisica'),
-    (38, 'Producto Estrella', '¡Nuestra estrella al mejor precio!', 'STAR10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Fisica'),
+    (37, 'Cerveza en Casa', '¡Celebra con Quilmes!', 'BEER10', 'Fijo', 10.0, '2025-01-01', '2025-03-08', 'Física'),
+    (38, 'Producto Estrella', '¡Nuestra estrella al mejor precio!', 'STAR10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Física'),
     (39, 'Galletas Dulces', '¡Dulzura asegurada!', 'COOKIES15', 'Fijo', 15.0, '2025-02-01', '2025-03-31', 'Online'),
     (40, 'Nestlé Premium', '¡Calidad Nestlé!', 'NESTLE10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-31', 'Ambos'),
-    (41, 'Cuidado Colgate', '¡Sonrisa perfecta!', 'COLGATE15', 'Fijo', 15.0, '2025-01-01', '2025-03-08', 'Fisica'),
+    (41, 'Cuidado Colgate', '¡Sonrisa perfecta!', 'COLGATE15', 'Fijo', 15.0, '2025-01-01', '2025-03-08', 'Física'),
     (42, 'Bebidas Refrescantes', '¡Refréscate ya!', 'DRINK10', 'Porcentaje', 10.0, '2024-06-01', '2025-03-31', 'Online'), -- Ajustado: desde factura 1
     (43, 'Sprite Party', '¡Fiesta con Sprite!', 'SPRITE10', 'Fijo', 10.0, '2025-01-01', '2025-03-15', 'Online'),
-    (44, 'Cereales Mañaneros', '¡Desayuno con energía!', 'CEREAL10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Fisica'),
+    (44, 'Cereales Mañaneros', '¡Desayuno con energía!', 'CEREAL10', 'Porcentaje', 10.0, '2025-01-01', '2025-03-08', 'Física'),
     (45, 'Producto Bimbo', '¡Pan fresco siempre!', 'BIMBO10', 'Fijo', 10.0, '2025-02-01', '2025-03-31', 'Online'),
     (46, 'Chucherías Lays', '¡Sabor en cada bocado!', 'LAYS15', 'Porcentaje', 15.0, '2025-01-01', '2025-03-31', 'Ambos'),
     (47, 'Verano en Gama', 'Disfruta el verano con Gama', 'VERANO2025', 'Porcentaje', 10.0, '2025-06-01', '2025-08-31', 'Ambos');
