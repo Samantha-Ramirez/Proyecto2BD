@@ -293,7 +293,7 @@ SegundaCompra AS (
     AND DATEDIFF(day, PC.fecha, F.fechaEmision) <= 30 -- Segunda compra dentro de los 30 dias posteriores a la primera compra
 )
 SELECT 
-    -- Clientes que han hecho segunda compra entre todos los clientes que hecho compra
+    -- Clientes que han hecho segunda compra entre todos los clientes que han hecho compra
     (COUNT(DISTINCT SC.clienteId) * 100/ COUNT(DISTINCT PC.clienteId)) AS porcentajeClienteSegCompra
 FROM PrimeraCompra PC
 LEFT JOIN SegundaCompra SC ON SC.clienteId = PC.clienteId;
