@@ -173,28 +173,26 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
                 GETDATE(),
                 PRP.mensaje
             FROM 
-                SELECT clienteId, productoId, SUM(cantidad) AS cantidadComprasProducto
-                FROM
+                (SELECT 
+                    clienteId, 
+                    productoId, 
+                    SUM(cantidad) AS cantidadComprasProducto -- Obtener cantidad de compras del producto por el cliente
+                FROM 
                     (SELECT 
                         clienteId, 
                         productoId, 
-                        SUM(cantidad) AS cantidadComprasProducto -- Obtener cantidad de compras del producto por el cliente
-                    FROM 
-                        (SELECT 
-                            clienteId, 
-                            productoId, 
-                            cantidad
-                        FROM FacturaDetalle FD
-                        JOIN Factura F ON F.id = FD.facturaId
-                        UNION ALL
-                        SELECT 
-                            clienteId, 
-                            productoId, 
-                            cantidad
-                        FROM #InsertedData
-                        ) AS Compras
+                        cantidad
+                    FROM FacturaDetalle FD
+                    JOIN Factura F ON F.id = FD.facturaId
+                    UNION
+                    SELECT 
+                        clienteId, 
+                        productoId, 
+                        cantidad
+                    FROM #InsertedData
+                    ) AS Compras
                 GROUP BY clienteId, productoId
-            ) AS id
+                ) AS id
             JOIN ProductoRecomendadoParaProducto PRP ON PRP.productoId = id.productoId -- Buscar productos recomendados para ese producto 
             WHERE id.cantidadComprasProducto > 3; -- Verificar más de 3 veces
 
@@ -219,7 +217,8 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
             SELECT 
                 clienteId, 
                 productoId
-            FROM inserted;
+            FROM inserted
+            WHERE tipoAccion = 'Búsqueda';
 
         -- Procesar cada combinacion de clienteId y productoId
         INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) -- Recomendarlos al cliente
@@ -228,22 +227,25 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
                 PRP.productoRecomendadoId,
                 GETDATE(),
                 PRP.mensaje
-            FROM (
-                SELECT
+            FROM 
+                (SELECT
                     clienteId,
                     productoId,
                     COUNT(*) AS cantidadBusquedasProducto -- Obtener cantidad de busquedas del producto por el cliente
                 FROM 
-                    (SELECT clienteId, productoId
+                    (SELECT 
+                        clienteId, 
+                        productoId
                     FROM HistorialClienteProducto
                     WHERE tipoAccion = 'Búsqueda'
-                    UNION ALL
-                    SELECT clienteId, productoId
+                    UNION
+                    SELECT 
+                        clienteId, 
+                        productoId
                     FROM #InsertedData
-                    WHERE tipoAccion = 'Búsqueda'
                     ) AS Busquedas
                 GROUP BY clienteId, productoId
-            ) AS id
+                ) AS id
             JOIN ProductoRecomendadoParaProducto PRP ON PRP.productoId = id.productoId -- Buscar productos recomendados para ese producto 
             WHERE id.cantidadBusquedasProducto > 3; -- Verificar más de 3 veces
 
