@@ -93,10 +93,10 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaDetalle
 
         -- Recalcular los valores totales de Factura
         -- Obtener subTotal, montoDescuentoTotal, porcentajeIVA, montoIVA, montoTotal
-        SET @subTotal = dbo.GetsubTotal(@ordenId);
-        SET @montoDescuentoTotal = dbo.GetmontoDescuentoTotal(@ordenId);
-        SET @montoIVA = dbo.GetmontoIVA(@ordenId);
-        SET @montoTotal = dbo.GetMontoTotal(@ordenId);
+        SET @subTotal = dbo.GetsubTotal(@facturaId);
+        SET @montoDescuentoTotal = dbo.GetmontoDescuentoTotal(@facturaId);
+        SET @montoIVA = dbo.GetmontoIVA(@facturaId);
+        SET @montoTotal = dbo.GetMontoTotal(@facturaId);
 
         UPDATE Factura
             SET subTotal = @subTotal, montoDescuentoTotal = @montoDescuentoTotal, montoIVA = @montoIVA, montoTotal = @montoTotal
