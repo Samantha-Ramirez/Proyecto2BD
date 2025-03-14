@@ -1,21 +1,73 @@
--- Consulta A
+
+-- Consulta D 
+;WITH SucursalesPorEmpleado AS (
+    SELECT 
+        e.id AS empleadoId,
+        COUNT(DISTINCT vf.sucursalId) AS numSucursales
+    FROM Empleado e
+    JOIN VentaFisica vf ON vf.empleadoId = e.id
+    GROUP BY e.id
+    HAVING COUNT(DISTINCT vf.sucursalId) > 1
+),
+MismaSucursalSupervisor AS (
+    SELECT 
+        e.id AS empleadoId
+    FROM Empleado e
+    JOIN Empleado sup ON sup.id = e.empleadoSupervisorId
+    WHERE e.sucursalId = sup.sucursalId
+      AND e.id != e.empleadoSupervisorId  -- Un empleado no se puede supervisar el mismo
+),
+Top5Cargos AS (
+    SELECT TOP 5 
+        id AS cargoId
+    FROM Cargo
+    ORDER BY salarioBasePorHora DESC
+),
+EmpleadosCumplenCriterios AS (
+    SELECT DISTINCT e.id AS empleadoId
+    FROM Empleado e
+    WHERE EXISTS (SELECT 1 FROM SucursalesPorEmpleado spe WHERE spe.empleadoId = e.id)
+       OR EXISTS (SELECT 1 FROM MismaSucursalSupervisor mss WHERE mss.empleadoId = e.id)
+       OR EXISTS (SELECT 1 FROM Top5Cargos t5c WHERE t5c.cargoId = e.cargoId)
+),
+SueldoDetallado AS (
+    SELECT 
+        e.id AS empleadoId,
+        e.CI,
+        e.nombre + ' ' + e.apellido AS nombreCompleto,
+        e.sexo,
+        c.nombre AS cargoNombre,
+        c.salarioBasePorHora,
+        e.bonoFijoMensual,
+        -- Horas por día
+        (e.horaFin - e.horaInicio) AS horasPorDia,
+        -- Horas por mes 
+        (e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33 AS horasPorMes,
+        -- Sueldo mensual
+        (c.salarioBasePorHora * ((e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33)) + e.bonoFijoMensual AS sueldoMensual,
+        -- Meses desde contrato hasta hoy
+        DATEDIFF(MONTH, e.fechaContrato, GETDATE()) AS mesesDesdeContrato,
+        -- Total recibido desde contrato
+        (c.salarioBasePorHora * ((e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33) + e.bonoFijoMensual) * 
+        DATEDIFF(MONTH, e.fechaContrato, GETDATE()) AS totalDesdeContrato
+    FROM Empleado e
+    JOIN Cargo c ON c.id = e.cargoId
+    WHERE EXISTS (SELECT 1 FROM EmpleadosCumplenCriterios ecc WHERE ecc.empleadoId = e.id)
+      AND e.fechaContrato <= GETDATE()
+)
 SELECT 
-    te.id AS TipoEnvio,
-	te.nombreEnvio,
-    te.tiempoEstimadoEntrega,
-    te.costoEnvio,
-    COUNT(o.id) AS CantidadVecesUsado,
-    ROUND(COUNT(o.id) * 100.0 / SUM(COUNT(o.id)) OVER (), 2) AS ProporcionUso,
-    SUM(f.montoTotal) AS IngresosTotales,
-    ROUND(SUM(f.montoTotal) * 100.0 / SUM(SUM(f.montoTotal)) OVER (), 2) AS ProporcionIngresos
-FROM 
-    TipoEnvio te
-LEFT JOIN 
-    OrdenOnline o ON te.id = o.tipoEnvioId
-LEFT JOIN 
-    Factura f ON o.facturaId = f.id
-GROUP BY 
-    te.id,te.nombreEnvio, te.tiempoEstimadoEntrega, te.costoEnvio;
+    sd.CI,
+    sd.nombreCompleto,
+    sd.sexo,
+    sd.cargoNombre,
+    sd.salarioBasePorHora AS SalarioBasePorHora,
+    sd.bonoFijoMensual AS BonoFijoMensual,
+    sd.sueldoMensual AS SueldoMensual,
+    sd.totalDesdeContrato AS TotalDesdeContrato
+FROM SueldoDetallado sd
+WHERE sd.sueldoMensual > 0 
+  AND sd.totalDesdeContrato >= 0 
+ORDER BY sd.nombreCompleto;
 
 -- Consulta B
 WITH ComprasUltimoAnio AS (
@@ -75,6 +127,26 @@ FROM Totales t
 JOIN MetodoPredilectoMax mp ON mp.clienteId = t.clienteId
 ORDER BY t.nombre, t.apellido;
 
+
+-- Consulta A
+SELECT 
+    te.id AS TipoEnvio,
+	te.nombreEnvio,
+    te.tiempoEstimadoEntrega,
+    te.costoEnvio,
+    COUNT(o.id) AS CantidadVecesUsado,
+    ROUND(COUNT(o.id) * 100.0 / SUM(COUNT(o.id)) OVER (), 2) AS ProporcionUso,
+    SUM(f.montoTotal) AS IngresosTotales,
+    ROUND(SUM(f.montoTotal) * 100.0 / SUM(SUM(f.montoTotal)) OVER (), 2) AS ProporcionIngresos
+FROM 
+    TipoEnvio te
+LEFT JOIN 
+    OrdenOnline o ON te.id = o.tipoEnvioId
+LEFT JOIN 
+    Factura f ON o.facturaId = f.id
+GROUP BY 
+    te.id,te.nombreEnvio, te.tiempoEstimadoEntrega, te.costoEnvio;
+
 -- Consulta C
 SELECT DISTINCT 
     P.nombre AS nombreProducto,
@@ -101,114 +173,6 @@ WHERE
         WHERE PRC2.productoRecomendadoId = P.id
     );
 
--- Consulta D 
-WITH SucursalesPorEmpleado AS (
-    SELECT 
-        e.id AS empleadoId,
-        COUNT(DISTINCT vf.sucursalId) AS numSucursales
-    FROM Empleado e
-    JOIN VentaFisica vf ON vf.empleadoId = e.id
-    GROUP BY e.id
-    HAVING COUNT(DISTINCT vf.sucursalId) > 1
-),
-MismaSucursalSupervisor AS (
-    SELECT 
-        e.id AS empleadoId
-    FROM Empleado e
-    JOIN Empleado sup ON sup.id = e.empleadoSupervisorId
-    WHERE e.sucursalId = sup.sucursalId
-),
-Top5Cargos AS (
-    SELECT TOP 5 
-        id AS cargoId
-    FROM Cargo
-    ORDER BY salarioBasePorHora DESC
-),
-EmpleadosCumplenCriterios AS (
-    SELECT DISTINCT e.id AS empleadoId
-    FROM Empleado e
-    WHERE EXISTS (SELECT 1 FROM SucursalesPorEmpleado spe WHERE spe.empleadoId = e.id)
-       OR EXISTS (SELECT 1 FROM MismaSucursalSupervisor mss WHERE mss.empleadoId = e.id)
-       OR EXISTS (SELECT 1 FROM Top5Cargos t5c WHERE t5c.cargoId = e.cargoId)
-),
-SueldoDetallado AS (
-    SELECT 
-        e.id AS empleadoId,
-        e.CI,
-        e.nombre + ' ' + e.apellido AS nombreCompleto,
-        e.sexo,
-        c.nombre AS cargoNombre,
-        c.salarioBasePorHora,
-        e.bonoFijoMensual,
-        -- Horas por día
-        (e.horaFin - e.horaInicio) AS horasPorDia,
-        -- Horas por mes (4.33 semanas promedio por mes)
-        (e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33 AS horasPorMes,
-        -- Sueldo mensual
-        (c.salarioBasePorHora * ((e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33)) + e.bonoFijoMensual AS sueldoMensual,
-        -- Meses desde contrato hasta hoy
-        DATEDIFF(MONTH, e.fechaContrato, GETDATE()) AS mesesDesdeContrato,
-        -- Total recibido desde contrato
-        (c.salarioBasePorHora * ((e.horaFin - e.horaInicio) * e.cantidadDiasTrabajoPorSemana * 4.33) + e.bonoFijoMensual) * 
-        DATEDIFF(MONTH, e.fechaContrato,  GETDATE()) AS totalDesdeContrato
-    FROM Empleado e
-    JOIN Cargo c ON c.id = e.cargoId
-    WHERE EXISTS (SELECT 1 FROM EmpleadosCumplenCriterios ecc WHERE ecc.empleadoId = e.id)
-      AND e.fechaContrato <=  GETDATE()
-)
-SELECT 
-    sd.CI,
-    sd.nombreCompleto,
-    sd.sexo,
-    sd.cargoNombre,
-    sd.salarioBasePorHora AS SalarioBasePorHora,
-    sd.bonoFijoMensual AS BonoFijoMensual,
-    ROUND(sd.sueldoMensual, 2) AS SueldoMensual,
-    ROUND(sd.totalDesdeContrato, 2) AS TotalDesdeContrato
-FROM SueldoDetallado sd
-WHERE sd.sueldoMensual > 0 
-  AND sd.totalDesdeContrato >= 0 
-ORDER BY sd.nombreCompleto;
-
---Consulta E 
-SELECT 
-    c.id AS ClienteID,
-    c.CI,
-    c.nombre,
-    c.apellido,
-    c.sexo,
-    COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
-        END) AS Compras_Recomendadas,
-    COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
-        END) AS Compras_No_Recomendadas,
-    CAST(COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
-        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_Recomendadas,
-    CAST(COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
-        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_No_Recomendadas
-FROM 
-    Cliente c
-LEFT JOIN 
-    HistorialClienteProducto hc ON c.id = hc.clienteId
-LEFT JOIN 
-    Producto p ON hc.productoId = p.id
-LEFT JOIN 
-    ProductoRecomendadoParaCliente pr ON c.id = pr.clienteId AND p.id = pr.productoRecomendadoId
-GROUP BY 
-    c.id, c.CI, c.nombre, c.apellido, c.sexo
-HAVING 
-    COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
-        END) > 0 OR 
-    COUNT(CASE 
-        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
-        END) > 0
-ORDER BY 
-    c.id;
-    
 -- Consulta F
 SELECT 
     P.*, -- Informacion de los productos
@@ -346,3 +310,44 @@ FROM Producto P
 JOIN Categoria C ON C.id = P.categoriaId -- Categoria del producto
 JOIN Inventario I ON I.productoId = P.id -- Inventario del producto
 WHERE C.nombre = 'Chucherías' -- Categoria Chucherías (id=6)
+
+
+
+--Consulta E 
+SELECT 
+    c.id AS ClienteID,
+    c.CI,
+    c.nombre,
+    c.apellido,
+    c.sexo,
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) AS Compras_Recomendadas,
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) AS Compras_No_Recomendadas,
+    CAST(COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_Recomendadas,
+    CAST(COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_No_Recomendadas
+FROM 
+    Cliente c
+LEFT JOIN 
+    HistorialClienteProducto hc ON c.id = hc.clienteId
+LEFT JOIN 
+    Producto p ON hc.productoId = p.id
+LEFT JOIN 
+    ProductoRecomendadoParaCliente pr ON c.id = pr.clienteId AND p.id = pr.productoRecomendadoId
+GROUP BY 
+    c.id, c.CI, c.nombre, c.apellido, c.sexo
+HAVING 
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
+        END) > 0 OR 
+    COUNT(CASE 
+        WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
+        END) > 0
+ORDER BY 
+    c.id;
