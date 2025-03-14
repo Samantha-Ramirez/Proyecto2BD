@@ -1,5 +1,3 @@
-USE M25
-
 -- Pais
 SET IDENTITY_INSERT Pais ON;
 INSERT INTO Pais (id, nombre) VALUES
