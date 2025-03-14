@@ -1,5 +1,5 @@
 GO
---Costo envio 
+-- Funcion Costo envio 
 CREATE FUNCTION dbo.GetCostoEnvio (@ordenId INT)
 RETURNS DECIMAL(10,2)
 AS
@@ -13,7 +13,7 @@ BEGIN
 END;
 GO
 
---Subtotal
+-- Funcion Subtotal
 CREATE FUNCTION dbo.GetSubTotal (@facturaId INT)
 RETURNS DECIMAL(10,2)
 AS
@@ -35,7 +35,7 @@ BEGIN
 END;
 GO
 
---Descuento
+--Funcion Descuento
 CREATE FUNCTION dbo.GetMontoDescuentoTotal (@facturaId INT)
 RETURNS DECIMAL(10,2)
 AS
@@ -99,7 +99,7 @@ BEGIN
 END;
 GO
 
---Monto IVA
+-- Funcion Monto IVA
 CREATE FUNCTION dbo.GetmontoIVA (@facturaId INT)
 RETURNS DECIMAL(10,2)
 AS
@@ -134,7 +134,7 @@ BEGIN
 END;
 GO
 
---Total
+-- Funcion Total
 CREATE FUNCTION dbo.GetMontoTotal (@facturaId INT)
 RETURNS DECIMAL(10,2)
 AS
@@ -148,7 +148,7 @@ BEGIN
 END;
 GO
 
---Promo valida
+-- Funcion Promo valida
 CREATE FUNCTION dbo.esPromoValida (@facturaId INT, @promoId INT)
 RETURNS BIT
 AS

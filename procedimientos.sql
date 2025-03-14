@@ -1,7 +1,4 @@
-
-
-
--- A probar 
+-- Procedimiento A probar 
 CREATE PROCEDURE RealizarCompraOnline
     @ClienteId INT
 AS
@@ -58,8 +55,7 @@ BEGIN
 END;
 GO
 
-
---C 
+-- Procedimiento C 
 Create PROCEDURE CrearFacturaFisica(
     @idCliente INT,
     @idEmpleado VARCHAR(20))
@@ -101,8 +97,7 @@ BEGIN
 END;
 GO
 
-
-  --D
+-- Procedimiento D
 Create PROCEDURE AgregarProductoAFactura (
     @FacturaId INT,
     @ProductoId INT,
@@ -142,8 +137,6 @@ BEGIN
         THROW;
     END CATCH;
 END;
-
-
 
 --EXEC CrearFacturaFisica 2,2
 
