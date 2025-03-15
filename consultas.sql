@@ -173,6 +173,7 @@ WHERE sd.sueldoMensual > 0
 ORDER BY sd.nombreCompleto;
 
 -- Consulta E 
+--Consulta E 
 SELECT 
     c.id AS ClienteID,
     c.CI,
@@ -181,16 +182,16 @@ SELECT
     c.sexo,
     COUNT(CASE 
         WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
-        END) AS Compras_Recomendadas,
+        END) AS ComprasRecomendadas,
     COUNT(CASE 
         WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
-        END) AS Compras_No_Recomendadas,
+        END) AS ComprasNoRecomendadas,
     CAST(COUNT(CASE 
         WHEN pr.fechaRecomendacion IS NOT NULL AND hc.tipoAccion = 'Compra' AND hc.fecha > pr.fechaRecomendacion THEN 1 
-        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_Recomendadas,
+        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS ProporcionRecomendadas,
     CAST(COUNT(CASE 
         WHEN pr.fechaRecomendacion IS NULL AND hc.tipoAccion = 'Compra' THEN 1 
-        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS Proporcion_No_Recomendadas
+        END) AS FLOAT) / NULLIF(COUNT(hc.tipoAccion), 0) AS ProporcionNoRecomendadas
 FROM 
     Cliente c
 LEFT JOIN 
