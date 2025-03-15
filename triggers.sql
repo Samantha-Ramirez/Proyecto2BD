@@ -4,7 +4,7 @@ CREATE TRIGGER ProductoInsertarInventario
     ON Producto
     AFTER INSERT -- Al tener datos nuevos
     AS BEGIN
-        -- Crear registro en 0
+        -- Crear registro en 0 para el producto
         INSERT INTO Inventario (productoId, cantidad)
             SELECT 
                 id,
@@ -17,10 +17,17 @@ CREATE TRIGGER ProveedorProductoInsertarInventario
     ON ProveedorProducto
     AFTER INSERT -- Al tener datos nuevos
     AS BEGIN
+        -- Actualizar registros
         UPDATE Inventario
-            SET cantidad = I.cantidad + inserted.cantidad
+            SET cantidad = I.cantidad + InsAgrupado.cantidadTotal -- Sumar cantidad actual con cantidad total comprada
             FROM Inventario I
-            JOIN inserted ON inserted.productoId = I.productoId;
+            JOIN -- Agrupar registros por producto y obtener cantidad total comprada
+                (SELECT 
+                    productoId, 
+                    SUM(cantidad) AS cantidadTotal
+                FROM inserted
+                GROUP BY productoId
+                ) AS InsAgrupado ON InsAgrupado.productoId = I.productoId;
     END;
     GO
 
@@ -55,11 +62,11 @@ CREATE TRIGGER OrdenOnlineInsertarFactura
             (GETDATE(), @clienteId, @subTotal, @montoDescuentoTotal, @porcentajeIVA, @montoIVA, @montoTotal)
         
         -- Obtener lastId
-        DECLARE @facturaLastId INT = SCOPE_IDENTITY(); -- Ultimo ID generado
+        DECLARE @facturaUltimoId INT = SCOPE_IDENTITY(); -- Ultimo ID generado
 
         -- Asociar OrdenOnline y Factura
         UPDATE OrdenOnline
-            SET facturaId = @facturaLastId
+            SET facturaId = @facturaUltimoId
             WHERE id = @ordenId;
     END;
     GO
@@ -75,11 +82,11 @@ CREATE TRIGGER OrdenDetalleInsertarFacturaDetalle
         SELECT 
             @ordenId = OO.id,
             @facturaId = OO.facturaId,
-            @productoId = inserted.productoId, 
-            @cantidad = inserted.cantidad, 
-            @precioPor = inserted.precioPor
+            @productoId = Ins.productoId, 
+            @cantidad = Ins.cantidad, 
+            @precioPor = Ins.precioPor
         FROM OrdenOnline OO
-        JOIN inserted ON inserted.ordenId = OO.id;
+        JOIN inserted Ins ON Ins.ordenId = OO.id;
 
         -- Si ya tiene una factura detalle asociada
         IF EXISTS (SELECT 1 FROM FacturaDetalle FD WHERE FD.facturaId = @facturaId AND FD.productoId = @productoId)
@@ -109,6 +116,7 @@ CREATE TRIGGER CarritoInsertarHistorialClienteProducto
     ON Carrito
     AFTER INSERT -- Al agregar al carrito un producto
     AS BEGIN
+        -- Crear registro con cliente, producto, fecha agregado, de tipo Carrito
         INSERT INTO HistorialClienteProducto (clienteId, productoId, fecha, tipoAccion)
             SELECT 
                 clienteId, 
@@ -124,14 +132,15 @@ CREATE TRIGGER FacturaDetalleInsertarHistorialClienteProducto
     ON FacturaDetalle
     AFTER INSERT -- Al comprar un producto
     AS BEGIN
+        -- Crear registro con cliente, producto, fecha emision, de tipo Compra
         INSERT INTO HistorialClienteProducto (clienteId, productoId, fecha, tipoAccion)
             SELECT 
                 F.clienteId, 
-                inserted.productoId, 
+                Ins.productoId, 
                 F.fechaEmision, 
                 'Compra'
-            FROM inserted 
-            JOIN Factura F ON F.id = inserted.facturaId;
+            FROM inserted Ins
+            JOIN Factura F ON F.id = Ins.facturaId;
     END;
     GO
 
@@ -140,36 +149,51 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
     ON FacturaDetalle
     AFTER INSERT -- Al comprar un producto 
     AS BEGIN
-        -- Usar tabla temporal
+        -- Tabla temporal
         CREATE TABLE #InsertedData (
             clienteId INT,
             productoId INT,
             cantidad INT
         );
 
+        -- Crear registros insertados en tabla temporal
         INSERT INTO #InsertedData (clienteId, productoId, cantidad)
             SELECT
                 F.clienteId,
-                inserted.productoId,
-                inserted.cantidad
-            FROM inserted
-            JOIN Factura F ON F.id = inserted.facturaId;
+                Ins.productoId,
+                Ins.cantidad
+            FROM inserted Ins
+            JOIN Factura F ON F.id = Ins.facturaId;
 
-        -- Procesar cada combinación de clienteId y productoId
+        -- Procesar cada combinacion de clienteId y productoId
         INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) -- Recomendarlos al cliente
             SELECT
                 id.clienteId,
                 PRP.productoRecomendadoId,
                 GETDATE(),
                 PRP.mensaje
-            FROM (
-                SELECT
-                    clienteId,
-                    productoId,
-                    SUM(cantidad) AS cantidadComprasProducto
-                FROM #InsertedData
+            FROM 
+                (SELECT 
+                    clienteId, 
+                    productoId, 
+                    SUM(cantidad) AS cantidadComprasProducto -- Obtener cantidad de compras del producto por el cliente
+                FROM 
+                    -- Seleccionar de compras anteriores + insertadas
+                    (SELECT 
+                        clienteId, 
+                        productoId, 
+                        cantidad
+                    FROM FacturaDetalle FD
+                    JOIN Factura F ON F.id = FD.facturaId
+                    UNION ALL
+                    SELECT 
+                        clienteId, 
+                        productoId, 
+                        cantidad
+                    FROM #InsertedData
+                    ) AS Compras
                 GROUP BY clienteId, productoId
-            ) AS id
+                ) AS id
             JOIN ProductoRecomendadoParaProducto PRP ON PRP.productoId = id.productoId -- Buscar productos recomendados para ese producto 
             WHERE id.cantidadComprasProducto > 3; -- Verificar más de 3 veces
 
@@ -183,40 +207,47 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
     ON HistorialClienteProducto -- Al buscar un producto 
     AFTER INSERT
     AS BEGIN
-        -- Usar tabla temporal
+        -- Tabla temporal
         CREATE TABLE #InsertedData (
             clienteId INT,
             productoId INT
         );
 
+        -- Crear registros insertados en tabla temporal
         INSERT INTO #InsertedData (clienteId, productoId)
             SELECT 
                 clienteId, 
                 productoId
-            FROM inserted;
+            FROM inserted
+            WHERE tipoAccion = 'Búsqueda';
 
-        -- Procesar cada combinación de clienteId y productoId
+        -- Procesar cada combinacion de clienteId y productoId
         INSERT INTO ProductoRecomendadoParaCliente (clienteId, productoRecomendadoId, fechaRecomendacion, mensaje) -- Recomendarlos al cliente
             SELECT
                 id.clienteId,
                 PRP.productoRecomendadoId,
                 GETDATE(),
                 PRP.mensaje
-            FROM (
-                SELECT
+            FROM 
+                (SELECT
                     clienteId,
                     productoId,
                     COUNT(*) AS cantidadBusquedasProducto -- Obtener cantidad de busquedas del producto por el cliente
-                FROM HistorialClienteProducto
-                WHERE tipoAccion = 'Búsqueda'
-                AND EXISTS (
-                    SELECT 1
-                    FROM #InsertedData i
-                    WHERE i.clienteId = HistorialClienteProducto.clienteId
-                    AND i.productoId = HistorialClienteProducto.productoId
-                )
+                FROM 
+                    -- Seleccionar de compras anteriores + insertadas
+                    (SELECT 
+                        clienteId, 
+                        productoId
+                    FROM HistorialClienteProducto
+                    WHERE tipoAccion = 'Búsqueda'
+                    UNION ALL
+                    SELECT 
+                        clienteId, 
+                        productoId
+                    FROM #InsertedData
+                    ) AS Busquedas
                 GROUP BY clienteId, productoId
-            ) AS id
+                ) AS id
             JOIN ProductoRecomendadoParaProducto PRP ON PRP.productoId = id.productoId -- Buscar productos recomendados para ese producto 
             WHERE id.cantidadBusquedasProducto > 3; -- Verificar más de 3 veces
 
@@ -232,9 +263,16 @@ CREATE TRIGGER ProveedorProductoActualizarProducto
     AS BEGIN
         -- Actualizar el precioPor del Producto
         UPDATE Producto
-            SET precioPor = inserted.precioPor * 1.30 -- Tomar como base el precioPor el que se le compró al proveedor y sumarle un 30%
+            SET precioPor = Ins.precioPor * 1.30 -- Tomar como base el precioPor el que se le compró al proveedor y sumarle un 30%
             FROM Producto P
-            JOIN inserted ON inserted.productoId = P.id;
+            JOIN -- Agrupar registros por productoId y obtener ultimoId comprado
+                (SELECT
+                    productoId,
+                    MAX(id) AS ultimoId
+                FROM inserted
+                GROUP BY productoId
+                ) AS InsAgrupado ON InsAgrupado.productoId = P.id
+                JOIN inserted Ins ON Ins.id = InsAgrupado.ultimoId;
     END;
     GO
 
@@ -261,7 +299,9 @@ CREATE TRIGGER FacturaPromoVerificarValida
         ELSE
             BEGIN
                 INSERT INTO FacturaPromo (facturaId, promoId)
-                    SELECT facturaId, promoId
+                    SELECT 
+                        facturaId, 
+                        promoId
                     FROM inserted;
             END;     
     END;
@@ -360,10 +400,16 @@ CREATE TRIGGER FacturaDetalleActualizarInventario
     ON FacturaDetalle
     AFTER DELETE -- Al eliminar un registro (devolución)
     AS BEGIN
-        -- Reintegrar automáticamente la cantidad al inventario del producto correspondiente
+        -- Reintegrar automáticamente la cantidad al inventario para todas las filas eliminadas
         UPDATE Inventario
-            SET cantidad = I.cantidad + deleted.cantidad
-            FROM Inventario I
-            JOIN deleted ON deleted.productoId = I.productoId;
+        SET cantidad = I.cantidad + DelAgrupado.cantidadTotal -- Sumar cantidad actual con cantidad total devuelta
+        FROM Inventario I 
+        JOIN -- Agrupar registros por producto y obtener cantidad total devuelta
+            (SELECT 
+                productoId, 
+                SUM(cantidad) AS cantidadTotal
+            FROM deleted
+            GROUP BY productoId
+            ) AS DelAgrupado ON DelAgrupado.productoId = I.productoId;
     END;
     GO

@@ -186,7 +186,7 @@ LEFT JOIN FacturaPromo FP ON FP.facturaId = F.id -- Promo de la factura
 LEFT JOIN Promo Pr ON Pr.id = FP.promoId AND LOWER(Pr.nombre) = LOWER('Verano EN GaMa') -- Promo Verano EN GaMa (id=47)
 LEFT JOIN PromoEspecializada PE ON PE.promoId = Pr.id AND (PE.productoId = P.id OR PE.marcaId = M.id) -- Promo especializada del producto o de su marca
 WHERE M.nombre = 'Gama' -- Marca Gama (id=21)
-AND MONTH(F.fechaEmision) IN (6, 8) -- Compra en junio y agosto
+AND MONTH(F.fechaEmision) IN (6, 8); -- Compra en junio y agosto
 
 -- Consulta G
 -- Ordenes válidas (condición b)
@@ -257,10 +257,10 @@ SegundaCompra AS (
     AND DATEDIFF(day, PC.fecha, F.fechaEmision) <= 30 -- Segunda compra dentro de los 30 dias posteriores a la primera compra
 )
 SELECT 
-    -- Clientes que han hecho segunda compra entre todos los clientes que hecho compra
+    -- Clientes que han hecho segunda compra entre todos los clientes que han hecho compra
     (COUNT(DISTINCT SC.clienteId) * 100/ COUNT(DISTINCT PC.clienteId)) AS porcentajeClienteSegCompra
 FROM PrimeraCompra PC
-LEFT JOIN SegundaCompra SC ON SC.clienteId = PC.clienteId
+LEFT JOIN SegundaCompra SC ON SC.clienteId = PC.clienteId;
 
 -- Consulta I
 WITH
@@ -294,7 +294,7 @@ SELECT
 FROM Producto P
 JOIN MasVendidos MV ON MV.productoId = P.id
 JOIN TotalIngresosPorProducto TP ON TP.productoId = P.id
-CROSS JOIN TotalIngresos TI
+CROSS JOIN TotalIngresos TI;
 
 -- Consulta J
 SELECT 
@@ -309,9 +309,7 @@ SELECT
 FROM Producto P
 JOIN Categoria C ON C.id = P.categoriaId -- Categoria del producto
 JOIN Inventario I ON I.productoId = P.id -- Inventario del producto
-WHERE C.nombre = 'Chucherías' -- Categoria Chucherías (id=6)
-
-
+WHERE C.nombre = 'Chucherías'; -- Categoria Chucherías (id=6)
 
 --Consulta E 
 SELECT 
