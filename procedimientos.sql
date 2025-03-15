@@ -141,7 +141,7 @@ END;
 
 -- E
 GO
-ALTER PROCEDURE ReporteEfectividadPromo (
+CREATE PROCEDURE ReporteEfectividadPromo (
     @promoId INT
 )
 AS
