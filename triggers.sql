@@ -156,7 +156,7 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
             cantidad INT
         );
 
-        -- Crear registros con inserted
+        -- Crear registros insertados en tabla temporal
         INSERT INTO #InsertedData (clienteId, productoId, cantidad)
             SELECT
                 F.clienteId,
@@ -178,13 +178,14 @@ CREATE TRIGGER FacturaDetalleInsertarProductoRecomendadoParaCliente
                     productoId, 
                     SUM(cantidad) AS cantidadComprasProducto -- Obtener cantidad de compras del producto por el cliente
                 FROM 
+                    -- Seleccionar de compras anteriores + insertadas
                     (SELECT 
                         clienteId, 
                         productoId, 
                         cantidad
                     FROM FacturaDetalle FD
                     JOIN Factura F ON F.id = FD.facturaId
-                    UNION
+                    UNION ALL
                     SELECT 
                         clienteId, 
                         productoId, 
@@ -212,7 +213,7 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
             productoId INT
         );
 
-        -- Crear registros con inserted
+        -- Crear registros insertados en tabla temporal
         INSERT INTO #InsertedData (clienteId, productoId)
             SELECT 
                 clienteId, 
@@ -233,12 +234,13 @@ CREATE TRIGGER HistorialClienteProductoInsertarProductoRecomendadoParaCliente
                     productoId,
                     COUNT(*) AS cantidadBusquedasProducto -- Obtener cantidad de busquedas del producto por el cliente
                 FROM 
+                    -- Seleccionar de compras anteriores + insertadas
                     (SELECT 
                         clienteId, 
                         productoId
                     FROM HistorialClienteProducto
                     WHERE tipoAccion = 'Búsqueda'
-                    UNION
+                    UNION ALL
                     SELECT 
                         clienteId, 
                         productoId
