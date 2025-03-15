@@ -241,7 +241,7 @@ WITH OrdenesValidas AS (
     INNER JOIN Categoria c ON p.categoriaId = c.id
     LEFT JOIN Pago pg ON f.id = pg.facturaId
     LEFT JOIN FormaPago fp ON pg.metodoPagoId = fp.id
-    WHERE f.fechaEmision >= DATEADD(MONTH, -6, '2025-03-03') -- Últimos 6 meses
+    WHERE f.fechaEmision >= DATEADD(MONTH, -6, GETDATE()) -- Últimos 6 meses
     GROUP BY f.id, f.clienteId, f.montoTotal, f.fechaEmision, fp.nombre
     HAVING 
         SUM(CASE WHEN c.nombre = 'Electrónica' THEN 1 ELSE 0 END) >= 1
@@ -265,7 +265,7 @@ ClientesConCondiciones AS (
 PromedioGasto AS (
     SELECT AVG(montoTotal) AS promedioGasto
     FROM Factura
-    WHERE fechaEmision >= DATEADD(MONTH, -6, '2025-03-03')
+    WHERE fechaEmision >= DATEADD(MONTH, -6, GETDATE())
 )
 SELECT 
     cc.*
