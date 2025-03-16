@@ -1,5 +1,5 @@
 -- Procedimiento A 
-CREATE PROCEDURE RealizarCompraOnline
+alter PROCEDURE RealizarCompraOnline
     @ClienteId INT
 AS
 BEGIN
@@ -7,6 +7,9 @@ BEGIN
     DECLARE @NroOrden INT;
     DECLARE @ordenId INT;
     DECLARE @FacturaId INT;
+    DECLARE @ProductoId INT;
+    DECLARE @Cantidad INT;
+    DECLARE @PrecioPor DECIMAL(10, 2);
 
     BEGIN TRANSACTION;
 
@@ -19,13 +22,31 @@ BEGIN
 
     SET @ordenId = SCOPE_IDENTITY();
 
-    INSERT INTO OrdenDetalle (OrdenId, ProductoId, Cantidad, PrecioPor)
-    SELECT @ordenId, ProductoId, Cantidad, PrecioPor
+
+    -- Declarar cursor para recorrer los elementos del carrito
+    DECLARE cur CURSOR FOR
+    SELECT ProductoId, Cantidad, PrecioPor
     FROM Carrito
     WHERE ClienteId = @ClienteId;
 
+    OPEN cur;
+
+    FETCH NEXT FROM cur INTO @ProductoId, @Cantidad, @PrecioPor;
+
+    -- Recorrer los elementos del carrito e insertar en OrdenDetalle
+    WHILE @@FETCH_STATUS = 0
+    BEGIN
+        -- Insertar en OrdenDetalle
+        INSERT INTO OrdenDetalle (OrdenId, ProductoId, Cantidad, PrecioPor)
+        VALUES (@ordenId, @ProductoId, @Cantidad, @PrecioPor);
+
+        FETCH NEXT FROM cur INTO @ProductoId, @Cantidad, @PrecioPor;
+    END;
+
+    CLOSE cur;
+    DEALLOCATE cur;
+
     -- Insertar pago
-    Select @FacturaId = FacturaId from OrdenOnline WHERE id = @ordenId;
     INSERT INTO Pago (FacturaId, MetodoPagoId)
     VALUES (@FacturaId, 1);
 
