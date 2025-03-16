@@ -41,7 +41,7 @@ GO
 -- Procedimiento C 
 CREATE PROCEDURE CrearFacturaFisica (
     @idCliente INT,
-    @idEmpleado VARCHAR(20))
+    @idEmpleado INT)
 AS
 BEGIN
     SET NOCOUNT ON; -- Evita que se devuelva el número de filas afectadas
