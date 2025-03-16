@@ -47,8 +47,9 @@ BEGIN
     DEALLOCATE cur;
 
     -- Insertar pago
-    INSERT INTO Pago (FacturaId, MetodoPagoId)
-    VALUES (@FacturaId, 1);
+	Select @FacturaId = FacturaId from OrdenOnline WHERE id = @ordenId;
+	INSERT INTO Pago (FacturaId, MetodoPagoId)
+    	VALUES (@FacturaId, 1);
 
     -- Eliminar carrito
     DELETE FROM Carrito WHERE ClienteId = @ClienteId;
