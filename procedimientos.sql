@@ -1,5 +1,5 @@
 -- Procedimiento A 
-alter PROCEDURE RealizarCompraOnline
+CREATE PROCEDURE RealizarCompraOnline
     @ClienteId INT
 AS
 BEGIN
@@ -48,8 +48,8 @@ BEGIN
 
     -- Insertar pago
 	Select @FacturaId = FacturaId from OrdenOnline WHERE id = @ordenId;
-	INSERT INTO Pago (FacturaId, MetodoPagoId)
-    	VALUES (@FacturaId, 1);
+    INSERT INTO Pago (FacturaId, MetodoPagoId)
+    VALUES (@FacturaId, 1);
 
     -- Eliminar carrito
     DELETE FROM Carrito WHERE ClienteId = @ClienteId;
