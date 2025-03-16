@@ -36,7 +36,8 @@ BEGIN
     COMMIT TRANSACTION;
 END;
 GO
-
+	
+-- Procedimiento B
     create PROCEDURE SimularCompraAProveedor
     @ProveedorId INT,
     @ProductoId INT,
@@ -65,7 +66,7 @@ BEGIN
         THROW;
     END CATCH
 END;
-
+GO
 -- Procedimiento C 
 CREATE PROCEDURE CrearFacturaFisica (
     @idCliente INT,
