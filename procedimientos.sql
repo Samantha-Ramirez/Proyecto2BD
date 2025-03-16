@@ -169,10 +169,10 @@ BEGIN
     DECLARE @montoIngresoPromo DECIMAL(10, 2);
     DECLARE @porcentajeCambioVentas DECIMAL(10, 2);
     DECLARE @porcentajeCambioIngresos DECIMAL(10, 2);
-    DECLARE @MediaVentasP DECIMAL(10, 2); -- Cambiado a DECIMAL para mayor precisión
-    DECLARE @MediaMontosP DECIMAL(10, 2); -- Cambiado a DECIMAL para mayor precisión
-    DECLARE @MediaVentas DECIMAL(10, 2); -- Cambiado a DECIMAL para mayor precisión
-    DECLARE @MediaMontos DECIMAL(10, 2); -- Cambiado a DECIMAL para mayor precisión
+    DECLARE @MediaVentasP DECIMAL(10, 2); 
+    DECLARE @MediaMontosP DECIMAL(10, 2); 
+    DECLARE @MediaVentas DECIMAL(10, 2); 
+    DECLARE @MediaMontos DECIMAL(10, 2);
 
     -- Obtener fechas de la promoción
     SELECT @fechaInicio = fechaInicio, @fechaFin = fechaFin
