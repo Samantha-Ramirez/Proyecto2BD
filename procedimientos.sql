@@ -37,6 +37,35 @@ BEGIN
 END;
 GO
 
+    create PROCEDURE SimularCompraAProveedor
+    @ProveedorId INT,
+    @ProductoId INT,
+    @PrecioPor DECIMAL(10, 2),
+    @Cantidad INT
+AS
+BEGIN
+
+    BEGIN TRANSACTION;
+    BEGIN TRY
+
+        -- Actualizar el ProveedorProducto
+		INSERT INTO ProveedorProducto (proveedorId, productoId, fechaCompra, precioPor, cantidad)
+        VALUES (@ProveedorId, @ProductoId, GETDATE(), @PrecioPor, @Cantidad);
+		-- Usa el trigger para actualizar el inventario(A)
+		-- Se considera que el id de producto existe y que en caso de un nuevo producto se debe agregar ese producto a la tabla producto manualmente
+
+
+        COMMIT TRANSACTION;
+    END TRY
+    BEGIN CATCH
+
+        ROLLBACK TRANSACTION;
+
+
+        THROW;
+    END CATCH
+END;
+
 -- Procedimiento C 
 CREATE PROCEDURE CrearFacturaFisica (
     @idCliente INT,
