@@ -8,7 +8,6 @@ BEGIN
     DECLARE @ordenId INT;
     DECLARE @FacturaId INT;
 
-    -- Iniciar transacción
     BEGIN TRANSACTION;
 
     -- Obtener el próximo número de orden
@@ -30,7 +29,7 @@ BEGIN
     INSERT INTO Pago (FacturaId, MetodoPagoId)
     VALUES (@FacturaId, 1);
 
-    -- Eliminar el carrito del cliente
+    -- Eliminar carrito
     DELETE FROM Carrito WHERE ClienteId = @ClienteId;
 
     -- Confirmar transacción
