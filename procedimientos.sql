@@ -95,7 +95,7 @@ CREATE PROCEDURE CrearFacturaFisica (
     @idEmpleado INT)
 AS
 BEGIN
-    SET NOCOUNT ON; -- Evita que se devuelva el número de filas afectadas
+    SET NOCOUNT ON; 
 
     BEGIN TRY
         BEGIN TRANSACTION;
@@ -179,7 +179,7 @@ CREATE PROCEDURE ReporteEfectividadPromo
     @promoId INT
 AS
 BEGIN
-    SET NOCOUNT ON; -- Mejora el rendimiento al evitar el envío de mensajes de conteo de filas
+    SET NOCOUNT ON;
 
     DECLARE @fechaInicio DATE;
     DECLARE @fechaFin DATE;
