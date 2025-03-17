@@ -175,9 +175,8 @@ END;
 
 -- Procedimiento E
 GO
-CREATE PROCEDURE ReporteEfectividadPromo (
+CREATE PROCEDURE ReporteEfectividadPromo
     @promoId INT
-)
 AS
 BEGIN
     SET NOCOUNT ON; -- Mejora el rendimiento al evitar el envío de mensajes de conteo de filas
@@ -189,29 +188,36 @@ BEGIN
     DECLARE @montoIngresoPrevio DECIMAL(10, 2);
     DECLARE @cantidadVentasPromo INT;
     DECLARE @montoIngresoPromo DECIMAL(10, 2);
+
     DECLARE @porcentajeCambioVentas DECIMAL(10, 2);
     DECLARE @porcentajeCambioIngresos DECIMAL(10, 2);
+
     DECLARE @MediaVentasP DECIMAL(10, 2); 
     DECLARE @MediaMontosP DECIMAL(10, 2); 
     DECLARE @MediaVentas DECIMAL(10, 2); 
-    DECLARE @MediaMontos DECIMAL(10, 2);
+    DECLARE @MediaMontos DECIMAL(10, 2); 
 
     -- Obtener fechas de la promoción
     SELECT @fechaInicio = fechaInicio, @fechaFin = fechaFin
     FROM Promo
     WHERE id = @promoId;
 
+    -- Validar si las fechas de la promoción son válidas
+    IF @fechaInicio IS NULL OR @fechaFin IS NULL
+    BEGIN
+        RAISERROR('No se encontró la promoción con el ID especificado.', 16, 1);
+        RETURN;
+    END
+
     -- Calcular fecha de inicio del período previo (3 meses antes)
     SET @fechaInicioPrevia = DATEADD(MONTH, -3, @fechaInicio);
 
     -- Calcular ventas y montos del período previo
     SELECT
-        @cantidadVentasPrevia = COUNT(DISTINCT fp.facturaId),
+        @cantidadVentasPrevia = COUNT(DISTINCT f.id),
         @montoIngresoPrevio = SUM(f.montoTotal)
-    FROM FacturaPromo fp
-    JOIN Factura f ON fp.facturaId = f.id
-    WHERE fp.promoId = @promoId
-    AND f.fechaEmision >= @fechaInicioPrevia AND f.fechaEmision < @fechaInicio;
+    FROM Factura f
+    WHERE f.fechaEmision >= @fechaInicioPrevia AND f.fechaEmision < @fechaInicio;
 
     -- Calcular ventas y montos del período de promoción
     SELECT
@@ -219,35 +225,45 @@ BEGIN
         @montoIngresoPromo = SUM(f.montoTotal)
     FROM FacturaPromo fp
     JOIN Factura f ON fp.facturaId = f.id
-    WHERE fp.promoId = @promoId
-    AND f.fechaEmision >= @fechaInicio AND f.fechaEmision <= @fechaFin;
-
-    -- Medias Previas
-    SELECT
-        @MediaVentasP = COALESCE(CAST(@cantidadVentasPrevia AS DECIMAL(10, 2)) / NULLIF(COUNT(DISTINCT f.Id), 0), 0),
-        @MediaMontosP = COALESCE(@montoIngresoPrevio / NULLIF(COUNT(DISTINCT f.Id), 0), 0)
-    FROM Factura f
-    WHERE f.fechaEmision >= @fechaInicioPrevia AND f.fechaEmision < @fechaInicio;
-
-    -- Medias durante la promo
-    SELECT
-        @MediaVentas = COALESCE(CAST(@cantidadVentasPromo AS DECIMAL(10, 2)) / NULLIF(COUNT(DISTINCT f.Id), 0), 0),
-        @MediaMontos = COALESCE(@montoIngresoPromo / NULLIF(COUNT(DISTINCT f.Id), 0), 0)
-    FROM Factura f
     WHERE f.fechaEmision >= @fechaInicio AND f.fechaEmision <= @fechaFin;
 
-    -- Calcular porcentajes de cambio
-    SET @porcentajeCambioVentas = COALESCE(((@cantidadVentasPromo - @cantidadVentasPrevia)* 100 / NULLIF(@cantidadVentasPrevia, 0)), 0);
 
-    SET @porcentajeCambioIngresos = COALESCE(((@montoIngresoPromo - @montoIngresoPrevio)* 100 / NULLIF(@montoIngresoPrevio, 0)), 0);
-
-    -- Generar el reporte
+	--- Se saca es la media por mes de las ventas y montos
+    -- Calcular medias previas (por mes)
     SELECT
-        @MediaVentasP AS 'Media Ventas Previa',
-        @MediaMontosP AS 'Media Monto Previa',
-        @MediaVentas AS 'Media Ventas Promo',
-        @MediaMontos AS 'Media Ingresos Promo',
-        @porcentajeCambioVentas AS 'Cambio Ventas (%)',
-        @porcentajeCambioIngresos AS 'Cambio Ingresos (%)';
+        @MediaVentasP = COALESCE(CAST(@cantidadVentasPrevia AS DECIMAL(10, 2)) / NULLIF(DATEDIFF(MONTH, @fechaInicioPrevia, @fechaInicio), 0), 0),
+        @MediaMontosP = COALESCE(@montoIngresoPrevio / NULLIF(DATEDIFF(MONTH, @fechaInicioPrevia, @fechaInicio), 0), 0);
 
+    -- Calcular medias durante la promoción (por mes)
+    SELECT
+        @MediaVentas = COALESCE(CAST(@cantidadVentasPromo AS DECIMAL(10, 2)) / NULLIF(DATEDIFF(MONTH, @fechaInicio, @fechaFin), 0), 0),
+        @MediaMontos = COALESCE(@montoIngresoPromo / NULLIF(DATEDIFF(MONTH, @fechaInicio, @fechaFin), 0), 0);
+
+    -- Calcular porcentajes de cambio
+	-- N/A sinifica que es idefinido
+    IF @MediaVentasP = 0 OR @MediaMontosP = 0
+    BEGIN
+        SELECT
+            @MediaVentasP AS 'Media Ventas Previa',
+            @MediaMontosP AS 'Media Monto Previa',
+            @MediaVentas AS 'Media Ventas Promo',
+            @MediaMontos AS 'Media Ingresos Promo',
+            'N/A' AS 'Cambio Ventas (%)',
+            'N/A' AS 'Cambio Ingresos (%)';
+    END
+    ELSE
+    BEGIN
+	--- se saca el cambio porcentual de las medias si es positivo es incremento y si es negativo es decremento
+        SET @porcentajeCambioVentas = COALESCE(((@MediaVentas - @MediaVentasP) * 100.0 / NULLIF(@MediaVentasP, 0)), 0);
+        SET @porcentajeCambioIngresos = COALESCE(((@MediaMontos - @MediaMontosP) * 100.0 / NULLIF(@MediaMontosP, 0)), 0);
+
+        -- Generar el reporte
+        SELECT
+            @MediaVentasP AS 'Media Ventas Previa',
+            @MediaMontosP AS 'Media Monto Previa',
+            @MediaVentas AS 'Media Ventas Promo',
+            @MediaMontos AS 'Media Ingresos Promo',
+            @porcentajeCambioVentas AS 'Cambio Ventas (%)',
+            @porcentajeCambioIngresos AS 'Cambio Ingresos (%)';
+    END
 END;
