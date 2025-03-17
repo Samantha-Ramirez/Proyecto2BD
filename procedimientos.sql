@@ -60,7 +60,7 @@ END;
 GO
 	
 -- Procedimiento B
-    create PROCEDURE SimularCompraAProveedor
+    create PROCEDURE RealizarCompraAProveedor
     @ProveedorId INT,
     @ProductoId INT,
     @PrecioPor DECIMAL(10, 2),
