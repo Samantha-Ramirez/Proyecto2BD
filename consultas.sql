@@ -173,7 +173,6 @@ WHERE sd.sueldoMensual > 0
 ORDER BY sd.nombreCompleto;
 
 -- Consulta E 
---Consulta E 
 SELECT 
     c.id AS ClienteID,
     c.CI,
